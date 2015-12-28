@@ -1,0 +1,102 @@
+#+Title: Lisp Equations to TeX
+#+AUTHOR: Sam Flint
+#+EMAIL: swflint@flintfam.org
+#+DATE: \today
+#+INFOJS_OPT: view:info toc:nil path:http://flintfam.org/org-info.js
+#+OPTIONS: toc:nil H:5 ':t *:t
+#+PROPERTY: noweb no-export
+#+PROPERTY: comments noweb
+#+LATEX_HEADER: \usepackage[color]{showkeys}
+#+LATEX_HEADER: \parskip=5pt
+#+LATEX_HEADER: \lstset{texcl=true,breaklines=true,columns=fullflexible,basestyle=\ttfamily,frame=lines,literate={lambda}{$\lambda$}{1} {set}{$\gets$}1 {setq}{$\gets$}1 {setf}{$\gets$}1 {<=}{$\leq$}1 {>=}{$\geq$}1}
+
+* Introduction                                                        :nonum:
+
+Foo
+
+* TOC                                                         :ignoreheading:
+
+#+TOC: headlines 3
+#+TOC: listings
+
+* Matching And Generating
+
+** Match Test
+
+#+Caption: Generate Match Test
+#+Name: gen-match-test
+#+BEGIN_SRC lisp
+  (defun generate-match-expression (op arity &optional (type '=))
+    (declare (symbol on type)
+             (integer arity))
+    (ecase type
+      (=
+       `(and (eq function ',op)
+           (= arg-count ,arity)))
+      (>
+       `(and (eq function ',op)
+           (> arg-count ,arity)))
+      (>=
+       `(and (eq function ',op)
+           (>= arg-count ,arity)))))
+#+END_SRC
+
+** Define Rule
+
+#+Caption: Define Matching Rule
+#+Name: def-match-rule
+#+BEGIN_SRC lisp
+  (defmacro defrule (name (on arity &optional type) (&rest arguments) &body rule))
+#+END_SRC
+
+** Store Rules
+
+#+Caption: Rule Storage
+#+Name: rule-storage
+#+BEGIN_SRC lisp
+
+#+END_SRC
+
+* Rules
+
+** Multiplication
+
+** Division
+
+** Addition
+
+** Subtraction
+
+** Exponentials and Logarithmics
+
+** Trigonometrics
+
+* Conversion Driver
+
+#+Caption: Conversion Driver
+#+Name: conversion-driver
+#+BEGIN_SRC lisp
+
+#+END_SRC
+
+* Putting it Together
+
+#+Caption: Packaging
+#+Name: packaging
+#+BEGIN_SRC lisp :tangle "to-tex.lisp"
+  ;;;; to-tex.lisp
+  ;;;;
+  ;;;; Copyright (c) 2015 Samuel W. Flint <swflint@flintfam.org>
+
+  (defpackage #:to-tex
+    (:use #:cl)
+    (:export #:convert))
+
+  (in-package #:to-tex)
+
+  ;;; "to-tex" goes here.
+
+  <<conversion-driver>>
+
+  ;;; End to-tex
+#+END_SRC
