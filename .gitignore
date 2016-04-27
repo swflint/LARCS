@@ -1,0 +1,14 @@
+.*
+!.gitignore
+*.aux
+*.bcf
+*.bbl
+*.lol
+*.pdf
+*.tex
+*.log
+*.out
+*.run.xml
+auto/*
+*~
+\#*\#
