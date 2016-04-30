@@ -1,4 +1,4 @@
-#+Title: Lisp Equations to TeX
+#+Title: Lisp Equations to LaTeX
 #+AUTHOR: Sam Flint
 #+EMAIL: swflint@flintfam.org
 #+DATE: \today
@@ -10,7 +10,10 @@
 #+LATEX_HEADER: \parskip=5pt
 #+LATEX_HEADER: \lstset{texcl=true,breaklines=true,columns=fullflexible,basestyle=\ttfamily,frame=lines,literate={lambda}{$\lambda$}{1} {set}{$\gets$}1 {setq}{$\gets$}1 {setf}{$\gets$}1 {<=}{$\leq$}1 {>=}{$\geq$}1}
 
-* Introduction                                                        :nonum:
+* TODO Introduction                                                   :nonum:
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 17:53>
+:END:
 
 Foo
 
@@ -205,6 +208,7 @@ Foo
 ** TODO Trigonometrics
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 16:19>
+:ID:       837806c9-7174-43a3-80b2-355b645d46ed
 :END:
 
 #+Caption: Trigonometric Functions
@@ -265,7 +269,10 @@ Foo
            (format nil "~a" op))
           ((and (symbolp op)
               (= 1 (length function)))
-           (string-downcase op))
+           (let ((symbol-pair (assoc op *special-symbols-to-sequences*)))
+             (if (null symbol-pair)
+                 (string-downcase op)
+                 (cdr symbol-pair))))
           (t
            (let ((expansion-function (get-expansion function)))
              (if (functionp expansion-function)
@@ -276,6 +283,7 @@ Foo
 * TODO Miscellaneous Functions
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 16:09>
+:ID:       a4ab8a72-0b09-453c-b936-2470d5429c05
 :END:
 
 #+Caption: Misc Functions
@@ -285,6 +293,48 @@ Foo
     (if (listp list)
         list
         (list list)))
+
+  (defvar *special-symbols-to-sequences*
+    '((alpha . "\\alpha")
+      (beta . "\\beta")
+      (gamma . "\\gamma")
+      (delta . "\\delta")
+      (epsilon . "\\epsilon")
+      (varepsilon . "\\varepsilon")
+      (zeta . "\\zeta")
+      (eta . "\\eta")
+      (theta . "\\theta")
+      (vartheta . "\\vartheta")
+      (gamma . "\\gamma") (kappa . "\\kappa")
+      (lambda . "\\lambda")
+      (mu . "\\mu")
+      (nu . "\\nu")
+      (xi . "\\xi")
+      (omicron . "\\o")
+      (pi . "\\pi")
+      (varpi . "\\varpi")
+      (rho . "\\rho")
+      (varrho . "\\varrho")
+      (sigma . "\\sigma")
+      (varsigm . "\\varsigm")
+      (tau . "\\tau")
+      (upsilon . "\\upsilon")
+      (phi . "\\phi")
+      (varphi . "\\varphi")
+      (chi . "\\chi")
+      (psi . "\\psi")
+      (omega . "\\omega")
+      (big-gamma . "\\Gamma")
+      (big-delta . "\\Delta")
+      (big-theta . "\\Theta")
+      (big-lambda . "\\Lambda")
+      (big-xi . "\\Xi")
+      (big-pi . "\\Pi")
+      (big-sigma . "\\Sigma")
+      (big-upsilon . "\\Upsilon")
+      (big-phi . "\\Phi")
+      (big-psi . "\\Psi")
+      (big-omega . "\\Omega")))
 #+END_SRC
 
 * TODO Putting it Together
@@ -311,7 +361,7 @@ Foo
 
   ;;; "to-tex" goes here.
 
-  <<misc-function>>
+  <<misc-functions>>
 
   <<rule-storage>>
 
