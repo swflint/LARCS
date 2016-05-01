@@ -1,0 +1,363 @@
+#+Title: Simple Algebraic Manipulation
+#+Subtitle: An approach to allow for the solving and simplification of expressions
+#+AUTHOR: Samuel W. Flint
+#+EMAIL: swflint@flintfam.org
+#+DATE: \today
+#+INFOJS_OPT: view:info toc:nil path:http://flintfam.org/org-info.js
+#+OPTIONS: toc:nil H:5 ':t *:t todo:nil stat:nil d:nil
+#+PROPERTY: noweb no-export
+#+PROPERTY: comments noweb
+#+LATEX_HEADER: \usepackage[margins=0.75in]{geometry}
+#+LATEX_HEADER: \parskip=5pt
+#+LATEX_HEADER: \parindent=0pt
+#+LATEX_HEADER: \lstset{texcl=true,breaklines=true,columns=fullflexible,basicstyle=\ttfamily,frame=lines,literate={<=}{$\leq$}1 {>=}{$\geq$}1}
+#+LATEX_CLASS_OPTIONS: [10pt,twoside]
+#+LATEX_HEADER: \pagestyle{headings}
+
+* COMMENT Export
+
+#+Caption: Export Document
+#+Name: export-document
+#+BEGIN_SRC emacs-lisp :exports none :results none
+  (save-buffer)
+  (let ((org-confirm-babel-evaluate
+         (lambda (lang body)
+           (declare (ignorable lang body))
+           nil)))
+    (org-latex-export-to-pdf))
+#+END_SRC
+
+* COMMENT Tangle
+
+#+Caption: Tangle Document
+#+Name: tangle-document
+#+BEGIN_SRC emacs-lisp :exports none :results none
+  (save-buffer)
+  (let ((python-indent-offset 4))
+    (org-babel-tangle))
+#+END_SRC
+
+* DONE Introduction                                                   :nonum:
+CLOSED: [2016-05-01 Sun 14:33]
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 22:55>
+:END:
+
+As a part of my lisp-based Computer Algebra System, an algebraic manipulation toolkit is required.  This will be used to simplify equations, or for that matter solve them.  This creates this toolkit, but does not create a complete simplifier or solver.  It does this by providing manipulators and automatic rewriters.  These together will provide simplification and solving utilities.
+
+* TOC                                                                :ignore:
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 22:55>
+:END:
+
+#+TOC: headlines 3
+#+TOC: listings
+
+* WORKING Macros [0/2]
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 22:57>
+:END:
+
+Foo
+
+** WORKING Define Expression Manipulator
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 22:57>
+:ID:       63909972-428d-47f3-9dc3-3e1fb213aa70
+:END:
+
+#+Caption: Define Expression Manipulator
+#+Name: define-expression-manipulator
+#+BEGIN_SRC lisp
+  (defmacro defmanipulator (name arity &body body)
+    (check-type name symbol)
+    (check-type arity (or (integer 1 26) (eql rest) (cons symbol *)))
+    (cond
+      ((listp arity)
+       `(defun ,name (,@arity)
+          ,@body))
+      ((typep arity '(integer 1 26))
+       (if (= arity 1)
+           `(defun ,name (expression)
+              ,@body)
+           (let* ((letters '(a b c d e f g h i j k l m n o p q r s t u v w x y z))
+                  (args (loop for i from 1 to arity
+                           collect (symbolicate 'expression- (nth (1- i) letters)))))
+             `(defun ,name (,@args)
+                ,@body))))
+      ((eq arity 'rest)
+       `(defun ,name (&rest expressions)
+          ,@body))))
+#+END_SRC
+
+** WORKING Rewrite Rules [0/4]
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 22:58>
+:END:
+
+Foo
+
+*** TODO Define Rule
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 23:07>
+:END:
+
+Foo
+
+*** TODO Rule Storage
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 23:07>
+:END:
+
+Foo
+
+*** TODO Rule Retrieval
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 23:07>
+:END:
+
+Foo
+
+*** TODO Rule Application
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 23:08>
+:END:
+
+Foo
+
+* WORKING Expression Typing
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 23:15>
+:ID:       c6921b1e-d269-4243-acff-5a77685c331e
+:END:
+
+#+Caption: Determine Expression Type
+#+Name: determine-expression-type
+#+BEGIN_SRC lisp
+  (defun expression-type (expression)
+    (cond
+      ((numberp expression) 'number)
+      ((symbolp expression) 'variable)
+      ((eq '+ (first expression)) 'additive)
+      ((eq '- (first expression)) 'subtractive)
+      ((and (eq '* (first expression))
+          (= 2 (length (rest expression)))
+          (expression-type-p (third expression) 'power)) 'polynomial-term)
+      ((eq '* (first expression)) 'multiplicative)
+      ((eq 'expt (first expression)) 'power)))
+
+  (defun expression-type-p (expression type)
+    (eq type (expression-type expression)))
+#+END_SRC
+
+* TODO Term Collector
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 22:59>
+:END:
+
+Foo
+
+* TODO Combine Polynomial Terms
+:PROPERTIES:
+:CREATED:  <2016-05-01 Sun 12:29>
+:ID:       984d0f52-4c52-4bfa-a150-f3289d25bdf1
+:END:
+
+#+Caption: Combine Polynomial Terms
+#+Name: combine-polynomial-terms
+#+BEGIN_SRC lisp
+  (defun coefficient (term)
+    (second term))
+
+  (defun term-variable (term)
+    (second (third term)))
+
+  (defun get-power (term)
+    (cond
+      ((expression-type-p term 'polynomial-term) (third (third term)))
+      ((expression-type-p term 'power) (third term))))
+
+  (defun same-order-p (term-a term-b)
+    (= (get-power term-a)
+       (get-power term-b)))
+
+  (defun same-variable-p (term-a term-b)
+    (eq (term-variable term-a)
+        (term-variable term-b)))
+
+  (defun single-term-combinable-p (term-a term-b)
+    (and (same-order-p term-a term-b)
+       (same-variable-p term-a term-b)))
+
+  (defun combine-polynomial-terms (operation term-a term-b)
+    (if (single-term-combinable-p term-a term-b)
+        `(* ,(if (eq operation '+)
+                 (+ (coefficient term-a)
+                    (coefficient term-b))
+                 (- (coefficient term-a)
+                    (coefficient term-b)))
+            (expt ,(term-variable term-a) ,(get-power term-a)))
+        `(,operation ,term-a ,term-b)))
+#+END_SRC
+
+* WORKING Expression Manipulators [0/6]
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 22:58>
+:END:
+
+Foo
+
+** WORKING External Manipulator
+:PROPERTIES:
+:CREATED:  <2016-05-01 Sun 14:33>
+:ID:       6419490c-3cb0-47e4-840a-c20af4bfb3d7
+:END:
+
+#+Caption: External Manipulator
+#+Name: external-manipulator
+#+BEGIN_SRC lisp
+  (defun manipulate (action &rest expressions)
+    (case action
+      (+
+       (reduce #'add expressions))
+      (-
+       (reduce #'subtract expressions))
+      (*
+       (reduce #'multiply expressions))
+      (/
+       (reduce #'divide expressions))
+      (sin
+       (reduce #'manip-sin expressions))
+      (cos
+       (reduce #'manip-cos expressions))
+      (tan
+       (reduce #'manip-tan expressions))
+      (expt
+       (reduce #'powers expressions))))
+#+END_SRC
+
+** WORKING Addition
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 23:08>
+:ID:       b794486c-e493-408f-b80c-a440edae1bc8
+:END:
+
+Foo
+
+#+Caption: Addition Manipulator
+#+Name: addition-manipulator
+#+BEGIN_SRC lisp
+  (defmanipulator add 2
+    (if (and (expression-type-p expression-b 'number)
+           (not (eq 'number (expression-type expression-a))))
+        (add expression-b expression-a)
+        (cond
+          ((and (expression-type-p expression-a 'number)
+              (expression-type-p expression-b 'number))
+           (+ expression-a expression-b))
+          ((and (expression-type-p expression-a 'number)
+              (expression-type-p expression-b 'additive))
+           (let ((total expression-a)
+                 (the-other (rest expression-b))
+                 (non-numbers '()))
+             (loop for other in the-other
+                do (if (numberp other)
+                       (incf total other)
+                       (push other non-numbers)))
+             (if (null non-numbers)
+                 total
+                 `(+ ,total ,@non-numbers))))
+          ((and (expression-type-p expression-a 'additive)
+              (expression-type-p expression-b 'additive))
+           (let ((total 0)
+                 (elements (append (rest expression-a)
+                                   (rest expression-b)))
+                 (non-numerics '()))
+             (loop for element in elements
+                do (if (numberp element)
+                       (incf total element)
+                       (push element non-numerics)))
+             (if (null non-numerics)
+                 total
+                 `(+ ,total ,@non-numerics))))
+          ((and (expression-type-p expression-a 'number)
+              (expression-type-p expression-b 'subtractive))
+           (let ((total expression-a)
+                 (the-other (rest expression-b))
+                 (non-numeric '()))
+             (loop for other in the-other
+                do (if (numberp other)
+                       (decf total other)
+                       (push other non-numeric)))
+             (if (null non-numeric)
+                 total
+                 `(+ ,total (- ,@(reverse non-numeric))))))
+          ((and (expression-type-p expression-a 'polynomial-term)
+              (expression-type-p expression-b 'polynomial-term))
+           (combine-polynomial-terms '+ expression-a expression-b)))))
+#+END_SRC
+
+** TODO Subtraction
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 23:08>
+:END:
+
+Foo
+
+** TODO Multiplication
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 23:08>
+:END:
+
+Foo
+
+** TODO Division
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 23:09>
+:END:
+
+Foo
+
+** TODO Trigonometric
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 23:09>
+:END:
+
+Foo
+
+* TODO Rewrite Rules
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 22:59>
+:END:
+
+Foo
+
+* WORKING Packaging
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 23:07>
+:ID:       d487ed31-295b-4274-aef2-b45e4fa7bec2
+:END:
+
+Foo
+
+#+Caption: Packaging
+#+Name: packaging
+#+BEGIN_SRC lisp :tangle "manipulation.lisp"
+  (defpackage #:manipulator
+    (:use #:cl)
+    (:import-from #:alexandria
+                  #:symbolicate)
+    (:export #:manipulate))
+
+  (in-package #:manipulator)
+
+  <<define-expression-manipulator>>
+
+  <<determine-expression-type>>
+
+  <<combine-polynomial-terms>>
+
+  <<addition-manipulator>>
+
+  <<external-manipulator>>
+#+END_SRC
