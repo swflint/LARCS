@@ -109,7 +109,7 @@ Foo
                                               ,*rules*)))))
 #+END_SRC
 
-* WORKING Rules [0/6]
+* WORKING Rules [0/10]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 16:19>
 :END:
@@ -239,6 +239,90 @@ Foo
             (convert-to-tex (ensure-list arg))))
 #+END_SRC
 
+** TODO Logic
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 18:29>
+:ID:       74d12931-343f-4982-945d-738a3e38a1db
+:END:
+
+#+Caption: Logic Rules
+#+Name: logic-rules
+#+BEGIN_SRC lisp
+  (defrule and (and 2 >=) (&rest elements)
+    (format nil "{~{{~a}~^ \\wedge ~}}"
+            (map 'list #'convert-to-tex
+                 (map 'list #'ensure-list elements))))
+
+  (defrule or (or 2 >=) (&rest elements)
+    (format nil "{~{{~a}~^ \\vee ~}}"
+            (map 'list #'convert-to-tex
+                 (map 'list #'ensure-list elements))))
+
+  (defrule not (not 1 =) (&rest elements)
+    (format nil "{\\not {~a}}"
+            (map 'list #'convert-to-tex
+                 (map 'list #'ensure-list elements))))
+#+END_SRC
+
+** TODO Equality
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 18:29>
+:ID:       f75273d2-d523-4404-925b-af6fd01c7520
+:END:
+
+#+Caption: Equality Rules
+#+Name: equality-rules
+#+BEGIN_SRC lisp
+  (defrule = (= 2 =) (lhs rhs)
+    (format nil "{{~a} = {~a}}"
+            (convert-to-tex (ensure-list lhs))
+            (convert-to-tex (ensure-list rhs))))
+#+END_SRC
+
+** TODO Summation and Integration
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 18:30>
+:ID:       dda2827a-cee5-4efc-bd9a-4dd953829b5c
+:END:
+
+#+Caption: Summation and Integration
+#+Name: summation-and-integration
+#+BEGIN_SRC lisp
+  (defrule sum (sum 3 =) (start stop expression)
+    (format nil "{\\sum_{~a}^{~a} {~a}}"
+            (convert-to-tex (ensure-list start))
+            (convert-to-tex (ensure-list stop))
+            (convert-to-tex (ensure-list expression))))
+
+  (defrule integrate (integrate 4 =) (from to expression wrt)
+    (format nil "{\\int_{~a}^{~a} ~a\\,\mathrm{d}~a}"
+            (convert-to-tex (ensure-list from))
+            (convert-to-tex (ensure-list to))
+            (convert-to-tex (ensure-list expression))
+            (convert-to-tex (ensure-list wrt))))
+#+END_SRC
+
+** TODO Speciality
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 18:30>
+:ID:       f4e6b309-289d-4b32-bc55-4740ec86a113
+:END:
+
+#+Caption: Specialty
+#+Name: specialty
+#+BEGIN_SRC lisp
+  (defrule parens (parens 2 =) (type inside)
+    (let* ((types '((square . ("[" . "]"))
+                    (curly . ("{" . "}"))
+                    (smooth . ("(" . ")"))))
+           (left (cadr (assoc type types)))
+           (right (cddr (assoc type types))))
+      (format nil "{\\left~a {~a} \\right~a}"
+              left
+              (convert-to-tex (ensure-list inside))
+              right)))
+#+END_SRC
+
 * TODO Conversion Driver
 :PROPERTIES:
 :ID:       b395bdb7-7b98-49a1-b6d6-4256fb40d4fa
@@ -359,7 +443,7 @@ Foo
 
   (in-package #:to-tex)
 
-  ;;; "to-tex" goes here.
+    ;;; "to-tex" goes here.
 
   <<misc-functions>>
 
@@ -384,6 +468,14 @@ Foo
   <<exponentials-and-logarithms>>
 
   <<trigonometrics>>
+
+  <<logic-rules>>
+
+  <<equality-rules>>
+
+  <<summation-and-integration>>
+
+  <<specialty>>
 
   ;;; End to-tex
 #+END_SRC
