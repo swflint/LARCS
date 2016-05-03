@@ -53,79 +53,97 @@ As a part of my lisp-based Computer Algebra System, an algebraic manipulation to
 #+TOC: headlines 3
 #+TOC: listings
 
-* WORKING Macros [0/2]
-:PROPERTIES:
-:CREATED:  <2016-04-30 Sat 22:57>
-:END:
-
-Foo
-
-** WORKING Define Expression Manipulator
-:PROPERTIES:
-:CREATED:  <2016-04-30 Sat 22:57>
-:ID:       63909972-428d-47f3-9dc3-3e1fb213aa70
-:END:
-
-#+Caption: Define Expression Manipulator
-#+Name: define-expression-manipulator
-#+BEGIN_SRC lisp
-  (defmacro defmanipulator (name arity &body body)
-    (check-type name symbol)
-    (check-type arity (or (integer 1 26) (eql rest) (cons symbol *)))
-    (cond
-      ((listp arity)
-       `(defun ,name (,@arity)
-          ,@body))
-      ((typep arity '(integer 1 26))
-       (if (= arity 1)
-           `(defun ,name (expression)
-              ,@body)
-           (let* ((letters '(a b c d e f g h i j k l m n o p q r s t u v w x y z))
-                  (args (loop for i from 1 to arity
-                           collect (symbolicate 'expression- (nth (1- i) letters)))))
-             `(defun ,name (,@args)
-                ,@body))))
-      ((eq arity 'rest)
-       `(defun ,name (&rest expressions)
-          ,@body))))
-#+END_SRC
-
-** WORKING Rewrite Rules [0/4]
+* WORKING Rewrite Rules [0/5]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 22:58>
 :END:
 
 Foo
 
-*** TODO Define Rule
+** TODO Match Expressions
+:PROPERTIES:
+:CREATED:  <2016-05-01 Sun 16:26>
+:END:
+
+Foo
+
+#+Caption: Match Expressions
+#+Name: match-expressions
+#+BEGIN_SRC lisp
+  (defun generate-match-expression (on arity &optional (type '=))
+    (check-type on symbol)
+    (check-type type (member = > >=))
+    (check-type arity (integer 0))
+    (case type
+      (=
+       `(and (eq function ',on)
+           (= arg-count ,arity)))
+      (>
+       `(and (eq function ',on)
+           (> arg-count ,arity)))
+      (>=
+       `(and (eq function ',on)
+           (>= arg-count ,arity)))))
+#+END_SRC
+
+** TODO Define Rule
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:07>
 :END:
 
 Foo
 
-*** TODO Rule Storage
+#+Caption: Define Rule
+#+Name: define-rule
+#+BEGIN_SRC lisp
+  (defmacro defrule (name (on arity &optional (type '=)) (&rest arguments) &body expansion)
+    (let ((match-expression (generate-match-expression on arity type))
+          (test-name (symbolicate name '-test))
+          (expansion-name (symbolicate name '-expansion)))
+
+      `(progn
+         (defun ,test-name (function &rest arguments &aux (arg-count (length arguments)))
+           ,match-expression)
+         (defun ,expansion-name (,@arguments)
+           ,@expansion)
+         (setf (aget *rules* ',name)
+               (make-rule :name ',name
+                          :test-function #',test-name
+                          :expansion-function #',expansion-name))
+         ',name)))
+#+END_SRC
+
+** TODO Rule Storage
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:07>
 :END:
 
 Foo
 
-*** TODO Rule Retrieval
+#+Caption: Rule Storage
+#+Name: rule-storage
+#+BEGIN_SRC lisp
+  (defstruct (rule (:type list))
+    name test-function expansion-function)
+
+  (defvar *rules* '())
+#+END_SRC
+
+** TODO Rule Retrieval
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:07>
 :END:
 
 Foo
 
-*** TODO Rule Application
+** TODO Rule Application
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:08>
 :END:
 
 Foo
 
-* WORKING Expression Typing
+* WORKING Expression Typing [0/5]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:15>
 :ID:       c6921b1e-d269-4243-acff-5a77685c331e
@@ -134,48 +152,332 @@ Foo
 #+Caption: Determine Expression Type
 #+Name: determine-expression-type
 #+BEGIN_SRC lisp
-  (defun expression-type (expression)
-    (cond
-      ((numberp expression) 'number)
-      ((symbolp expression) 'variable)
-      ((eq '+ (first expression)) 'additive)
-      ((eq '- (first expression)) 'subtractive)
-      ((and (eq '* (first expression))
-          (= 2 (length (rest expression)))
-          (expression-type-p (third expression) 'power)) 'polynomial-term)
-      ((eq '* (first expression)) 'multiplicative)
-      ((eq 'expt (first expression)) 'power)))
-
-  (defun expression-type-p (expression type)
-    (eq type (expression-type expression)))
+  <<classification-storage>>
+  <<define-classification>>
+  <<check-classification>>
+  <<classify-expression>>
+  <<possible-classifications>>
 #+END_SRC
 
-* TODO Term Collector
+** WORKING Classification Storage
+:PROPERTIES:
+:CREATED:  <2016-05-02 Mon 13:55>
+:ID:       ff35cd33-3c10-4a45-a2c5-32bc3fdc1acc
+:END:
+
+#+Caption: Classification Storage
+#+Name: classification-storage
+#+BEGIN_SRC lisp
+  (defvar *classifications* '())
+#+END_SRC
+
+** WORKING Define Classification
+:PROPERTIES:
+:CREATED:  <2016-05-02 Mon 13:56>
+:ID:       d8826a51-50b8-467a-9e52-158502bd4138
+:END:
+
+#+Caption: Define Classification
+#+Name: define-classification
+#+BEGIN_SRC lisp
+  (defmacro defclassification (name &body body)
+    `(progn
+       (defun ,(symbolicate name '-classifier) (expression &aux (length (if (listp expression) (length expression) 1)))
+         (declare (ignorable length))
+         ,@body)
+       (pushnew '(,name . ,(symbolicate name '-classifier)) *classifications*)
+       ',name))
+#+END_SRC
+
+** WORKING Check Classification
+:PROPERTIES:
+:CREATED:  <2016-05-02 Mon 13:56>
+:ID:       6505b0b1-ffd8-4dd6-b81a-3e49483d8437
+:END:
+
+#+Caption: Check Classification
+#+Name: check-classification
+#+BEGIN_SRC lisp
+  (defun expression-type-p (expression type)
+    (if (eq '* type)
+        t
+        (funcall (cdr (assoc type *classifications*))
+                 expression)))
+#+END_SRC
+
+** WORKING Classify Expression
+:PROPERTIES:
+:CREATED:  <2016-05-02 Mon 14:09>
+:ID:       82d75d54-1d33-400b-86a3-7d16af938ac8
+:END:
+
+#+Caption: Classify Expression
+#+Name: classify-expression
+#+BEGIN_SRC lisp
+  (defun classify (expression)
+    (remove-if #'null
+               (map 'list #'(lambda (name-and-checker)
+                              (let ((name (car name-and-checker))
+                                    (checker (cdr name-and-checker)))
+                                (if (funcall checker expression)
+                                    name
+                                    nil)))
+                    ,*classifications*)))
+
+  (defun expression-type (expression)
+    (first (classify expression)))
+#+END_SRC
+
+** WORKING Classifications [0/11]
+:PROPERTIES:
+:CREATED:  <2016-05-02 Mon 13:56>
+:ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
+:END:
+
+#+Caption: Possible Classifications
+#+Name: possible-classifications
+#+BEGIN_SRC lisp
+  <<classify-numbers>>
+  <<classify-variables>>
+  <<classify-additives>>
+  <<classify-subtractives>>
+  <<classify-powers>>
+  <<classify-exponentials>>
+  <<classify-multiplicatives>>
+  <<classify-logarithmics>>
+  <<classify-rationals>>
+  <<classify-polynomial-term>>
+  <<classify-polynomials>>
+#+END_SRC
+
+*** WORKING Numbers
+:PROPERTIES:
+:CREATED:  <2016-05-02 Mon 14:26>
+:ID:       42081153-7cc5-42ff-a17f-53e171c6d1a7
+:END:
+
+#+Caption: Classify Numbers
+#+Name: classify-numbers
+#+BEGIN_SRC lisp
+  (defclassification numeric
+    (numberp expression))
+#+END_SRC
+
+*** WORKING Variables
+:PROPERTIES:
+:CREATED:  <2016-05-02 Mon 14:26>
+:ID:       4c676754-ef9a-485f-91a2-8f1bd83c7659
+:END:
+
+#+Caption: Classify Variables
+#+Name: classify-variables
+#+BEGIN_SRC lisp
+  (defclassification variable
+    (symbolp expression))
+#+END_SRC
+
+*** WORKING Additives
+:PROPERTIES:
+:CREATED:  <2016-05-02 Mon 14:26>
+:ID:       736d79dc-f34c-4247-b592-690d7f2fddd9
+:END:
+
+#+Caption: Classify Additives
+#+Name: classify-additives
+#+BEGIN_SRC lisp
+  (defclassification additive
+    (when (listp expression)
+      (eq '+ (first expression))))
+#+END_SRC
+
+*** WORKING Subtractive
+:PROPERTIES:
+:CREATED:  <2016-05-02 Mon 14:26>
+:ID:       c59d086f-2f49-485a-8f96-57d85e774f60
+:END:
+
+#+Caption: Classify Subtractives
+#+Name: classify-subtractives
+#+BEGIN_SRC lisp
+  (defclassification subtractive
+    (when (listp expression)
+      (eq '- (first expression))))
+#+END_SRC
+
+*** WORKING Powers
+:PROPERTIES:
+:CREATED:  <2016-05-02 Mon 14:27>
+:ID:       cc15dd10-7cc0-4370-9e69-daf903b30ad5
+:END:
+
+#+Caption: Classify Powers
+#+Name: classify-powers
+#+BEGIN_SRC lisp
+  (defclassification power
+    (when (listp expression)
+      (and (eq 'expt (first expression))
+         (expression-type-p (second expression) 'variable)
+         (expression-type-p (third expression) 'numeric))))
+#+END_SRC
+
+*** WORKING Exponentials
+:PROPERTIES:
+:CREATED:  <2016-05-02 Mon 15:04>
+:ID:       a11fdd94-d56c-4749-bb22-dca75159dbcb
+:END:
+
+#+Caption: Classify Exponentials
+#+Name: classify-exponentials
+#+BEGIN_SRC lisp
+  (defclassification natural-exponential
+    (when (listp expression)
+      (and (= 2 length)
+         (eq 'exp (first expression)))))
+
+  (defclassification exponential
+    (when (listp expression)
+      (and (= 3 length)
+         (eq 'expt (first expression)))))
+#+END_SRC
+
+*** WORKING Multiplicatives
+:PROPERTIES:
+:CREATED:  <2016-05-02 Mon 14:27>
+:ID:       feb85a20-93e3-45a1-be01-9893ecc07c53
+:END:
+
+#+Caption: Classify Multiplicatives
+#+Name: classify-multiplicatives
+#+BEGIN_SRC lisp
+  (defclassification multiplicative
+    (when (listp expression)
+      (eq '* (first expression))))
+#+END_SRC
+
+*** WORKING Logarithmics
+:PROPERTIES:
+:CREATED:  <2016-05-02 Mon 14:27>
+:ID:       0b733d75-e1ab-413f-8f8a-6a8a47db409c
+:END:
+
+#+Caption: Classify Lograthmics
+#+Name: classify-logarithmics
+#+BEGIN_SRC lisp
+  (defclassification natural-logarithmic
+    (when (listp expression)
+      (and (= 2 length)
+         (eq 'log (first expression)))))
+
+  (defclassification logarithmic
+    (when (listp expression)
+      (and (= 3 length)
+         (eq 'log (first expression)))))
+#+END_SRC
+
+*** WORKING Rationals
+:PROPERTIES:
+:CREATED:  <2016-05-02 Mon 14:28>
+:ID:       a4505a66-c249-4438-a6df-81e21718e23e
+:END:
+
+#+Caption: Classify Rationals
+#+Name: classify-rationals
+#+BEGIN_SRC lisp
+  (defclassification rational
+    (when (listp expression)
+      (and (= 3 length)
+         (eq '/ (first expression)))))
+#+END_SRC
+
+*** WORKING Polynomial Terms
+:PROPERTIES:
+:CREATED:  <2016-05-02 Mon 14:28>
+:ID:       37da52b7-98a0-4a16-8a17-a62fcff2ba59
+:END:
+
+#+Caption: Classify Polynomial Term
+#+Name: classify-polynomial-term
+#+BEGIN_SRC lisp
+  (defclassification polynomial-term
+    (or (expression-type-p expression 'numeric)
+       (expression-type-p expression 'variable)
+       (expression-type-p expression 'power)
+       (and (expression-type-p expression 'multiplicative)
+          (= (length (rest expression)) 2)
+          (or (and (expression-type-p (second expression) 'numeric)
+                (or (expression-type-p (third expression) 'power)
+                   (expression-type-p (third expression) 'variable)))
+             (and (expression-type-p (third expression) 'numeric)
+                (or (expression-type-p (second expression) 'power)
+                   (expression-type-p (second expression) 'variable)))))))
+#+END_SRC
+
+*** WORKING Polynomials
+:PROPERTIES:
+:CREATED:  <2016-05-02 Mon 14:28>
+:ID:       8cd9045b-81dd-4571-930a-a852f81969c9
+:END:
+
+#+Caption: Classify Polynomials
+#+Name: classify-polynomials
+#+BEGIN_SRC lisp
+  (defclassification polynomial
+    (when (listp expression)
+      (and (or (eq '- (first expression))
+            (eq '+ (first expression)))
+         (reduce #'(lambda (a b)
+                     (and a b))
+                 (map 'list
+                   #'(lambda (the-expression)
+                       (expression-type-p the-expression 'polynomial-term))
+                   (rest expression))))))
+#+END_SRC
+
+* WORKING Term Collector
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 22:59>
+:ID:       c1856735-914b-4f73-8825-3e5a062113d2
 :END:
 
 Foo
 
-* TODO Combine Polynomial Terms
+#+Caption: Collect Terms
+#+Name: collect-terms
+#+BEGIN_SRC lisp
+  (defun collect-terms (expression)
+    (let ((terms (rest expression)))
+      ))
+#+END_SRC
+
+* WORKING Polynomial Related Functions
 :PROPERTIES:
 :CREATED:  <2016-05-01 Sun 12:29>
 :ID:       984d0f52-4c52-4bfa-a150-f3289d25bdf1
 :END:
 
-#+Caption: Combine Polynomial Terms
-#+Name: combine-polynomial-terms
+#+Caption: Polynomial Related Functions
+#+Name: polynomial-related-functions
 #+BEGIN_SRC lisp
   (defun coefficient (term)
-    (second term))
+    (when (expression-type-p term 'polynomial-term)
+      (if (expression-type-p term 'multiplicative)
+          (second term)
+          (if (expression-type-p term 'variable)
+              1
+              term))))
 
   (defun term-variable (term)
-    (second (third term)))
+    (when (expression-type-p term 'polynomial-term)
+      (cond
+        ((expression-type-p term 'multiplicative) (second (third term)))
+        ((expression-type-p term 'power) (second term))
+        (t nil))))
 
   (defun get-power (term)
     (cond
       ((expression-type-p term 'polynomial-term) (third (third term)))
-      ((expression-type-p term 'power) (third term))))
+      ((expression-type-p term 'power) (third term))
+      (t 0)))
 
   (defun same-order-p (term-a term-b)
     (= (get-power term-a)
@@ -188,24 +490,97 @@ Foo
   (defun single-term-combinable-p (term-a term-b)
     (and (same-order-p term-a term-b)
        (same-variable-p term-a term-b)))
-
-  (defun combine-polynomial-terms (operation term-a term-b)
-    (if (single-term-combinable-p term-a term-b)
-        `(* ,(if (eq operation '+)
-                 (+ (coefficient term-a)
-                    (coefficient term-b))
-                 (- (coefficient term-a)
-                    (coefficient term-b)))
-            (expt ,(term-variable term-a) ,(get-power term-a)))
-        `(,operation ,term-a ,term-b)))
 #+END_SRC
 
-* WORKING Expression Manipulators [0/6]
+* WORKING Expression Manipulators [0/7]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 22:58>
+:ID:       4fe60cc1-be66-4d5e-8922-590554d99004
 :END:
 
 Foo
+
+#+Caption: Expression Manipulation
+#+Name: expression-manipulation
+#+BEGIN_SRC lisp
+  <<define-expression-manipulator>>
+  <<external-manipulator>>
+  <<addition-manipulator>>
+  <<subtraction-manipulator>>
+#+END_SRC
+
+** WORKING Define Expression Manipulator
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 22:57>
+:ID:       63909972-428d-47f3-9dc3-3e1fb213aa70
+:END:
+
+#+Caption: Define Expression Manipulator
+#+Name: define-expression-manipulator
+#+BEGIN_SRC lisp
+  (defvar *manipulator-map* '())
+
+  (defun gen-args-list (count)
+    (let ((letters '(a b c d e f g h i j k l m n o p q r s t u v w x y z)))
+      (loop for i from 1 to count
+         collect (symbolicate 'expression- (nth (1- i) letters)))))
+
+  (defmacro defoperation (name arity short)
+    (check-type name symbol)
+    (check-type arity (integer 1 26))
+    (check-type short symbol)
+    (let* ((args (gen-args-list arity))
+           (rules-name (symbolicate '*manipulators- name '*))
+           (base-manipulator-name (symbolicate name '-manipulator-))
+           (manipulator-define-name (symbolicate 'define- name '-manipulator))
+           (is-applicable-name (symbolicate name '-is-applicable-p))
+           (get-operations-name (symbolicate 'get- name '-manipulators))
+           (type-check-list (let ((i 0))
+                              (loop for arg in args
+                                 collect (prog1
+                                             `(expression-type-p ,arg (nth ,i types))
+                                           (incf i))))))
+      `(progn
+         (push '(,short . ,name) *manipulator-map*)
+         (defvar ,rules-name '())
+         (defun ,is-applicable-name (types ,@args)
+           (and ,@type-check-list))
+         (defun ,get-operations-name (,@args)
+           (remove-if #'null
+                      (map 'list #'(lambda (option)
+                                     (let ((types (car option))
+                                           (name (cdr option)))
+                                       (if (,is-applicable-name types ,@args)
+                                           name)))
+                           ,rules-name)))
+         (defun ,name (,@args)
+           (funcall (first (,get-operations-name ,@args))
+                    ,@args))
+         (defmacro ,manipulator-define-name ((&rest types) &body body)
+           (let ((manipulator-name (symbolicate ',base-manipulator-name (format nil "~a" (1+ (length ,rules-name))))))
+             `(progn
+                (setf ,',rules-name (append ,',rules-name '((,types . ,manipulator-name))))
+                (defun ,manipulator-name ,',args
+                  ,@body)))))))
+
+  ;; (defmacro defmanipulator (name arity &body body)
+  ;;   (cond
+  ;;     ((listp arity)
+  ;;      `(defun ,name (,@arity)
+  ;;         ,@body))
+  ;;     ((typep arity '(integer 1 26))
+  ;;      (if (= arity 1)
+  ;;          `(defun ,name (expression)
+  ;;             ,@body)
+  ;;          (let* ((letters '(a b c d e f g h i j k l m n o p q r s t u v w x y z))
+  ;;                 (args (loop for i from 1 to arity
+  ;;                          collect (symbolicate 'expression- (nth (1- i) letters)))))
+  ;;            `(defun ,name (,@args)
+  ;;               ,@body))))
+  ;;     ((eq arity 'rest)
+  ;;      `(defun ,name (&rest expressions)
+  ;;         ,@body))))
+#+END_SRC
 
 ** WORKING External Manipulator
 :PROPERTIES:
@@ -216,24 +591,24 @@ Foo
 #+Caption: External Manipulator
 #+Name: external-manipulator
 #+BEGIN_SRC lisp
-  (defun manipulate (action &rest expressions)
-    (case action
-      (+
-       (reduce #'add expressions))
-      (-
-       (reduce #'subtract expressions))
-      (*
-       (reduce #'multiply expressions))
-      (/
-       (reduce #'divide expressions))
-      (sin
-       (reduce #'manip-sin expressions))
-      (cos
-       (reduce #'manip-cos expressions))
-      (tan
-       (reduce #'manip-tan expressions))
-      (expt
-       (reduce #'powers expressions))))
+  ;; (defun manipulate (action &rest expressions)
+  ;;   (case action
+  ;;     (+
+  ;;      (reduce #'add expressions))
+  ;;     (-
+  ;;      (reduce #'subtract expressions))
+  ;;     (*
+  ;;      (reduce #'multiply expressions))
+  ;;     (/
+  ;;      (reduce #'divide expressions))
+  ;;     (sin
+  ;;      (reduce #'manip-sin expressions))
+  ;;     (cos
+  ;;      (reduce #'manip-cos expressions))
+  ;;     (tan
+  ;;      (reduce #'manip-tan expressions))
+  ;;     (expt
+  ;;      (reduce #'powers expressions))))
 #+END_SRC
 
 ** WORKING Addition
@@ -247,62 +622,111 @@ Foo
 #+Caption: Addition Manipulator
 #+Name: addition-manipulator
 #+BEGIN_SRC lisp
-  (defmanipulator add 2
-    (if (and (expression-type-p expression-b 'number)
-           (not (eq 'number (expression-type expression-a))))
-        (add expression-b expression-a)
-        (cond
-          ((and (expression-type-p expression-a 'number)
-              (expression-type-p expression-b 'number))
-           (+ expression-a expression-b))
-          ((and (expression-type-p expression-a 'number)
-              (expression-type-p expression-b 'additive))
-           (let ((total expression-a)
-                 (the-other (rest expression-b))
-                 (non-numbers '()))
-             (loop for other in the-other
-                do (if (numberp other)
-                       (incf total other)
-                       (push other non-numbers)))
-             (if (null non-numbers)
-                 total
-                 `(+ ,total ,@non-numbers))))
-          ((and (expression-type-p expression-a 'additive)
-              (expression-type-p expression-b 'additive))
-           (let ((total 0)
-                 (elements (append (rest expression-a)
-                                   (rest expression-b)))
-                 (non-numerics '()))
-             (loop for element in elements
-                do (if (numberp element)
-                       (incf total element)
-                       (push element non-numerics)))
-             (if (null non-numerics)
-                 total
-                 `(+ ,total ,@non-numerics))))
-          ((and (expression-type-p expression-a 'number)
-              (expression-type-p expression-b 'subtractive))
-           (let ((total expression-a)
-                 (the-other (rest expression-b))
-                 (non-numeric '()))
-             (loop for other in the-other
-                do (if (numberp other)
-                       (decf total other)
-                       (push other non-numeric)))
-             (if (null non-numeric)
-                 total
-                 `(+ ,total (- ,@(reverse non-numeric))))))
-          ((and (expression-type-p expression-a 'polynomial-term)
-              (expression-type-p expression-b 'polynomial-term))
-           (combine-polynomial-terms '+ expression-a expression-b)))))
+  (defoperation add 2 +)
+
+  (define-add-manipulator (numeric numeric)
+    (+ expression-a expression-b))
+
+  (define-add-manipulator (numeric additive)
+    (let ((total expression-a)
+          (remainder (rest expression-b))
+          (non-numeric '()))
+      (dolist (element remainder)
+        (if (expression-type-p element 'numeric)
+            (incf total element)
+            (push element non-numeric)))
+      (cond
+        ((null non-numeric)
+         total)
+        ((= 0 total)
+         `(+ ,@non-numeric))
+        (t
+         `(+ ,total ,@non-numeric)))))
+
+  (define-add-manipulator (additive additive)
+    (let ((total 0)
+          (elements (append (rest expression-a)
+                            (rest expression-b)))
+          (non-numeric '()))
+      (dolist (element elements)
+        (if (expression-type-p element 'numeric)
+            (incf total element)
+            (push element non-numeric)))
+      (cond
+        ((null non-numeric)
+         total)
+        ((= 0 total)
+         `(+ ,@non-numeric))
+        (t
+         `(+ ,total ,@non-numeric)))))
+
+  (define-add-manipulator (numeric subtractive)
+    (let ((total expression-a)
+          (the-other (rest expression-b))
+          (non-numeric '()))
+      (dolist (element the-other)
+        (if (expression-type-p element 'numeric)
+            (decf total element)
+            (push element non-numeric)))
+      (cond
+        ((null non-numeric)
+         total)
+        ((= 0 total)
+         `(+ ,@non-numeric))
+        (t
+         `(+ ,total (-,@non-numeric))))))
+
+  (define-add-manipulator (numeric polynomial-term)
+    `(+ ,expression-a ,expression-b))
+
+  (define-add-manipulator (polynomial-term polynomial-term)
+    (if (single-term-combinable-p expression-a expression-b)
+        (let ((new-coefficient (+ (coefficient expression-a)
+                                  (coefficient expression-b)))
+              (variable (term-variable expression-a))
+              (power (get-power expression-a)))
+          `(* ,new-coefficient (expt ,variable ,new-power)))
+        `(+ ,expression-a ,expression-b)))
+
+  (define-add-manipulator (* numeric)
+    (add expression-b expression-a))
 #+END_SRC
 
-** TODO Subtraction
+** WORKING Subtraction
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:08>
+:ID:       f675fd81-e995-41ee-9570-cc78261d9dc1
 :END:
 
 Foo
+
+#+Caption: Subtraction Manipulator
+#+Name: subtraction-manipulator
+#+BEGIN_SRC lisp
+  (defoperation subtract 2 -)
+
+  (define-subtract-manipulator (numeric numeric)
+    (- expression-a expression-b))
+
+  (define-subtract-manipulator (numeric subtractive)
+    (let ((total expression-a)
+          (elements (rest expression-b))
+          (non-numeric '()))
+      (dolist (element elements)
+        (if (expression-type-p element 'numeric)
+            (decf total element)
+            (push element non-numeric)))
+      (cond
+        ((null non-numeric)
+         total)
+        ((= 0 total)
+         `(- ,@(reverse non-numeric)))
+        (t
+         `(- ,total ,@(reverse non-numeric))))))
+
+  (define-subtract-manipulator (* numeric)
+    (subtract expression-b expression-a))
+#+END_SRC
 
 ** TODO Multiplication
 :PROPERTIES:
@@ -321,13 +745,6 @@ Foo
 ** TODO Trigonometric
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:09>
-:END:
-
-Foo
-
-* TODO Rewrite Rules
-:PROPERTIES:
-:CREATED:  <2016-04-30 Sat 22:59>
 :END:
 
 Foo
@@ -351,13 +768,11 @@ Foo
 
   (in-package #:manipulator)
 
-  <<define-expression-manipulator>>
-
   <<determine-expression-type>>
 
-  <<combine-polynomial-terms>>
+  <<polynomial-related-functions>>
 
-  <<addition-manipulator>>
+  <<collect-terms>>
 
-  <<external-manipulator>>
+  <<expression-manipulation>>
 #+END_SRC
