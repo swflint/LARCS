@@ -492,7 +492,7 @@ Foo
        (same-variable-p term-a term-b)))
 #+END_SRC
 
-* WORKING Expression Manipulators [0/7]
+* WORKING Expression Manipulators [0/8]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 22:58>
 :ID:       4fe60cc1-be66-4d5e-8922-590554d99004
@@ -503,10 +503,27 @@ Foo
 #+Caption: Expression Manipulation
 #+Name: expression-manipulation
 #+BEGIN_SRC lisp
+  <<misc-manipulator-functions>>
   <<define-expression-manipulator>>
   <<external-manipulator>>
   <<addition-manipulator>>
   <<subtraction-manipulator>>
+#+END_SRC
+
+** WORKING Manipulator Miscellaneous Functions
+:PROPERTIES:
+:CREATED:  <2016-05-03 Tue 15:38>
+:END:
+
+#+Caption: Misc Manipulator Functions
+#+Name: misc-manipulator-functions
+#+BEGIN_SRC lisp
+  (defvar *manipulator-map* '())
+
+  (defun gen-args-list (count)
+    (let ((letters '(a b c d e f g h i j k l m n o p q r s t u v w x y z)))
+      (loop for i from 1 to count
+         collect (symbolicate 'expression- (nth (1- i) letters)))))
 #+END_SRC
 
 ** WORKING Define Expression Manipulator
@@ -518,13 +535,6 @@ Foo
 #+Caption: Define Expression Manipulator
 #+Name: define-expression-manipulator
 #+BEGIN_SRC lisp
-  (defvar *manipulator-map* '())
-
-  (defun gen-args-list (count)
-    (let ((letters '(a b c d e f g h i j k l m n o p q r s t u v w x y z)))
-      (loop for i from 1 to count
-         collect (symbolicate 'expression- (nth (1- i) letters)))))
-
   (defmacro defoperation (name arity short)
     (check-type name symbol)
     (check-type arity (integer 1 26))
@@ -562,24 +572,6 @@ Foo
                 (setf ,',rules-name (append ,',rules-name '((,types . ,manipulator-name))))
                 (defun ,manipulator-name ,',args
                   ,@body)))))))
-
-  ;; (defmacro defmanipulator (name arity &body body)
-  ;;   (cond
-  ;;     ((listp arity)
-  ;;      `(defun ,name (,@arity)
-  ;;         ,@body))
-  ;;     ((typep arity '(integer 1 26))
-  ;;      (if (= arity 1)
-  ;;          `(defun ,name (expression)
-  ;;             ,@body)
-  ;;          (let* ((letters '(a b c d e f g h i j k l m n o p q r s t u v w x y z))
-  ;;                 (args (loop for i from 1 to arity
-  ;;                          collect (symbolicate 'expression- (nth (1- i) letters)))))
-  ;;            `(defun ,name (,@args)
-  ;;               ,@body))))
-  ;;     ((eq arity 'rest)
-  ;;      `(defun ,name (&rest expressions)
-  ;;         ,@body))))
 #+END_SRC
 
 ** WORKING External Manipulator
