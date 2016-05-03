@@ -508,6 +508,7 @@ Foo
   <<external-manipulator>>
   <<addition-manipulator>>
   <<subtraction-manipulator>>
+  <<multiplication-manipulators>>
 #+END_SRC
 
 ** WORKING Manipulator Miscellaneous Functions
@@ -720,12 +721,18 @@ Foo
     (subtract expression-b expression-a))
 #+END_SRC
 
-** TODO Multiplication
+** WORKING Multiplication
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:08>
 :END:
 
 Foo
+
+#+Caption: Multiplication Manipulators
+#+Name: multiplication-manipulators
+#+BEGIN_SRC lisp
+  (defoperation multiply 2 *)
+#+END_SRC
 
 ** TODO Division
 :PROPERTIES:
