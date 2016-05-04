@@ -53,7 +53,7 @@ As a part of my lisp-based Computer Algebra System, an algebraic manipulation to
 #+TOC: headlines 3
 #+TOC: listings
 
-* WORKING Rewrite Rules [0/5]
+* WORKING Rewrite Rules [0/5]                                      :noexport:
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 22:58>
 :END:
