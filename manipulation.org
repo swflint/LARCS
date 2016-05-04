@@ -571,11 +571,13 @@ Foo
 #+Caption: Define Expression Manipulator
 #+Name: define-expression-manipulator
 #+BEGIN_SRC lisp
-  (defmacro defoperation (name arity short)
+  (defmacro define-operation (name arity short)
     (check-type name symbol)
     (check-type arity (integer 1 26))
     (check-type short symbol)
     (let* ((args (gen-args-list arity))
+           (expression-types (map 'list #'(lambda (x)
+                                            (symbolicate x '-type)) args))
            (rules-name (symbolicate '*manipulators- name '*))
            (base-manipulator-name (symbolicate name '-manipulator-))
            (manipulator-define-name (symbolicate 'define- name '-manipulator))
@@ -602,10 +604,10 @@ Foo
          (defun ,name (,@args)
            (funcall (first (,get-operations-name ,@args))
                     ,@args))
-         (defmacro ,manipulator-define-name ((&rest types) &body body)
-           (let ((manipulator-name (symbolicate ',base-manipulator-name (format nil "~a" (1+ (length ,rules-name))))))
+         (defmacro ,manipulator-define-name ((,@expression-types) &body body)
+           (let ((manipulator-name (symbolicate ',base-manipulator-name ,@expression-types)))
              `(progn
-                (setf ,',rules-name (append ,',rules-name '((,types . ,manipulator-name))))
+                (setf ,',rules-name (append ,',rules-name '(((,,@expression-types) . ,manipulator-name))))
                 (defun ,manipulator-name ,',args
                   ,@body)))))))
 #+END_SRC
@@ -650,7 +652,7 @@ Foo
 #+Caption: Addition Manipulator
 #+Name: addition-manipulator
 #+BEGIN_SRC lisp
-  (defoperation add 2 +)
+  (define-operation add 2 +)
 
   (define-add-manipulator (numeric numeric)
     (+ expression-a expression-b))
@@ -713,7 +715,7 @@ Foo
                                   (coefficient expression-b)))
               (variable (term-variable expression-a))
               (power (get-power expression-a)))
-          `(* ,new-coefficient (expt ,variable ,new-power)))
+          `(* ,new-coefficient (expt ,variable ,power)))
         `(+ ,expression-a ,expression-b)))
 
   (define-add-manipulator (* numeric)
@@ -731,7 +733,7 @@ Foo
 #+Caption: Subtraction Manipulator
 #+Name: subtraction-manipulator
 #+BEGIN_SRC lisp
-  (defoperation subtract 2 -)
+  (define-operation subtract 2 -)
 
   (define-subtract-manipulator (numeric numeric)
     (- expression-a expression-b))
@@ -759,6 +761,7 @@ Foo
 ** WORKING Multiplication
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:08>
+:ID:       cddffdaa-10dd-425f-9697-3f0617162953
 :END:
 
 Foo
@@ -766,7 +769,7 @@ Foo
 #+Caption: Multiplication Manipulators
 #+Name: multiplication-manipulators
 #+BEGIN_SRC lisp
-  (defoperation multiply 2 *)
+  (define-operation multiply 2 *)
 #+END_SRC
 
 ** TODO Division
@@ -775,6 +778,12 @@ Foo
 :END:
 
 Foo
+
+#+Caption: Division Manipulators
+#+Name: division-manipulators
+#+BEGIN_SRC lisp
+  (define-operation division 2 /)
+#+END_SRC
 
 ** TODO Trigonometric
 :PROPERTIES:
