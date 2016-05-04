@@ -549,6 +549,7 @@ Foo
 ** WORKING Manipulator Miscellaneous Functions
 :PROPERTIES:
 :CREATED:  <2016-05-03 Tue 15:38>
+:ID:       20450528-d763-4c14-a085-5ac54d4d4b85
 :END:
 
 #+Caption: Misc Manipulator Functions
