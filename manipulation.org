@@ -180,7 +180,7 @@ Foo
 #+Caption: Define Classification
 #+Name: define-classification
 #+BEGIN_SRC lisp
-  (defmacro defclassification (name &body body)
+  (defmacro define-classification (name &body body)
     `(progn
        (defun ,(symbolicate name '-classifier) (expression &aux (length (if (listp expression) (length expression) 1)))
          (declare (ignorable length))
@@ -228,7 +228,7 @@ Foo
     (first (classify expression)))
 #+END_SRC
 
-** WORKING Classifications [0/11]
+** WORKING Classifications [0/12]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
@@ -248,6 +248,7 @@ Foo
   <<classify-rationals>>
   <<classify-polynomial-term>>
   <<classify-polynomials>>
+  <<classify-trigonometrics>>
 #+END_SRC
 
 *** WORKING Numbers
@@ -259,7 +260,7 @@ Foo
 #+Caption: Classify Numbers
 #+Name: classify-numbers
 #+BEGIN_SRC lisp
-  (defclassification numeric
+  (define-classification numeric
     (numberp expression))
 #+END_SRC
 
@@ -272,7 +273,7 @@ Foo
 #+Caption: Classify Variables
 #+Name: classify-variables
 #+BEGIN_SRC lisp
-  (defclassification variable
+  (define-classification variable
     (symbolp expression))
 #+END_SRC
 
@@ -285,7 +286,7 @@ Foo
 #+Caption: Classify Additives
 #+Name: classify-additives
 #+BEGIN_SRC lisp
-  (defclassification additive
+  (define-classification additive
     (when (listp expression)
       (eq '+ (first expression))))
 #+END_SRC
@@ -299,7 +300,7 @@ Foo
 #+Caption: Classify Subtractives
 #+Name: classify-subtractives
 #+BEGIN_SRC lisp
-  (defclassification subtractive
+  (define-classification subtractive
     (when (listp expression)
       (eq '- (first expression))))
 #+END_SRC
@@ -313,7 +314,7 @@ Foo
 #+Caption: Classify Powers
 #+Name: classify-powers
 #+BEGIN_SRC lisp
-  (defclassification power
+  (define-classification power
     (when (listp expression)
       (and (eq 'expt (first expression))
          (expression-type-p (second expression) 'variable)
@@ -329,12 +330,12 @@ Foo
 #+Caption: Classify Exponentials
 #+Name: classify-exponentials
 #+BEGIN_SRC lisp
-  (defclassification natural-exponential
+  (define-classification natural-exponential
     (when (listp expression)
       (and (= 2 length)
          (eq 'exp (first expression)))))
 
-  (defclassification exponential
+  (define-classification exponential
     (when (listp expression)
       (and (= 3 length)
          (eq 'expt (first expression)))))
@@ -349,7 +350,7 @@ Foo
 #+Caption: Classify Multiplicatives
 #+Name: classify-multiplicatives
 #+BEGIN_SRC lisp
-  (defclassification multiplicative
+  (define-classification multiplicative
     (when (listp expression)
       (eq '* (first expression))))
 #+END_SRC
@@ -363,12 +364,12 @@ Foo
 #+Caption: Classify Lograthmics
 #+Name: classify-logarithmics
 #+BEGIN_SRC lisp
-  (defclassification natural-logarithmic
+  (define-classification natural-logarithmic
     (when (listp expression)
       (and (= 2 length)
          (eq 'log (first expression)))))
 
-  (defclassification logarithmic
+  (define-classification logarithmic
     (when (listp expression)
       (and (= 3 length)
          (eq 'log (first expression)))))
@@ -383,7 +384,7 @@ Foo
 #+Caption: Classify Rationals
 #+Name: classify-rationals
 #+BEGIN_SRC lisp
-  (defclassification rational
+  (define-classification rational
     (when (listp expression)
       (and (= 3 length)
          (eq '/ (first expression)))))
@@ -398,7 +399,7 @@ Foo
 #+Caption: Classify Polynomial Term
 #+Name: classify-polynomial-term
 #+BEGIN_SRC lisp
-  (defclassification polynomial-term
+  (define-classification polynomial-term
     (or (expression-type-p expression 'numeric)
        (expression-type-p expression 'variable)
        (expression-type-p expression 'power)
@@ -421,7 +422,7 @@ Foo
 #+Caption: Classify Polynomials
 #+Name: classify-polynomials
 #+BEGIN_SRC lisp
-  (defclassification polynomial
+  (define-classification polynomial
     (when (listp expression)
       (and (or (eq '- (first expression))
             (eq '+ (first expression)))
@@ -431,6 +432,40 @@ Foo
                    #'(lambda (the-expression)
                        (expression-type-p the-expression 'polynomial-term))
                    (rest expression))))))
+#+END_SRC
+
+*** WORKING Trigonometrics
+:PROPERTIES:
+:CREATED:  <2016-05-04 Wed 13:38>
+:ID:       6f433cad-4b81-4a6f-ab65-981f4a924812
+:END:
+
+#+Caption: Classify Trigonometrics
+#+Name: classify-trigonometrics
+#+BEGIN_SRC lisp
+  (define-classification sin
+    (when (listp expression)
+      (eq 'sin (first expression))))
+
+  (define-classification cos
+    (when (listp expression)
+      (eq 'cos (first expression))))
+
+  (define-classification tan
+    (when (listp expression)
+      (eq 'tan (first expression))))
+
+  (define-classification csc
+    (when (listp expression)
+      (eq 'csc (first expression))))
+
+  (define-classification sec
+    (when (listp expression)
+      (eq 'sec (first expression))))
+
+  (define-classification cot
+    (when (listp expression)
+      (eq 'cot (first expression))))
 #+END_SRC
 
 * WORKING Term Collector
