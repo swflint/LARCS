@@ -495,11 +495,11 @@ Foo
 #+BEGIN_SRC lisp
   (defun coefficient (term)
     (when (expression-type-p term 'polynomial-term)
-      (if (expression-type-p term 'multiplicative)
-          (second term)
-          (if (expression-type-p term 'variable)
-              1
-              term))))
+      (cond
+        ((expression-type-p term 'variable) 1)
+        ((expression-type-p term 'power) 1)
+        ((expression-type-p term 'multiplicative) (second term))
+        ((expression-type-p term 'numeric) term))))
 
   (defun term-variable (term)
     (when (expression-type-p term 'polynomial-term)
@@ -510,8 +510,8 @@ Foo
 
   (defun get-power (term)
     (cond
-      ((expression-type-p term 'polynomial-term) (third (third term)))
       ((expression-type-p term 'power) (third term))
+      ((expression-type-p term 'polynomial-term) (third (third term)))
       (t 0)))
 
   (defun same-order-p (term-a term-b)
