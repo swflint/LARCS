@@ -53,7 +53,7 @@ As a part of my lisp-based Computer Algebra System, an algebraic manipulation to
 #+TOC: headlines 3
 #+TOC: listings
 
-* WORKING Expression Typing [0/5]
+* WORKING Expression Typing [1/5]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:15>
 :ID:       c6921b1e-d269-4243-acff-5a77685c331e
@@ -73,22 +73,32 @@ This includes a form of storage, the classification definition macro, a way to c
   <<possible-classifications>>
 #+END_SRC
 
-** WORKING Define Classification
+** DONE Define Classification
+CLOSED: [2016-05-04 Wed 19:30]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       d8826a51-50b8-467a-9e52-158502bd4138
 :END:
 
+This is the classification definition macro, ~define-classification~.  It takes one symbol argument, ~name~ (the name of the classification), and a body, which is encapsulated within a defun, and binds the following variables:
+
+ - ~expression~ :: the expression which is to be classified
+ - ~length~ :: the length of the expression if the expression is a list, or 0 if it is not.
+
+Aside from defining the classification, it also pushes the classification name and the classifier onto the stack, which can be used for direct classification checking or to completely classify an expression.
+
 #+Caption: Define Classification
 #+Name: define-classification
 #+BEGIN_SRC lisp
   (defmacro define-classification (name &body body)
-    `(progn
-       (defun ,(symbolicate name '-classifier) (expression &aux (length (if (listp expression) (length expression) 1)))
-         (declare (ignorable length))
-         ,@body)
-       (pushnew '(,name . ,(symbolicate name '-classifier)) *classifications*)
-       ',name))
+    (check-type name symbol)
+    (let ((classifier-name (symbolicate name '-classifier)))
+      `(progn
+         (defun ,classifier-name (expression &aux (length (if (listp expression) (length expression) 0)))
+           (declare (ignorable length))
+           ,@body)
+         (pushnew '(,name . ,classifier-name) *classifications*)
+         ',name)))
 #+END_SRC
 
 ** WORKING Check Classification
