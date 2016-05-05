@@ -133,9 +133,6 @@ As a part of my lisp-based Computer Algebra System, an algebraic manipulation to
                                     name
                                     nil)))
                     ,*classifications*)))
-
-  (defun expression-type (expression)
-    (first (classify expression)))
 #+END_SRC
 
 ** WORKING Classifications [0/12]
