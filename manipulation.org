@@ -53,7 +53,7 @@ As a part of my lisp-based Computer Algebra System, an algebraic manipulation to
 #+TOC: headlines 3
 #+TOC: listings
 
-* WORKING Expression Typing [2/5]
+* WORKING Expression Typing [3/5]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:15>
 :ID:       c6921b1e-d269-4243-acff-5a77685c331e
@@ -120,11 +120,14 @@ To check a classification, the classifier is obtained, unless the specified clas
                  expression)))
 #+END_SRC
 
-** WORKING Classify Expression
+** DONE Classify Expression
+CLOSED: [2016-05-04 Wed 19:44]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:09>
 :ID:       82d75d54-1d33-400b-86a3-7d16af938ac8
 :END:
+
+To completely classify an expression, the ~*classifications*~ alist is mapped over, checking to see if each classification is applicable to the expression, if so, the name being returned, otherwise ~nil~.  All nils are removed, leaving the complete classification, which is returned for use.
 
 #+Caption: Classify Expression
 #+Name: classify-expression
