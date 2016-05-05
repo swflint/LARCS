@@ -53,7 +53,7 @@ As a part of my lisp-based Computer Algebra System, an algebraic manipulation to
 #+TOC: headlines 3
 #+TOC: listings
 
-* WORKING Expression Typing [3/5]
+* WORKING Expression Typing [4/5]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:15>
 :ID:       c6921b1e-d269-4243-acff-5a77685c331e
@@ -383,11 +383,14 @@ To completely classify an expression, the ~*classifications*~ alist is mapped ov
       (eq 'cot (first expression))))
 #+END_SRC
 
-** WORKING Classification Storage
+** DONE Classification Storage
+CLOSED: [2016-05-04 Wed 19:49]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:55>
 :ID:       ff35cd33-3c10-4a45-a2c5-32bc3fdc1acc
 :END:
+
+The storage of classifications is simple, they are stored as an alist in the form of ~(name . classifier)~, in the list ~*classifications*~.
 
 #+Caption: Classification Storage
 #+Name: classification-storage
