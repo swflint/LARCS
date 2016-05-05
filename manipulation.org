@@ -751,7 +751,7 @@ Foo
   (define-operation multiply 2 *)
 #+END_SRC
 
-** TODO Division
+** WORKING Division
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:09>
 :END:
