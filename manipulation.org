@@ -59,6 +59,10 @@ As a part of my lisp-based Computer Algebra System, an algebraic manipulation to
 :ID:       c6921b1e-d269-4243-acff-5a77685c331e
 :END:
 
+To accomplish the goal of providing a complete system to manipulate algebraic expressions, a way to determine the type of expression is important.  This will allow for a form of "generic programming" to be used in the development of the manipulator functions, as a way to ensure that the correct manipulator is chosen.
+
+This includes a form of storage, the classification definition macro, a way to check a classification, an expression classifier, and all possible classifications.
+
 #+Caption: Determine Expression Type
 #+Name: determine-expression-type
 #+BEGIN_SRC lisp
