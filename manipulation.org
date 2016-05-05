@@ -143,7 +143,7 @@ To completely classify an expression, the ~*classifications*~ alist is mapped ov
                     ,*classifications*)))
 #+END_SRC
 
-** WORKING Classifications [0/13]
+** WORKING Classifications [6/13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
@@ -183,11 +183,14 @@ I must define several different classifications, ranging from numeric expression
   <<classify-trigonometrics>>
 #+END_SRC
 
-*** WORKING Numbers
+*** DONE Numbers
+CLOSED: [2016-05-04 Wed 19:56]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:26>
 :ID:       42081153-7cc5-42ff-a17f-53e171c6d1a7
 :END:
+
+Check to see if a given expression is a number using ~numberp~.
 
 #+Caption: Classify Numbers
 #+Name: classify-numbers
@@ -196,11 +199,14 @@ I must define several different classifications, ranging from numeric expression
     (numberp expression))
 #+END_SRC
 
-*** WORKING Variables
+*** DONE Variables
+CLOSED: [2016-05-04 Wed 19:57]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:26>
 :ID:       4c676754-ef9a-485f-91a2-8f1bd83c7659
 :END:
+
+Check to see if a given expression is a variable, that is to say a symbol, using ~symbolp~.
 
 #+Caption: Classify Variables
 #+Name: classify-variables
@@ -209,10 +215,13 @@ I must define several different classifications, ranging from numeric expression
     (symbolp expression))
 #+END_SRC
 
-*** WORKING Non Atomics
+*** DONE Non Atomics
+CLOSED: [2016-05-04 Wed 19:59]
 :PROPERTIES:
 :CREATED:  <2016-05-04 Wed 19:52>
 :END:
+
+Check to see if a given expression is a non-atomic (any expression other than a number or a variable) using ~listp~.
 
 #+Caption: Classify Non-Atomics
 #+Name: classify-non-atomics
@@ -221,45 +230,54 @@ I must define several different classifications, ranging from numeric expression
     (listp expression))
 #+END_SRC
 
-*** WORKING Additives
+*** DONE Additives
+CLOSED: [2016-05-04 Wed 20:01]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:26>
 :ID:       736d79dc-f34c-4247-b592-690d7f2fddd9
 :END:
 
+Check to see whether or not an expression is an additive by ensuring that it is non-atomic and the first element is the symbol ~+~.
+
 #+Caption: Classify Additives
 #+Name: classify-additives
 #+BEGIN_SRC lisp
   (define-classification additive
-    (when (listp expression)
+    (when (classified-as-p expression 'non-atomic)
       (eq '+ (first expression))))
 #+END_SRC
 
-*** WORKING Subtractive
+*** DONE Subtractive
+CLOSED: [2016-05-04 Wed 20:02]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:26>
 :ID:       c59d086f-2f49-485a-8f96-57d85e774f60
 :END:
 
+Check to see whether a given expression is a subtractive by ensuring it is non-atomic and the first element is the symbol ~-~.
+
 #+Caption: Classify Subtractives
 #+Name: classify-subtractives
 #+BEGIN_SRC lisp
   (define-classification subtractive
-    (when (listp expression)
+    (when (classified-as-p expression 'non-atomic)
       (eq '- (first expression))))
 #+END_SRC
 
-*** WORKING Powers
+*** DONE Powers
+CLOSED: [2016-05-04 Wed 20:07]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:27>
 :ID:       cc15dd10-7cc0-4370-9e69-daf903b30ad5
 :END:
 
+This is used to classify "powers", that is to say, equations of the form $x^n$, where $n$ is any numeric.  It does so by first ensuring that the expression is non-atomic, following that, it checks to see if the first element in the expression is the symbol ~expt~, the second is a variable and the third a numeric.
+
 #+Caption: Classify Powers
 #+Name: classify-powers
 #+BEGIN_SRC lisp
   (define-classification power
-    (when (listp expression)
+    (when (classified-as-p expression 'non-atomic)
       (and (eq 'expt (first expression))
          (classified-as-p (second expression) 'variable)
          (classified-as-p (third expression) 'numeric))))
@@ -275,12 +293,12 @@ I must define several different classifications, ranging from numeric expression
 #+Name: classify-exponentials
 #+BEGIN_SRC lisp
   (define-classification natural-exponential
-    (when (listp expression)
+    (when (classified-as-p expression 'non-atomic)
       (and (= 2 length)
          (eq 'exp (first expression)))))
 
   (define-classification exponential
-    (when (listp expression)
+    (when (classified-as-p expression 'non-atomic)
       (and (= 3 length)
          (eq 'expt (first expression)))))
 #+END_SRC
@@ -295,7 +313,7 @@ I must define several different classifications, ranging from numeric expression
 #+Name: classify-multiplicatives
 #+BEGIN_SRC lisp
   (define-classification multiplicative
-    (when (listp expression)
+    (when (classified-as-p expression 'non-atomic)
       (eq '* (first expression))))
 #+END_SRC
 
@@ -309,12 +327,12 @@ I must define several different classifications, ranging from numeric expression
 #+Name: classify-logarithmics
 #+BEGIN_SRC lisp
   (define-classification natural-logarithmic
-    (when (listp expression)
+    (when (classified-as-p expression 'non-atomic)
       (and (= 2 length)
          (eq 'log (first expression)))))
 
   (define-classification logarithmic
-    (when (listp expression)
+    (when (classified-as-p expression 'non-atomic)
       (and (= 3 length)
          (eq 'log (first expression)))))
 #+END_SRC
@@ -329,7 +347,7 @@ I must define several different classifications, ranging from numeric expression
 #+Name: classify-rationals
 #+BEGIN_SRC lisp
   (define-classification rational
-    (when (listp expression)
+    (when (classified-as-p expression 'non-atomic)
       (and (= 3 length)
          (eq '/ (first expression)))))
 #+END_SRC
@@ -367,7 +385,7 @@ I must define several different classifications, ranging from numeric expression
 #+Name: classify-polynomials
 #+BEGIN_SRC lisp
   (define-classification polynomial
-    (when (listp expression)
+    (when (classified-as-p expression 'non-atomic)
       (and (or (eq '- (first expression))
             (eq '+ (first expression)))
          (reduce #'(lambda (a b)
@@ -388,27 +406,27 @@ I must define several different classifications, ranging from numeric expression
 #+Name: classify-trigonometrics
 #+BEGIN_SRC lisp
   (define-classification sin
-    (when (listp expression)
+    (when (classified-as-p expression 'non-atomic)
       (eq 'sin (first expression))))
 
   (define-classification cos
-    (when (listp expression)
+    (when (classified-as-p expression 'non-atomic)
       (eq 'cos (first expression))))
 
   (define-classification tan
-    (when (listp expression)
+    (when (classified-as-p expression 'non-atomic)
       (eq 'tan (first expression))))
 
   (define-classification csc
-    (when (listp expression)
+    (when (classified-as-p expression 'non-atomic)
       (eq 'csc (first expression))))
 
   (define-classification sec
-    (when (listp expression)
+    (when (classified-as-p expression 'non-atomic)
       (eq 'sec (first expression))))
 
   (define-classification cot
-    (when (listp expression)
+    (when (classified-as-p expression 'non-atomic)
       (eq 'cot (first expression))))
 #+END_SRC
 
