@@ -53,7 +53,7 @@ As a part of my lisp-based Computer Algebra System, an algebraic manipulation to
 #+TOC: headlines 3
 #+TOC: listings
 
-* WORKING Expression Typing [1/5]
+* WORKING Expression Typing [2/5]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:15>
 :ID:       c6921b1e-d269-4243-acff-5a77685c331e
@@ -101,16 +101,19 @@ Aside from defining the classification, it also pushes the classification name a
          ',name)))
 #+END_SRC
 
-** WORKING Check Classification
+** DONE Check Classification
+CLOSED: [2016-05-04 Wed 19:37]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       6505b0b1-ffd8-4dd6-b81a-3e49483d8437
 :END:
 
+To check a classification, the classifier is obtained, unless the specified classifier is ~*~, in which case, ~t~ is always returned.  If the classification is not, the classifier function is called on the expression, the result of which is returned.
+
 #+Caption: Check Classification
 #+Name: check-classification
 #+BEGIN_SRC lisp
-  (defun expression-type-p (expression type)
+  (defun classified-as-p (expression type)
     (if (eq '* type)
         t
         (funcall (cdr (assoc type *classifications*))
@@ -226,8 +229,8 @@ Aside from defining the classification, it also pushes the classification name a
   (define-classification power
     (when (listp expression)
       (and (eq 'expt (first expression))
-         (expression-type-p (second expression) 'variable)
-         (expression-type-p (third expression) 'numeric))))
+         (classified-as-p (second expression) 'variable)
+         (classified-as-p (third expression) 'numeric))))
 #+END_SRC
 
 *** WORKING Exponentials
@@ -309,17 +312,17 @@ Aside from defining the classification, it also pushes the classification name a
 #+Name: classify-polynomial-term
 #+BEGIN_SRC lisp
   (define-classification polynomial-term
-    (or (expression-type-p expression 'numeric)
-       (expression-type-p expression 'variable)
-       (expression-type-p expression 'power)
-       (and (expression-type-p expression 'multiplicative)
+    (or (classified-as-p expression 'numeric)
+       (classified-as-p expression 'variable)
+       (classified-as-p expression 'power)
+       (and (classified-as-p expression 'multiplicative)
           (= (length (rest expression)) 2)
-          (or (and (expression-type-p (second expression) 'numeric)
-                (or (expression-type-p (third expression) 'power)
-                   (expression-type-p (third expression) 'variable)))
-             (and (expression-type-p (third expression) 'numeric)
-                (or (expression-type-p (second expression) 'power)
-                   (expression-type-p (second expression) 'variable)))))))
+          (or (and (classified-as-p (second expression) 'numeric)
+                (or (classified-as-p (third expression) 'power)
+                   (classified-as-p (third expression) 'variable)))
+             (and (classified-as-p (third expression) 'numeric)
+                (or (classified-as-p (second expression) 'power)
+                   (classified-as-p (second expression) 'variable)))))))
 #+END_SRC
 
 *** WORKING Polynomials
@@ -339,7 +342,7 @@ Aside from defining the classification, it also pushes the classification name a
                      (and a b))
                  (map 'list
                    #'(lambda (the-expression)
-                       (expression-type-p the-expression 'polynomial-term))
+                       (classified-as-p the-expression 'polynomial-term))
                    (rest expression))))))
 #+END_SRC
 
@@ -415,24 +418,24 @@ Foo
 #+Name: polynomial-related-functions
 #+BEGIN_SRC lisp
   (defun coefficient (term)
-    (when (expression-type-p term 'polynomial-term)
+    (when (classified-as-p term 'polynomial-term)
       (cond
-        ((expression-type-p term 'variable) 1)
-        ((expression-type-p term 'power) 1)
-        ((expression-type-p term 'multiplicative) (second term))
-        ((expression-type-p term 'numeric) term))))
+        ((classified-as-p term 'variable) 1)
+        ((classified-as-p term 'power) 1)
+        ((classified-as-p term 'multiplicative) (second term))
+        ((classified-as-p term 'numeric) term))))
 
   (defun term-variable (term)
-    (when (expression-type-p term 'polynomial-term)
+    (when (classified-as-p term 'polynomial-term)
       (cond
-        ((expression-type-p term 'multiplicative) (second (third term)))
-        ((expression-type-p term 'power) (second term))
+        ((classified-as-p term 'multiplicative) (second (third term)))
+        ((classified-as-p term 'power) (second term))
         (t nil))))
 
   (defun get-power (term)
     (cond
-      ((expression-type-p term 'power) (third term))
-      ((expression-type-p term 'polynomial-term) (third (third term)))
+      ((classified-as-p term 'power) (third term))
+      ((classified-as-p term 'polynomial-term) (third (third term)))
       (t 0)))
 
   (defun same-order-p (term-a term-b)
@@ -508,7 +511,7 @@ Foo
            (type-check-list (let ((i 0))
                               (loop for arg in args
                                  collect (prog1
-                                             `(expression-type-p ,arg (nth ,i types))
+                                             `(classified-as-p ,arg (nth ,i types))
                                            (incf i))))))
       `(progn
          (push '(,short . ,name) *manipulator-map*)
@@ -584,7 +587,7 @@ Foo
           (remainder (rest expression-b))
           (non-numeric '()))
       (dolist (element remainder)
-        (if (expression-type-p element 'numeric)
+        (if (classified-as-p element 'numeric)
             (incf total element)
             (push element non-numeric)))
       (cond
@@ -601,7 +604,7 @@ Foo
                             (rest expression-b)))
           (non-numeric '()))
       (dolist (element elements)
-        (if (expression-type-p element 'numeric)
+        (if (classified-as-p element 'numeric)
             (incf total element)
             (push element non-numeric)))
       (cond
@@ -617,7 +620,7 @@ Foo
           (the-other (rest expression-b))
           (non-numeric '()))
       (dolist (element the-other)
-        (if (expression-type-p element 'numeric)
+        (if (classified-as-p element 'numeric)
             (decf total element)
             (push element non-numeric)))
       (cond
@@ -665,7 +668,7 @@ Foo
           (elements (rest expression-b))
           (non-numeric '()))
       (dolist (element elements)
-        (if (expression-type-p element 'numeric)
+        (if (classified-as-p element 'numeric)
             (decf total element)
             (push element non-numeric)))
       (cond
