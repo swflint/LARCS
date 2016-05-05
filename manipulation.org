@@ -219,6 +219,7 @@ Check to see if a given expression is a variable, that is to say a symbol, using
 CLOSED: [2016-05-04 Wed 19:59]
 :PROPERTIES:
 :CREATED:  <2016-05-04 Wed 19:52>
+:ID:       414df063-0be1-4849-8b9f-d71aa828be2a
 :END:
 
 Check to see if a given expression is a non-atomic (any expression other than a number or a variable) using ~listp~.
