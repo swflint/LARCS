@@ -73,18 +73,6 @@ This includes a form of storage, the classification definition macro, a way to c
   <<possible-classifications>>
 #+END_SRC
 
-** WORKING Classification Storage
-:PROPERTIES:
-:CREATED:  <2016-05-02 Mon 13:55>
-:ID:       ff35cd33-3c10-4a45-a2c5-32bc3fdc1acc
-:END:
-
-#+Caption: Classification Storage
-#+Name: classification-storage
-#+BEGIN_SRC lisp
-  (defvar *classifications* '())
-#+END_SRC
-
 ** WORKING Define Classification
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
@@ -377,6 +365,18 @@ This includes a form of storage, the classification definition macro, a way to c
   (define-classification cot
     (when (listp expression)
       (eq 'cot (first expression))))
+#+END_SRC
+
+** WORKING Classification Storage
+:PROPERTIES:
+:CREATED:  <2016-05-02 Mon 13:55>
+:ID:       ff35cd33-3c10-4a45-a2c5-32bc3fdc1acc
+:END:
+
+#+Caption: Classification Storage
+#+Name: classification-storage
+#+BEGIN_SRC lisp
+  (defvar *classifications* '())
 #+END_SRC
 
 * WORKING Term Collector
