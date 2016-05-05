@@ -600,24 +600,9 @@ Foo
 #+Caption: External Manipulator
 #+Name: external-manipulator
 #+BEGIN_SRC lisp
-  ;; (defun manipulate (action &rest expressions)
-  ;;   (case action
-  ;;     (+
-  ;;      (reduce #'add expressions))
-  ;;     (-
-  ;;      (reduce #'subtract expressions))
-  ;;     (*
-  ;;      (reduce #'multiply expressions))
-  ;;     (/
-  ;;      (reduce #'divide expressions))
-  ;;     (sin
-  ;;      (reduce #'manip-sin expressions))
-  ;;     (cos
-  ;;      (reduce #'manip-cos expressions))
-  ;;     (tan
-  ;;      (reduce #'manip-tan expressions))
-  ;;     (expt
-  ;;      (reduce #'powers expressions))))
+  (defun manipulate (action &rest expressions)
+    (reduce (cdr (assoc action *manipulator-map*))
+            expressions))
 #+END_SRC
 
 ** WORKING Addition
