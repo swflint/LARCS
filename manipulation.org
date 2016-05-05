@@ -143,17 +143,34 @@ To completely classify an expression, the ~*classifications*~ alist is mapped ov
                     ,*classifications*)))
 #+END_SRC
 
-** WORKING Classifications [0/12]
+** WORKING Classifications [0/13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
 :END:
+
+I must define several different classifications, ranging from numeric expressions to trigonometric expressions.  They are as follows:
+
+ - Numbers
+ - Variables
+ - Non-Atomics
+ - Additives
+ - Subtractives
+ - Powers
+ - Exponentials
+ - Multiplicatives
+ - Logarithmics
+ - Rationals
+ - Polynomial Terms
+ - Polynomials
+ - Trigonometrics
 
 #+Caption: Possible Classifications
 #+Name: possible-classifications
 #+BEGIN_SRC lisp
   <<classify-numbers>>
   <<classify-variables>>
+  <<classify-non-atomics>>
   <<classify-additives>>
   <<classify-subtractives>>
   <<classify-powers>>
@@ -190,6 +207,18 @@ To completely classify an expression, the ~*classifications*~ alist is mapped ov
 #+BEGIN_SRC lisp
   (define-classification variable
     (symbolp expression))
+#+END_SRC
+
+*** WORKING Non Atomics
+:PROPERTIES:
+:CREATED:  <2016-05-04 Wed 19:52>
+:END:
+
+#+Caption: Classify Non-Atomics
+#+Name: classify-non-atomics
+#+BEGIN_SRC lisp
+  (define-classification non-atomic
+    (listp expression))
 #+END_SRC
 
 *** WORKING Additives
