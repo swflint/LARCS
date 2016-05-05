@@ -113,10 +113,10 @@ To check a classification, the classifier is obtained, unless the specified clas
 #+Caption: Check Classification
 #+Name: check-classification
 #+BEGIN_SRC lisp
-  (defun classified-as-p (expression type)
-    (if (eq '* type)
+  (defun classified-as-p (expression classification)
+    (if (eq '* classification)
         t
-        (funcall (cdr (assoc type *classifications*))
+        (funcall (cdr (assoc classification *classifications*))
                  expression)))
 #+END_SRC
 
