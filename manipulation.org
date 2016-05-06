@@ -756,13 +756,14 @@ Foo
 
 Foo
 
-* WORKING Packaging
+* DONE Packaging
+CLOSED: [2016-05-05 Thu 21:21]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:07>
 :ID:       d487ed31-295b-4274-aef2-b45e4fa7bec2
 :END:
 
-Foo
+This assembles and packages the algebraic manipulation system into a single file and library.  To do so, it must first define a package, import specific symbols from other packages, and export symbols from itself.  It then includes the remainder of the functionality, placing it in the file ~manipulation.lisp~.
 
 #+Caption: Packaging
 #+Name: packaging
