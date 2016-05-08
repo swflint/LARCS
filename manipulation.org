@@ -794,6 +794,9 @@ Foo
 #+Name: sine-manipulators
 #+BEGIN_SRC lisp
   (define-operation sine 1 sin)
+
+  (define-sine-manipulator (numeric)
+    (sin expression-a))
 #+END_SRC
 
 *** WORKING Cosine
