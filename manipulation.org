@@ -776,7 +776,9 @@ This assembles and packages the algebraic manipulation system into a single file
     (:use #:cl)
     (:import-from #:alexandria
                   #:symbolicate)
-    (:export #:manipulate))
+    (:export #:manipulate
+             #:classify
+             #:classified-as-p))
 
   (in-package #:manipulator)
 
