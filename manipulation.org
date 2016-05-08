@@ -133,14 +133,14 @@ To completely classify an expression, the ~*classifications*~ alist is mapped ov
 #+Name: classify-expression
 #+BEGIN_SRC lisp
   (defun classify (expression)
-    (remove-if #'null
-               (map 'list #'(lambda (name-and-checker)
-                              (let ((name (car name-and-checker))
-                                    (checker (cdr name-and-checker)))
-                                (if (funcall checker expression)
-                                    name
-                                    nil)))
-                    ,*classifications*)))
+    (let ((classifications '()))
+      (dolist (possible
+                ,*classifications*
+               (reverse classifications))
+        (let ((name (car possible))
+              (checker (cdr possible)))
+          (when (funcall checker expression)
+            (push name classifications))))))
 #+END_SRC
 
 ** WORKING Classifications [6/13]
