@@ -509,7 +509,7 @@ Foo
        (same-variable-p term-a term-b)))
 #+END_SRC
 
-* WORKING Expression Manipulators [0/8]
+* WORKING Expression Manipulators [1/8]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 22:58>
 :ID:       4fe60cc1-be66-4d5e-8922-590554d99004
@@ -528,11 +528,14 @@ Foo
   <<multiplication-manipulators>>
 #+END_SRC
 
-** WORKING Manipulator Miscellaneous Functions
+** DONE Manipulator Miscellaneous Functions
+CLOSED: [2016-05-08 Sun 10:34]
 :PROPERTIES:
 :CREATED:  <2016-05-03 Tue 15:38>
 :ID:       20450528-d763-4c14-a085-5ac54d4d4b85
 :END:
+
+This defines the ~*manipulator-map*~, where the manipulators for various functions are stored, and defines a function to generate an arguments list given a count of arguments.
 
 #+Caption: Misc Manipulator Functions
 #+Name: misc-manipulator-functions
