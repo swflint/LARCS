@@ -741,6 +741,9 @@ Foo
 #+Name: multiplication-manipulators
 #+BEGIN_SRC lisp
   (define-operation multiply 2 *)
+
+  (define-multiply-manipulator (numeric numeric)
+    (* expression-a expression-b))
 #+END_SRC
 
 ** WORKING Division
