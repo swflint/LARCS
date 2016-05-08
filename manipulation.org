@@ -809,6 +809,9 @@ Foo
 #+Name: cosine-manipulators
 #+BEGIN_SRC lisp
   (define-operation cosine 1 cos)
+
+  (define-cosine-manipulator (numeric)
+    (cosine expression-a))
 #+END_SRC
 
 *** WORKING Tangent
