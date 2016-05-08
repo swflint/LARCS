@@ -527,6 +527,7 @@ Foo
   <<subtraction-manipulator>>
   <<multiplication-manipulators>>
   <<division-manipulators>>
+  <<trigonometric-manipulators>>
 #+END_SRC
 
 ** DONE Manipulator Miscellaneous Functions
@@ -764,12 +765,96 @@ Foo
     (/ expression-a expression-b))
 #+END_SRC
 
-** TODO Trigonometric
+** WORKING Trigonometric [0/6]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:09>
+:ID:       ba4acf37-9074-429b-a2c8-a23094e1c86b
 :END:
 
 Foo
+
+#+Caption: Trigonometric Manipulators
+#+Name: trigonometric-manipulators
+#+BEGIN_SRC lisp
+  <<sine-manipulators>>
+  <<cosine-manipulators>>
+  <<tangent-manipulators>>
+  <<cosecant-manipulators>>
+  <<secant-manipulators>>
+  <<cotangent-manipulators>>
+#+END_SRC
+
+*** WORKING Sine
+:PROPERTIES:
+:CREATED:  <2016-05-08 Sun 16:22>
+:ID:       c733c6b3-a44a-488f-8b6e-38346830b257
+:END:
+
+#+Caption: Sine Manipulators
+#+Name: sine-manipulators
+#+BEGIN_SRC lisp
+  (define-operation sine 1 sin)
+#+END_SRC
+
+*** WORKING Cosine
+:PROPERTIES:
+:CREATED:  <2016-05-08 Sun 16:22>
+:ID:       c2fbd362-6932-4483-8270-e3ad72a308fd
+:END:
+
+#+Caption: Cosine Manipulators
+#+Name: cosine-manipulators
+#+BEGIN_SRC lisp
+  (define-operation cosine 1 cos)
+#+END_SRC
+
+*** WORKING Tangent
+:PROPERTIES:
+:CREATED:  <2016-05-08 Sun 16:22>
+:ID:       07222206-1c22-411e-a8ab-13e1a627e9ef
+:END:
+
+#+Caption: Tangent Manipulators
+#+Name: tangent-manipulators
+#+BEGIN_SRC lisp
+  (define-operation tangent 1 tan)
+#+END_SRC
+
+*** WORKING Cosecant
+:PROPERTIES:
+:CREATED:  <2016-05-08 Sun 16:22>
+:ID:       e77c0317-7281-45ff-b86b-8d66fb8c38ef
+:END:
+
+#+Caption: Cosecant Manipulators
+#+Name: cosecant-manipulators
+#+BEGIN_SRC lisp
+  (define-operation cosecant 1 csc)
+#+END_SRC
+
+*** WORKING Secant
+:PROPERTIES:
+:CREATED:  <2016-05-08 Sun 16:23>
+:ID:       6c377c7d-ec84-4fcf-be94-db89b832c2d8
+:END:
+
+#+Caption: Secant Manipulators
+#+Name: secant-manipulators
+#+BEGIN_SRC lisp
+  (define-operation secant 1 sec)
+#+END_SRC
+
+*** WORKING Cotangent
+:PROPERTIES:
+:CREATED:  <2016-05-08 Sun 16:23>
+:ID:       70a9fb76-7ca7-4c7d-b25b-0fa94d390b6c
+:END:
+
+#+Caption: Cotangent Manipulators
+#+Name: cotangent-manipulators
+#+BEGIN_SRC lisp
+  (define-operation cotangent 1 cot)
+#+END_SRC
 
 * DONE Packaging
 CLOSED: [2016-05-05 Thu 21:21]
