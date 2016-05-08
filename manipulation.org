@@ -824,6 +824,9 @@ Foo
 #+Name: tangent-manipulators
 #+BEGIN_SRC lisp
   (define-operation tangent 1 tan)
+
+  (define-tangent-manipulator (numeric)
+    (tan expression-a))
 #+END_SRC
 
 *** WORKING Cosecant
