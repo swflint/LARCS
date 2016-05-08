@@ -406,6 +406,10 @@ This is used to classify "powers", that is to say, equations of the form $x^n$, 
 #+Caption: Classify Trigonometrics
 #+Name: classify-trigonometrics
 #+BEGIN_SRC lisp
+  (define-classification trigonometric
+    (when (classified-as-p expression 'non-atomic)
+      (member (first expression) '(sin cos tan csc sec cot))))
+
   (define-classification sin
     (when (classified-as-p expression 'non-atomic)
       (eq 'sin (first expression))))
