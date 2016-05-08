@@ -143,7 +143,7 @@ To completely classify an expression, the ~*classifications*~ alist is mapped ov
             (push name classifications))))))
 #+END_SRC
 
-** WORKING Classifications [6/13]
+** WORKING Classifications [7/13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
@@ -376,11 +376,14 @@ This is used to classify "powers", that is to say, equations of the form $x^n$, 
                    (classified-as-p (second expression) 'variable)))))))
 #+END_SRC
 
-*** WORKING Polynomials
+*** DONE Polynomials
+CLOSED: [2016-05-08 Sun 16:46]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:28>
 :ID:       8cd9045b-81dd-4571-930a-a852f81969c9
 :END:
+
+This determines whether or not a given expression is a polynomial, that is to say it is either ~additive~ or ~subtractive~, and each and every term is classified as ~polynomial-term~, that is to say, a ~numeric~, ~power~, or a ~multiplicative~ consisting of a ~numeric~ followed by a ~power~.
 
 #+Caption: Classify Polynomials
 #+Name: classify-polynomials
