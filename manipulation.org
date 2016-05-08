@@ -526,6 +526,7 @@ Foo
   <<addition-manipulator>>
   <<subtraction-manipulator>>
   <<multiplication-manipulators>>
+  <<division-manipulators>>
 #+END_SRC
 
 ** DONE Manipulator Miscellaneous Functions
@@ -749,6 +750,7 @@ Foo
 ** WORKING Division
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:09>
+:ID:       4c4f7034-555a-46b0-85b9-56a08cf48f9b
 :END:
 
 Foo
@@ -757,6 +759,9 @@ Foo
 #+Name: division-manipulators
 #+BEGIN_SRC lisp
   (define-operation division 2 /)
+
+  (define-division-manipulator (numeric numeric)
+    (/ expression-a expression-b))
 #+END_SRC
 
 ** TODO Trigonometric
