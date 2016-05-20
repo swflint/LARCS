@@ -569,26 +569,26 @@ Foo
 #+BEGIN_SRC lisp
   (defun coefficient (term)
     (when (classified-as-p term 'polynomial-term)
-      (cond
-        ((classified-as-p term 'variable) 1)
-        ((classified-as-p term 'power) 1)
-        ((classified-as-p term 'multiplicative) (second term))
-        ((classified-as-p term 'numeric) term))))
+      (classification-case term
+                           (variable 1)
+                           (power 1)
+                           (multiplicative (second term))
+                           (numeric term))))
 
   (defun term-variable (term)
     (when (classified-as-p term 'polynomial-term)
-      (cond
-        ((classified-as-p term 'multiplicative) (second (third term)))
-        ((classified-as-p term 'power) (second term))
-        (t nil))))
+      (classification-case term
+                           (multiplicative (second (third term)))
+                           (power (second term))
+                           (* nil))))
 
   (defun get-power (term)
-    (cond
-      ((classified-as-p term 'numeric) 0)
-      ((classified-as-p term 'variable) 1)
-      ((classified-as-p term 'power) (third term))
-      ((classified-as-p term 'polynomial-term) (third (third term)))
-      (t 0)))
+    (classification-case term
+                         (numeric 0)
+                         (variable 1)
+                         (power (third term))
+                         (polynomial-term (third (third term)))
+                         (* 0)))
 
   (defun same-order-p (term-a term-b)
     (= (get-power term-a)
