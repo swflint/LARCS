@@ -53,7 +53,7 @@ As a part of my lisp-based Computer Algebra System, an algebraic manipulation to
 #+TOC: headlines 3
 #+TOC: listings
 
-* WORKING Expression Typing [4/5]
+* WORKING Expression Typing [4/6]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:15>
 :ID:       c6921b1e-d269-4243-acff-5a77685c331e
@@ -70,6 +70,7 @@ This includes a form of storage, the classification definition macro, a way to c
   <<define-classification>>
   <<check-classification>>
   <<classify-expression>>
+  <<classification-case>>
   <<possible-classifications>>
 #+END_SRC
 
@@ -141,6 +142,26 @@ To completely classify an expression, the ~*classifications*~ alist is mapped ov
               (checker (cdr possible)))
           (when (funcall checker expression)
             (push name classifications))))))
+#+END_SRC
+
+** WORKING Classification Case
+:PROPERTIES:
+:CREATED:  <2016-05-20 Fri 14:15>
+:ID:       19a4e467-baa0-47eb-9267-93ff3801b1fd
+:END:
+
+#+Caption: Classification Case
+#+Name: classification-case
+#+BEGIN_SRC lisp
+  (defmacro classification-case (var &rest cases)
+    (let ((conditions (map 'list #'(lambda (case)
+                                     (destructuring-bind (type &body body) case
+                                       (if (eq type 't)
+                                           `((classified-as-p ,var '*) ,@body)
+                                           `((classified-as-p ,var ',type) ,@body))))
+                           cases)))
+      `(cond
+         ,@conditions)))
 #+END_SRC
 
 ** WORKING Classifications [7/13]
