@@ -507,9 +507,48 @@ Foo
 #+Caption: Collect Terms
 #+Name: collect-terms
 #+BEGIN_SRC lisp
-  (defun collect-terms (expression)
-    (let ((terms (rest expression)))
-      ))
+  (defun collect-terms (expression &aux (terms (rest expression)))
+    (let ((numerics '())
+          (variables '())
+          (additives '())
+          (subtractives '())
+          (multiplicatives '())
+          (polynomial-terms '())
+          (rationals '())
+          (powers '())
+          (natural-exponentials '())
+          (exponentials '())
+          (natural-logarithmics '())
+          (trigonometrics '()))
+      (dolist (term terms)
+        (classification-case term
+                             (numeric (pushnew term numerics))
+                             (variable (pushnew term variables))
+                             (power (pushnew term powers))
+                             (additive (pushnew term additives))
+                             (subtractive (pushnew term subtractives))
+                             (multiplicative (pushnew term multiplicatives))
+                             (polynomial-term (pushnew term polynomial-terms))
+                             (rational (pushnew term rationals))
+                             (power (pushnew term powers))
+                             (natural-exponential (pushnew term natural-exponentials))
+                             (exponential (pushnew term exponentials))
+                             (natural-logarithmic (pushnew term natural-logarithmics))
+                             (trigonometric (pushnew term trigonometrics))))
+      (remove-if #'(lambda (expr) (null (cdr expr)))
+                 (list (append (list :numerics) numerics)
+                       (append (list :variables) variables)
+                       (append (list :powers) powers)
+                       (append (list :additives) additives)
+                       (append (list :subtractives) subtractives)
+                       (append (list :multiplicatives) multiplicatives)
+                       (append (list :polynomial-terms) polynomial-terms)
+                       (append (list :rationals) rationals)
+                       (append (list :powers) powers)
+                       (append (list :natural-exponentials) natural-exponentials)
+                       (append (list :exponentials) exponentials)
+                       (append (list :natural-logarithmics) natural-logarithmics)
+                       (append (list :trigonometrics) trigonometrics)))))
 #+END_SRC
 
 * WORKING Polynomial Related Functions
@@ -936,6 +975,8 @@ This assembles and packages the algebraic manipulation system into a single file
   <<determine-expression-type>>
 
   <<collect-variables>>
+
+  <<collect-terms>>
 
   <<polynomial-related-functions>>
 
