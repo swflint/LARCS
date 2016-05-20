@@ -474,6 +474,28 @@ The storage of classifications is simple, they are stored as an alist in the for
   (defvar *classifications* '())
 #+END_SRC
 
+* WORKING Collect Variables
+:PROPERTIES:
+:CREATED:  <2016-05-20 Fri 15:15>
+:ID:       6333322c-e12f-4ef6-8394-2fe219a72836
+:END:
+
+#+Caption: Collect Variables
+#+Name: collect-variables
+#+BEGIN_SRC lisp
+  (defun collect-variables (expression)
+    (let ((variables '()))
+      (flet ((merge-variables (variable)
+               (pushnew variable variables)))
+        (classification-case expression
+                             (variable (merge-variables expression))
+                             (non-atomic (map 'list #'(lambda (expr)
+                                                        (loop for var in (collect-variables expr)
+                                                           do (merge-variables var)))
+                                              (rest expression)))))
+      (reverse variables)))
+#+END_SRC
+
 * WORKING Term Collection                                          :noexport:
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 22:59>
@@ -912,6 +934,8 @@ This assembles and packages the algebraic manipulation system into a single file
   (in-package #:manipulator)
 
   <<determine-expression-type>>
+
+  <<collect-variables>>
 
   <<polynomial-related-functions>>
 
