@@ -584,6 +584,8 @@ Foo
 
   (defun get-power (term)
     (cond
+      ((classified-as-p term 'numeric) 0)
+      ((classified-as-p term 'variable) 1)
       ((classified-as-p term 'power) (third term))
       ((classified-as-p term 'polynomial-term) (third (third term)))
       (t 0)))
