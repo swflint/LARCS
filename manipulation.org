@@ -551,11 +551,18 @@ Foo
                        (append (list :trigonometrics) trigonometrics)))))
 #+END_SRC
 
-* WORKING Polynomial Related Functions
+* WORKING Polynomial Related Functions [0/6]
 :PROPERTIES:
 :CREATED:  <2016-05-01 Sun 12:29>
 :ID:       984d0f52-4c52-4bfa-a150-f3289d25bdf1
 :END:
+
+ - [ ] coefficient
+ - [ ] term-variable
+ - [ ] get-power
+ - [ ] same-order-p
+ - [ ] same-variable-p
+ - [ ] single-term-combinable-p
 
 #+Caption: Polynomial Related Functions
 #+Name: polynomial-related-functions
