@@ -968,7 +968,10 @@ This assembles and packages the algebraic manipulation system into a single file
                   #:symbolicate)
     (:export #:manipulate
              #:classify
-             #:classified-as-p))
+             #:classified-as-p
+             #:classification-case
+             #:collect-variables
+             #:collect-terms))
 
   (in-package #:manipulator)
 
