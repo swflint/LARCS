@@ -302,7 +302,7 @@ Foo
             (convert-to-tex (ensure-list wrt))))
 #+END_SRC
 
-** TODO Speciality
+** TODO Specialty
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 18:30>
 :ID:       f4e6b309-289d-4b32-bc55-4740ec86a113
