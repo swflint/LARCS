@@ -154,6 +154,7 @@ To completely classify an expression, the ~*classifications*~ alist is mapped ov
 #+Name: classification-case
 #+BEGIN_SRC lisp
   (defmacro classification-case (var &rest cases)
+    (declare (slime-indent (as case)))
     (let ((conditions (map 'list #'(lambda (case)
                                      (destructuring-bind (type &body body) case
                                        (if (eq type 't)
@@ -491,7 +492,7 @@ The storage of classifications is simple, they are stored as an alist in the for
                              (variable (merge-variables expression))
                              (non-atomic (map 'list #'(lambda (expr)
                                                         (loop for var in (collect-variables expr)
-                                                           do (merge-variables var)))
+                                                              do (merge-variables var)))
                                               (rest expression)))))
       (reverse variables)))
 #+END_SRC
@@ -654,6 +655,7 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
 #+Name: define-expression-manipulator
 #+BEGIN_SRC lisp
   (defmacro define-operation (name arity short)
+    (declare (slime-indent (as defun)))
     (check-type name symbol)
     (check-type arity (integer 1 26))
     (check-type short symbol)
@@ -667,9 +669,9 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
            (get-operations-name (symbolicate 'get- name '-manipulators))
            (type-check-list (let ((i 0))
                               (loop for arg in args
-                                 collect (prog1
-                                             `(classified-as-p ,arg (nth ,i types))
-                                           (incf i))))))
+                                    collect (prog1
+                                                `(classified-as-p ,arg (nth ,i types))
+                                              (incf i))))))
       `(progn
          (push '(,short . ,name) *manipulator-map*)
          (defvar ,rules-name '())
@@ -687,6 +689,7 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
            (funcall (first (,get-operations-name ,@args))
                     ,@args))
          (defmacro ,manipulator-define-name ((,@expression-types) &body body)
+           (declare (slime-indent (as defun)))
            (let ((manipulator-name (symbolicate ',base-manipulator-name ,@expression-types)))
              `(progn
                 (setf ,',rules-name (append ,',rules-name '(((,,@expression-types) . ,manipulator-name))))
@@ -983,6 +986,8 @@ This assembles and packages the algebraic manipulation system into a single file
              #:collect-terms))
 
   (in-package #:manipulator)
+
+  (declaim (declaration slime-indent))
 
   <<determine-expression-type>>
 
