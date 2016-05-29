@@ -579,16 +579,22 @@ Foo
   (defun term-variable (term)
     (when (classified-as-p term 'polynomial-term)
       (classification-case term
-                           (multiplicative (second (third term)))
                            (power (second term))
-                           (* nil))))
+                           (multiplicative
+                            (if (listp (third term))
+                                (second (third term))
+                                (third term)))
+                           (numeric nil))))
 
   (defun get-power (term)
     (classification-case term
                          (numeric 0)
                          (variable 1)
                          (power (third term))
-                         (polynomial-term (third (third term)))
+                         (multiplicative
+                          (if (listp (third term))
+                              (third (third term))
+                              1))
                          (* 0)))
 
   (defun same-order-p (term-a term-b)
