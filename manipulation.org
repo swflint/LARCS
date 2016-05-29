@@ -849,6 +849,14 @@ Foo
 
   (define-multiply-manipulator (numeric numeric)
     (* expression-a expression-b))
+
+  (define-multiply-manipulator (numeric polynomial-term)
+    (let ((new-coefficient (* expression-a (coefficient expression-b)))
+          (variable (term-variable expression-b))
+          (power (get-power expression-b)))
+      (if (= 1 power)
+          `(* ,new-coefficient ,variable)
+          `(* ,new-coefficient (expt ,variable ,power)))))
 #+END_SRC
 
 ** WORKING Division
