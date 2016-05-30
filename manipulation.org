@@ -286,7 +286,7 @@ Check to see whether or not an expression is an additive by ensuring that it is 
 #+Name: classify-additives
 #+BEGIN_SRC lisp
   (define-classification additive
-    (when (classified-as-p expression 'non-atomic)
+    (when-classified-as non-atomic expression
       (eq '+ (first expression))))
 #+END_SRC
 
@@ -303,7 +303,7 @@ Check to see whether a given expression is a subtractive by ensuring it is non-a
 #+Name: classify-subtractives
 #+BEGIN_SRC lisp
   (define-classification subtractive
-    (when (classified-as-p expression 'non-atomic)
+    (when-classified-as non-atomic expression
       (eq '- (first expression))))
 #+END_SRC
 
@@ -320,7 +320,7 @@ This is used to classify "powers", that is to say, equations of the form $x^n$, 
 #+Name: classify-powers
 #+BEGIN_SRC lisp
   (define-classification power
-    (when (classified-as-p expression 'non-atomic)
+    (when-classified-as non-atomic expression
       (and (eq 'expt (first expression))
          (classified-as-p (second expression) 'variable)
          (classified-as-p (third expression) 'numeric))))
@@ -339,12 +339,12 @@ This classifies both natural and non-natural exponentials.  It does so by ensuri
 #+Name: classify-exponentials
 #+BEGIN_SRC lisp
   (define-classification natural-exponential
-    (when (classified-as-p expression 'non-atomic)
+    (when-classified-as non-atomic expression
       (and (= 2 length)
          (eq 'exp (first expression)))))
 
   (define-classification exponential
-    (when (classified-as-p expression 'non-atomic)
+    (when-classified-as non-atomic expression
       (and (= 3 length)
          (eq 'expt (first expression)))))
 #+END_SRC
@@ -359,7 +359,7 @@ This classifies both natural and non-natural exponentials.  It does so by ensuri
 #+Name: classify-multiplicatives
 #+BEGIN_SRC lisp
   (define-classification multiplicative
-    (when (classified-as-p expression 'non-atomic)
+    (when-classified-as non-atomic expression
       (eq '* (first expression))))
 #+END_SRC
 
@@ -376,12 +376,12 @@ This defines the classifications for logarithmic expressions, for both natural a
 #+Name: classify-logarithmics
 #+BEGIN_SRC lisp
   (define-classification natural-logarithmic
-    (when (classified-as-p expression 'non-atomic)
+    (when-classified-as non-atomic expression
       (and (= 2 length)
          (eq 'log (first expression)))))
 
   (define-classification logarithmic
-    (when (classified-as-p expression 'non-atomic)
+    (when-classified-as non-atomic expression
       (and (= 3 length)
          (eq 'log (first expression)))))
 #+END_SRC
@@ -396,7 +396,7 @@ This defines the classifications for logarithmic expressions, for both natural a
 #+Name: classify-rationals
 #+BEGIN_SRC lisp
   (define-classification rational
-    (when (classified-as-p expression 'non-atomic)
+    (when-classified-as non-atomic expression
       (and (= 3 length)
          (eq '/ (first expression)))))
 #+END_SRC
@@ -437,7 +437,7 @@ This determines whether or not a given expression is a polynomial, that is to sa
 #+Name: classify-polynomials
 #+BEGIN_SRC lisp
   (define-classification polynomial
-    (when (classified-as-p expression 'non-atomic)
+    (when-classified-as non-atomic expression
       (and (or (eq '- (first expression))
             (eq '+ (first expression)))
          (reduce #'(lambda (a b)
@@ -458,27 +458,27 @@ This determines whether or not a given expression is a polynomial, that is to sa
 #+Name: classify-trigonometrics
 #+BEGIN_SRC lisp
   (define-classification trigonometric
-    (when (classified-as-p expression 'non-atomic)
+    (when-classified-as non-atomic expression
       (member (first expression) '(sin cos tan csc sec cot))))
 
   (define-classification sin
-    (when (classified-as-p expression 'non-atomic)
+    (when-classified-as non-atomic expression
       (eq 'sin (first expression))))
 
   (define-classification cos
-    (when (classified-as-p expression 'non-atomic)
+    (when-classified-as non-atomic expression
       (eq 'cos (first expression))))
 
   (define-classification tan
-    (when (classified-as-p expression 'non-atomic)
+    (when-classified-as non-atomic expression
       (eq 'tan (first expression))))
 
   (define-classification csc
-    (when (classified-as-p expression 'non-atomic)
+    (when-classified-as non-atomic expression
       (eq 'csc (first expression))))
 
   (define-classification sec
-    (when (classified-as-p expression 'non-atomic)
+    (when-classified-as non-atomic expression
       (eq 'sec (first expression))))
 
   (define-classification cot
