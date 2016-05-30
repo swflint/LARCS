@@ -185,7 +185,7 @@ Following the case pattern, and to allow for cleaner code, I've defined the clas
        ,@body))
 #+END_SRC
 
-** WORKING Classifications [10/13]
+** WORKING Classifications [11/13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
@@ -389,11 +389,14 @@ This defines the classifications for logarithmic expressions, for both natural a
          (eq 'log (first expression)))))
 #+END_SRC
 
-*** WORKING Rationals
+*** DONE Rationals
+CLOSED: [2016-05-30 Mon 18:58]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:28>
 :ID:       a4505a66-c249-4438-a6df-81e21718e23e
 :END:
+
+Rationals are classified similarly to multiplicatives, checking to see whether or not they are non-atomic and checking whether or not the first element is ~/~, but rationals are also defined as only having three elements, the operation and two following operands, and thus, the length is also checked.
 
 #+Caption: Classify Rationals
 #+Name: classify-rationals
