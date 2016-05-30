@@ -185,7 +185,7 @@ Following the case pattern, and to allow for cleaner code, I've defined the clas
        ,@body))
 #+END_SRC
 
-** WORKING Classifications [9/13]
+** WORKING Classifications [10/13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
@@ -349,11 +349,14 @@ This classifies both natural and non-natural exponentials.  It does so by ensuri
          (eq 'expt (first expression)))))
 #+END_SRC
 
-*** WORKING Multiplicatives
+*** DONE Multiplicatives
+CLOSED: [2016-05-30 Mon 18:55]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:27>
 :ID:       feb85a20-93e3-45a1-be01-9893ecc07c53
 :END:
+
+To classify multiplicative expressions, it is first ensured that they are non-atomic, and then, the first element is tested to see if it is equal to the symbol ~*~.
 
 #+Caption: Classify Multiplicatives
 #+Name: classify-multiplicatives
