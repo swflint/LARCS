@@ -53,7 +53,7 @@ As a part of my lisp-based Computer Algebra System, an algebraic manipulation to
 #+TOC: headlines 3
 #+TOC: listings
 
-* WORKING Expression Typing [5/6]
+* WORKING Expression Typing [5/7]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:15>
 :ID:       c6921b1e-d269-4243-acff-5a77685c331e
@@ -71,6 +71,7 @@ This includes a form of storage, the classification definition macro, a way to c
   <<check-classification>>
   <<classify-expression>>
   <<classification-case>>
+  <<when-classified>>
   <<possible-classifications>>
 #+END_SRC
 
@@ -165,8 +166,23 @@ Following the case pattern, and to allow for cleaner code, I've defined the clas
                                            `((classified-as-p ,var ',type) ,@body))))
                            cases)))
       `(let ((the-classification (classify ,var)))
+         (declare (ignorable the-classification))
          (cond
            ,@conditions))))
+#+END_SRC
+
+** TODO When Classified
+:PROPERTIES:
+:CREATED:  <2016-05-30 Mon 18:31>
+:ID:       5c7c3e0b-9170-48e9-a414-6ac4528f9ac3
+:END:
+
+#+Caption: When Classified
+#+Name: when-classified
+#+BEGIN_SRC lisp
+  (defmacro when-classified-as (classification variable &body body)
+    `(when (classified-as-p ,variable ',classification)
+       ,@body))
 #+END_SRC
 
 ** WORKING Classifications [9/13]
