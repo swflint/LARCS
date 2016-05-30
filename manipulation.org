@@ -175,7 +175,7 @@ Following the case pattern, and to allow for cleaner code, I've defined the clas
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
 :END:
 
-I must define several different classifications, ranging from numeric expressions to trigonometric expressions.  They are as follows:
+I must define several different classifications, ranging from simple numeric expressions (numbers) to trigonometric expressions ($\sin$, $\cos$ and the lot).  They are as follows:
 
  - Numbers
  - Variables
