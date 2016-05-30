@@ -169,7 +169,7 @@ Following the case pattern, and to allow for cleaner code, I've defined the clas
            ,@conditions))))
 #+END_SRC
 
-** WORKING Classifications [7/13]
+** WORKING Classifications [8/13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
@@ -310,11 +310,14 @@ This is used to classify "powers", that is to say, equations of the form $x^n$, 
          (classified-as-p (third expression) 'numeric))))
 #+END_SRC
 
-*** WORKING Exponentials
+*** DONE Exponentials
+CLOSED: [2016-05-30 Mon 18:24]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 15:04>
 :ID:       a11fdd94-d56c-4749-bb22-dca75159dbcb
 :END:
+
+This classifies both natural and non-natural exponentials.  It does so by ensuring that natural exponentials ($e^x$) are of the form ~(exp x)~, and non-natural exponentials ($a^x$) are of the form ~(expt base power)~.
 
 #+Caption: Classify Exponentials
 #+Name: classify-exponentials
