@@ -1,0 +1,10 @@
+;; -*- emacs-lisp -*-
+
+(define-buffer-layer lisp-cas
+  :files ("~/Projects/lisp-cas/"
+          "~/Projects/lisp-cas/derivatives.org"
+          "~/Projects/lisp-cas/lisp-to-tex.org"
+          "~/Projects/lisp-cas/manipulation.org"
+          "~/Projects/lisp-cas/newtons-method.org"
+          "~/Projects/lisp-cas/rules-application.org")
+  :buffer-to-select "lisp-cas")
