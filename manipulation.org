@@ -542,8 +542,8 @@ The storage of classifications is simple, they are stored as an alist in the for
         (classification-case expression
                              (variable (merge-variables expression))
                              (non-atomic (map 'list #'(lambda (expr)
-                                                        (loop for var in (collect-variables expr)
-                                                              do (merge-variables var)))
+                                                        (dolist (variable (collect-variables expr))
+                                                          (merge-variables variable)))
                                               (rest expression)))))
       (reverse variables)))
 #+END_SRC
