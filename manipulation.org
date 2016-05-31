@@ -698,8 +698,10 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
 
   (defun gen-args-list (count)
     (let ((letters '(a b c d e f g h i j k l m n o p q r s t u v w x y z)))
-      (loop for i from 1 to count
-         collect (symbolicate 'expression- (nth (1- i) letters)))))
+      (let ((variables-list '()))
+        (dotimes (i count)
+          (pushnew (symbolicate 'expression- (nth i letters)) variables-list))
+        (reverse variables-list))))
 #+END_SRC
 
 ** WORKING Define Expression Manipulator
