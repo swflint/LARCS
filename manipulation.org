@@ -526,11 +526,39 @@ The storage of classifications is simple, they are stored as an alist in the for
   (defvar *classifications* '())
 #+END_SRC
 
-* WORKING Collect Variables
+* DONE Collect Variables
+CLOSED: [2016-05-31 Tue 18:54]
 :PROPERTIES:
 :CREATED:  <2016-05-20 Fri 15:15>
 :ID:       6333322c-e12f-4ef6-8394-2fe219a72836
 :END:
+
+Variable collection is somewhat important, and to accomplish this, I use a recursive algorithm.  An expression is passed to the function, and if the expression is a variable, then the variable is collected and spit out; otherwise, if the expression is non-atomic, it is passed to the function recursively, and the returned variables are then merged into the variables list.  Upon termination (no further sub-expressions), all variables are returned.  (See Figure [[fig:variable-collection]].)
+
+#+Caption: Variable Collection
+#+Name: variable-collection
+#+BEGIN_SRC dot :file "variable-collection.png" :export results
+  digraph {
+          start [label = "Start"];
+          stop [label = "Stop"];
+          collect [label = "Collect"];
+          if_var [label = "If Variable", shape = rectangle];
+          recurse_collect [label = "Iterate, Recurse and Collect Results"];
+
+          start -> if_var;
+          if_var -> collect [label = "True"];
+          collect -> stop;
+
+          if_var -> recurse_collect [label = "Non-atomic"];
+          recurse_collect -> start;
+  }
+#+END_SRC
+
+#+Caption: Variable Collection Algorithm
+#+Name: fig:variable-collection
+#+ATTR_LATEX: :width 8cm
+#+RESULTS: variable-collection
+[[file:variable-collection.png]]
 
 #+Caption: Collect Variables
 #+Name: collect-variables
