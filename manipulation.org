@@ -53,7 +53,7 @@ As a part of my lisp-based Computer Algebra System, an algebraic manipulation to
 #+TOC: headlines 3
 #+TOC: listings
 
-* WORKING Expression Typing [6/7]
+* DONE Expression Typing [7/7]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:15>
 :ID:       c6921b1e-d269-4243-acff-5a77685c331e
@@ -171,11 +171,14 @@ Following the case pattern, and to allow for cleaner code, I've defined the clas
            ,@conditions))))
 #+END_SRC
 
-** TODO When Classified
+** DONE When Classified
+CLOSED: [2016-05-30 Mon 19:18]
 :PROPERTIES:
 :CREATED:  <2016-05-30 Mon 18:31>
 :ID:       5c7c3e0b-9170-48e9-a414-6ac4528f9ac3
 :END:
+
+The ~when-classified-as~ macro takes a classification, variable and a body.  It expands to a ~when~ form, with the classification and variable put into a ~classified-as-p~ call becoming the predicate, determining whether or not the body is run.
 
 #+Caption: When Classified
 #+Name: when-classified
