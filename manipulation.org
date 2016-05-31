@@ -185,7 +185,7 @@ Following the case pattern, and to allow for cleaner code, I've defined the clas
        ,@body))
 #+END_SRC
 
-** WORKING Classifications [11/13]
+** WORKING Classifications [12/13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
@@ -407,11 +407,18 @@ Rationals are classified similarly to multiplicatives, checking to see whether o
          (eq '/ (first expression)))))
 #+END_SRC
 
-*** WORKING Polynomial Terms
+*** DONE Polynomial Terms
+CLOSED: [2016-05-30 Mon 19:13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:28>
 :ID:       37da52b7-98a0-4a16-8a17-a62fcff2ba59
 :END:
+
+To classify a polynomial term, The expression is checked to see if it satisfies one of the following:
+ - Numeric
+ - Variable
+ - Power
+ - Multiplicative that composed of a numeric and a power or variable.
 
 #+Caption: Classify Polynomial Term
 #+Name: classify-polynomial-term
