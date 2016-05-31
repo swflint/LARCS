@@ -53,7 +53,7 @@ As a part of my lisp-based Computer Algebra System, an algebraic manipulation to
 #+TOC: headlines 3
 #+TOC: listings
 
-* WORKING Expression Typing [5/7]
+* WORKING Expression Typing [6/7]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:15>
 :ID:       c6921b1e-d269-4243-acff-5a77685c331e
@@ -185,7 +185,7 @@ Following the case pattern, and to allow for cleaner code, I've defined the clas
        ,@body))
 #+END_SRC
 
-** WORKING Classifications [12/13]
+** DONE Classifications [13/13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
@@ -461,11 +461,20 @@ This determines whether or not a given expression is a polynomial, that is to sa
                    (rest expression))))))
 #+END_SRC
 
-*** WORKING Trigonometrics
+*** DONE Trigonometrics
+CLOSED: [2016-05-30 Mon 19:15]
 :PROPERTIES:
 :CREATED:  <2016-05-04 Wed 13:38>
 :ID:       6f433cad-4b81-4a6f-ab65-981f4a924812
 :END:
+
+Trigonometrics are classified as many others are, they are first checked to see if they are non-atomic, and then the first element is checked, with the following being valid symbols:
+ - ~sin~
+ - ~cos~
+ - ~tan~
+ - ~csc~
+ - ~sec~
+ - ~cot~
 
 #+Caption: Classify Trigonometrics
 #+Name: classify-trigonometrics
