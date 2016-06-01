@@ -844,6 +844,53 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
                   ,@body)))))))
 #+END_SRC
 
+
+#+Caption: Expression Manipulation Example
+#+Name: ex-manip-example
+#+BEGIN_SRC lisp :results output raw :exports results :cache yes
+  (load "manipulation")
+  (in-package #:manipulator)
+
+  (format t "#+Caption: Expression Manipulator Expansion~%#+Name: ex-manip-expansion~%#+BEGIN_SRC lisp :exports code~%~a~%#+END_SRC"
+          (macroexpand-1 '(define-operation frobnicate 2 frob)))
+#+END_SRC
+
+#+RESULTS[8b2d6e575e0d168f96d4bba85d6dd90a56c5c5a6]: ex-manip-example
+#+Caption: Expression Manipulator Expansion
+#+Name: ex-manip-expansion
+#+BEGIN_SRC lisp :exports code
+(PROGN
+ (PUSH '(FROB . FROBNICATE) *MANIPULATOR-MAP*)
+ (DEFVAR *MANIPULATORS-FROBNICATE* 'NIL)
+ (DEFUN FROBNICATE-IS-APPLICABLE-P (TYPES EXPRESSION-A EXPRESSION-B)
+   (AND (CLASSIFIED-AS-P EXPRESSION-A (NTH 0 TYPES))
+        (CLASSIFIED-AS-P EXPRESSION-B (NTH 1 TYPES))))
+ (DEFUN GET-FROBNICATE-MANIPULATORS (EXPRESSION-A EXPRESSION-B)
+   (REMOVE-IF #'NULL
+              (MAP 'LIST
+                   #'(LAMBDA (OPTION)
+                       (LET ((TYPES (CAR OPTION)) (NAME (CDR OPTION)))
+                         (IF (FROBNICATE-IS-APPLICABLE-P TYPES EXPRESSION-A
+                              EXPRESSION-B)
+                             NAME)))
+                   *MANIPULATORS-FROBNICATE*)))
+ (DEFUN FROBNICATE (EXPRESSION-A EXPRESSION-B)
+   (FUNCALL (FIRST (GET-FROBNICATE-MANIPULATORS EXPRESSION-A EXPRESSION-B))
+            EXPRESSION-A EXPRESSION-B))
+ (DEFMACRO DEFINE-FROBNICATE-MANIPULATOR
+           ((EXPRESSION-A-TYPE EXPRESSION-B-TYPE) &BODY BODY)
+   (DECLARE (SLIME-INDENT (AS DEFUN)))
+   (LET ((MANIPULATOR-NAME
+          (SYMBOLICATE 'FROBNICATE-MANIPULATOR- EXPRESSION-A-TYPE
+                       EXPRESSION-B-TYPE)))
+     `(PROGN
+       (SETF ,'*MANIPULATORS-FROBNICATE*
+               (APPEND ,'*MANIPULATORS-FROBNICATE*
+                       '(((,EXPRESSION-A-TYPE ,EXPRESSION-B-TYPE)
+                          ,@MANIPULATOR-NAME))))
+       (DEFUN ,MANIPULATOR-NAME ,'(EXPRESSION-A EXPRESSION-B) ,@BODY)))))
+#+END_SRC
+
 ** WORKING External Manipulator
 :PROPERTIES:
 :CREATED:  <2016-05-01 Sun 14:33>
