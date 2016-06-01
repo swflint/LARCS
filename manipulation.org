@@ -1074,6 +1074,14 @@ Foo
 
   (define-division-manipulator (numeric numeric)
     (/ expression-a expression-b))
+
+  (define-division-manipulator (polynomial-term polynomial-term)
+    (let ((new-coefficient (/ (coefficient expression-a)
+                              (coefficient expression-b)))
+          (variable (term-variable expression-b))
+          (power (- (get-power expression-a)
+                    (get-power expression-b))))
+      `(* ,new-coefficient (expt ,variable ,power))))
 #+END_SRC
 
 ** WORKING Trigonometric [0/6]
