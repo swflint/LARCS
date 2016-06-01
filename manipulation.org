@@ -749,7 +749,7 @@ Foo
        (same-variable-p term-a term-b)))
 #+END_SRC
 
-* WORKING Expression Manipulators [1/8]
+* WORKING Expression Manipulators [2/8]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 22:58>
 :ID:       4fe60cc1-be66-4d5e-8922-590554d99004
@@ -891,18 +891,22 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
        (DEFUN ,MANIPULATOR-NAME ,'(EXPRESSION-A EXPRESSION-B) ,@BODY)))))
 #+END_SRC
 
-** WORKING External Manipulator
+** DONE External Manipulator
+CLOSED: [2016-05-31 Tue 19:48]
 :PROPERTIES:
 :CREATED:  <2016-05-01 Sun 14:33>
 :ID:       6419490c-3cb0-47e4-840a-c20af4bfb3d7
 :END:
 
+The Expression Manipulators should not be touched outside of this package, as they are not designed to be used outside of it.  Instead, they should be used through this simple function.  It takes an action and a list of expressions.  The function used to perform the action correctly is determined, and used to reduce the expressions.
+
 #+Caption: External Manipulator
 #+Name: external-manipulator
 #+BEGIN_SRC lisp
   (defun manipulate (action &rest expressions)
-    (reduce (cdr (assoc action *manipulator-map*))
-            expressions))
+    (let ((the-manipulator (cdr (assoc action *manipulator-map*))))
+      (reduce the-manipulator
+              expressions)))
 #+END_SRC
 
 ** WORKING Addition
