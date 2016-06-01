@@ -537,7 +537,7 @@ Variable collection is somewhat important, and to accomplish this, I use a recur
 
 #+Caption: Variable Collection
 #+Name: variable-collection
-#+BEGIN_SRC dot :file "variable-collection.png" :export results
+#+BEGIN_SRC dot :file "variable-collection.png" :export results :cache yes
   digraph {
           start [label = "Start"];
           stop [label = "Stop"];
@@ -557,7 +557,7 @@ Variable collection is somewhat important, and to accomplish this, I use a recur
 #+Caption: Variable Collection Algorithm
 #+Name: fig:variable-collection
 #+ATTR_LATEX: :width 8cm
-#+RESULTS: variable-collection
+#+RESULTS[e1586dc50921f7ba260f125e7221a978d489bd34]: variable-collection
 [[file:variable-collection.png]]
 
 #+Caption: Collect Variables
