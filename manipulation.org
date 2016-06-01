@@ -637,15 +637,25 @@ Foo
 :ID:       984d0f52-4c52-4bfa-a150-f3289d25bdf1
 :END:
 
- - [ ] coefficient
- - [ ] term-variable
- - [ ] get-power
- - [ ] same-order-p
- - [ ] same-variable-p
- - [ ] single-term-combinable-p
-
 #+Caption: Polynomial Related Functions
 #+Name: polynomial-related-functions
+#+BEGIN_SRC lisp
+  <<get-coefficient>>
+  <<get-term-variable>>
+  <<get-power>>
+  <<same-order>>
+  <<same-variable>>
+  <<is-combinable>>
+#+END_SRC
+
+** TODO Get Coefficient
+:PROPERTIES:
+:CREATED:  <2016-05-31 Tue 19:08>
+:ID:       cbc927fc-ae5e-46bf-a028-2872b5c31831
+:END:
+
+#+Caption: Get Coefficient
+#+Name: get-coefficient
 #+BEGIN_SRC lisp
   (defun coefficient (term)
     (when (classified-as-p term 'polynomial-term)
@@ -654,7 +664,17 @@ Foo
                            (power 1)
                            (multiplicative (second term))
                            (numeric term))))
+#+END_SRC
 
+** TODO Get Term Variables
+:PROPERTIES:
+:CREATED:  <2016-05-31 Tue 19:08>
+:ID:       55729698-bd51-48af-ab42-197871c54dbb
+:END:
+
+#+Caption: Get Term Variable
+#+Name: get-term-variable
+#+BEGIN_SRC lisp
   (defun term-variable (term)
     (when (classified-as-p term 'polynomial-term)
       (classification-case term
@@ -664,7 +684,17 @@ Foo
                                 (second (third term))
                                 (third term)))
                            (numeric nil))))
+#+END_SRC
 
+** TODO Get Power
+:PROPERTIES:
+:CREATED:  <2016-05-31 Tue 19:08>
+:ID:       7d5a10da-bb30-496f-b285-470057a46db0
+:END:
+
+#+Caption: Get Power
+#+Name: get-power
+#+BEGIN_SRC lisp
   (defun get-power (term)
     (classification-case term
                          (numeric 0)
@@ -675,15 +705,45 @@ Foo
                               (third (third term))
                               1))
                          (* 0)))
+#+END_SRC
 
+** TODO Same Order
+:PROPERTIES:
+:CREATED:  <2016-05-31 Tue 19:08>
+:ID:       c56a1496-f4c2-4693-9448-5043570a752f
+:END:
+
+#+Caption: Same Order
+#+Name: same-order
+#+BEGIN_SRC lisp
   (defun same-order-p (term-a term-b)
     (= (get-power term-a)
        (get-power term-b)))
+#+END_SRC
 
+** TODO Same Variable
+:PROPERTIES:
+:CREATED:  <2016-05-31 Tue 19:08>
+:ID:       3806c97a-12fa-4488-b38c-d9ff3570c139
+:END:
+
+#+Caption: Same Variable
+#+Name: same-variable
+#+BEGIN_SRC lisp
   (defun same-variable-p (term-a term-b)
     (eq (term-variable term-a)
         (term-variable term-b)))
+#+END_SRC
 
+** TODO Is Combinable
+:PROPERTIES:
+:CREATED:  <2016-05-31 Tue 19:08>
+:ID:       db0410aa-bb12-4933-9be7-1a50d70ae90f
+:END:
+
+#+Caption: Is Combinable
+#+Name: is-combinable
+#+BEGIN_SRC lisp
   (defun single-term-combinable-p (term-a term-b)
     (and (same-order-p term-a term-b)
        (same-variable-p term-a term-b)))
