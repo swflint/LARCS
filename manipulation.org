@@ -1049,6 +1049,14 @@ Foo
       (if (= 1 power)
           `(* ,new-coefficient ,variable)
           `(* ,new-coefficient (expt ,variable ,power)))))
+
+  (define-multiply-manipulator (polynomial-term polynomial-term)
+    (let ((new-coefficient (* (coefficient expression-a)
+                              (coefficient expression-b)))
+          (variable (term-variable expression-b))
+          (power (+ (get-power expression-a)
+                    (get-power expression-b))))
+      `(* ,new-coefficient (expt ,variable ,power))))
 #+END_SRC
 
 ** WORKING Division
