@@ -1291,7 +1291,7 @@ This program works in terms of expansion functions, and application tests.  That
 To be able to apply an expansion, you need to determine eligibility.  To do this, you need an expression that matches on two things, function name and arity.  To generate this, it takes an operation name and the arity.  Based on the arity type ($=$, $>$, $\leq$), it will construct a simple boolean statement in the format of $(function = operator) \land (argument-count == arity)$, where $==$ is one of the above arity types.
 
 #+Caption: Match Expressions
-#+Name: match-expressions
+#+Name: derive-match-expressions
 #+BEGIN_SRC lisp
   (defun generate-match-expression (on arity &optional (type '=))
     (check-type on symbol)
@@ -1321,7 +1321,7 @@ To generate the test function, it uses the match-expression generator and wraps 
 To generate the expansion function, a series of expressions is used as the body of the function, with the function destructured to form the arguments.
 
 #+Caption: Expansion Definition
-#+Name: expansion-definition
+#+Name: derive-expansion-definition
 #+BEGIN_SRC lisp
   (defmacro defexpansion (name (on arity &optional (type '=)) (&rest arguments) &body expansion)
     (let ((match-expression (generate-match-expression on arity type))
@@ -1350,7 +1350,7 @@ To allow for the use of expansions, you must be able to retrieve the correct one
 To do so, you need the second element of the list that is the ~(name test expansion)~ for the rule.  This is found by removing the expansions for which the test returns false for the given expression.
 
 #+Caption: Expansion Retrieval
-#+Name: expansion-retrieval
+#+Name: derive-expansion-retrieval
 #+BEGIN_SRC lisp
   (defun get-expansion (expression)
     (rule-expansion-function (rest (first
@@ -1368,7 +1368,7 @@ To do so, you need the second element of the list that is the ~(name test expans
 One of the more important parts of the program is a way to store expansions.  This is however, quite boring.  It's just a global variable (~*rules*~), containing a list of lists having the form of ~(name test-lambda expander-lambda)~.
 
 #+Caption: Expansion Storage
-#+Name: expansion-storage
+#+Name: derive-expansion-storage
 #+BEGIN_SRC lisp
   (defstruct (rule (:type list))
     name test-function expansion-function)
@@ -1400,7 +1400,7 @@ which is a specialized version of the more generalized Product Rule:
 There are two forms of the Product Rule as implemented, both matching on the ~*~ function, but taking a different number of arguments.  The first takes 2 arguments, and is the main driver for derivation, following the two above rules.  The second takes 3 or more, and modifies the arguments slightly so as to make it a derivative of two different equations.
 
 #+Caption: Rules for Multiplication
-#+Name: multiplication
+#+Name: derive-multiplication
 #+BEGIN_SRC lisp
   (defexpansion mult/2 (* 2) (first second)
     (cond
@@ -1428,7 +1428,7 @@ Division follows the Quotient Rule, which is as follows:
 The rule matches on the ~/~ function, and takes 2 arguments, a numerator and a denominator, its expansion is as above.
 
 #+Caption: Rules for Division
-#+Name: division
+#+Name: derive-division
 #+BEGIN_SRC lisp
   (defexpansion div/2 (/ 2) (numerator denominator)
     `(/ (- (* ,numerator ,(derive (if (listp denominator) denominator (list denominator))))
@@ -1452,7 +1452,7 @@ and here:
 This is accomplished by matching on either ~+~ or ~-~, and taking 2 or more arguments, deriving all of the passed in equations and applying the respective operation.
 
 #+Caption: Rules for Addition and Subtraction
-#+Name: addition-subtraction
+#+Name: derive-addition-subtraction
 #+BEGIN_SRC lisp
   (defexpansion plus/2+ (+ 2 >=) (&rest clauses)
     `(+ ,@(map 'list #'(lambda (clause)
@@ -1497,7 +1497,7 @@ However, equations of the form $x^n$ follow this form (The Power Rule):
 The following rules match based on the appropriate Lisp functions and the number of arguments taken based on whether or not you are performing natural or unnatural operations.
 
 #+Caption: Rules for Exponentials and Logarithms
-#+Name: exponentials-logarithms
+#+Name: derive-exponentials-logarithms
 #+BEGIN_SRC lisp
   (defexpansion exp/1 (exp 1) (expression)
     (if (listp expression)
@@ -1545,7 +1545,7 @@ and
 These rules all match on their respective trig function and substitute as appropriate.
 
 #+Caption: Rules for Trigonometric Functions
-#+Name: trigonometrics
+#+Name: derive-trigonometrics
 #+BEGIN_SRC lisp
   (defexpansion sin/1 (sin 1) (arg)
     `(* (cos ,arg) ,(derive (if (listp arg) arg (list arg)))))
@@ -1583,7 +1583,7 @@ Derive takes a list, and based on the first element in the list, and the length 
  - No Expansion Rule :: Signal an error, equation was likely malformed.
 
 #+Caption: Derivative Driver
-#+Name: derivative-driver
+#+Name: derive-derivative-driver
 #+BEGIN_SRC lisp
   (defun derive (function)
     (check-type function cons)
@@ -1617,7 +1617,7 @@ As Common Lisp does not have cosecant or secant functions, and they appear in th
 I also take the liberty of defining two macros, a ~define-equation-functions~ macro and ~take-derivative~.  The first defines two functions, one that is the original equation, and the second being the derivative of the original equation.  The ~take-derivative~ macro does simply that, but allows you to write the equation without having to quote it, providing a little bit of syntactic sugar.
 
 #+Caption: Miscellaneous Functions
-#+Name: misc-functions
+#+Name: derive-misc-functions
 #+BEGIN_SRC lisp
   (defun csc (x)
     "csc -- (csc x)
@@ -1653,7 +1653,7 @@ CLOSED: [2016-06-09 Thu 09:22]
 Now that the functions, macros and rules are defined, it's time to put them together into a package.  This package has only one dependency, Common Lisp itself, and exports the following five symbols: ~derive~, ~csc~, ~sec~, ~define-equation-functions~ and ~take-derivative~.
 
 #+Caption: Packaging
-#+Name: packaging
+#+Name: derive-packaging
 #+BEGIN_SRC lisp :tangle "derive.lisp"
   ;;;; derive.lisp
   ;;;;
@@ -1674,27 +1674,27 @@ Now that the functions, macros and rules are defined, it's time to put them toge
 
   ;;; "derive" goes here.
 
-  <<expansion-storage>>
+  <<derive-expansion-storage>>
 
-  <<expansion-retrieval>>
+  <<derive-expansion-retrieval>>
 
-  <<match-expressions>>
+  <<derive-match-expressions>>
 
-  <<expansion-definition>>
+  <<derive-expansion-definition>>
 
-  <<derivative-driver>>
+  <<derive-derivative-driver>>
 
-  <<multiplication>>
+  <<derive-multiplication>>
 
-  <<division>>
+  <<derive-division>>
 
-  <<addition-subtraction>>
+  <<derive-addition-subtraction>>
 
-  <<exponentials-logarithms>>
+  <<derive-exponentials-logarithms>>
 
-  <<trigonometrics>>
+  <<derive-trigonometrics>>
 
-  <<misc-functions>>
+  <<derive-misc-functions>>
 
   ;;; End derive
 #+END_SRC
