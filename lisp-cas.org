@@ -1142,6 +1142,8 @@ Foo
 :ID:       c733c6b3-a44a-488f-8b6e-38346830b257
 :END:
 
+Foo
+
 #+Caption: Sine Manipulators
 #+Name: sine-manipulators
 #+BEGIN_SRC lisp
@@ -1156,6 +1158,8 @@ Foo
 :CREATED:  <2016-05-08 Sun 16:22>
 :ID:       c2fbd362-6932-4483-8270-e3ad72a308fd
 :END:
+
+Foo
 
 #+Caption: Cosine Manipulators
 #+Name: cosine-manipulators
@@ -1172,6 +1176,8 @@ Foo
 :ID:       07222206-1c22-411e-a8ab-13e1a627e9ef
 :END:
 
+Foo
+
 #+Caption: Tangent Manipulators
 #+Name: tangent-manipulators
 #+BEGIN_SRC lisp
@@ -1187,6 +1193,8 @@ Foo
 :ID:       e77c0317-7281-45ff-b86b-8d66fb8c38ef
 :END:
 
+Foo
+
 #+Caption: Cosecant Manipulators
 #+Name: cosecant-manipulators
 #+BEGIN_SRC lisp
@@ -1199,6 +1207,8 @@ Foo
 :ID:       6c377c7d-ec84-4fcf-be94-db89b832c2d8
 :END:
 
+Foo
+
 #+Caption: Secant Manipulators
 #+Name: secant-manipulators
 #+BEGIN_SRC lisp
@@ -1210,6 +1220,8 @@ Foo
 :CREATED:  <2016-05-08 Sun 16:23>
 :ID:       70a9fb76-7ca7-4c7d-b25b-0fa94d390b6c
 :END:
+
+Foo
 
 #+Caption: Cotangent Manipulators
 #+Name: cotangent-manipulators
