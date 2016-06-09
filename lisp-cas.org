@@ -1705,6 +1705,8 @@ Now that the functions, macros and rules are defined, it's time to put them toge
 :ID:       ed9f4311-bf9f-42df-8f46-254658b93c10
 :END:
 
+The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be inserted into a document for whatever reason, and it does so using rewrite rules, this time, rewriting s-expressions (~(+ (* 3 (expt x 3)) (expt x 2) (* 4 x) 22)~) to the \LaTeX{} equivalent, ~${{{{3} \cdot {{x ^ {3}}}}} + {{x ^ {2}}} + {{{4} \cdot {x}}} + {22}}$~ (${{{{3} \cdot {{x ^ {3}}}}} + {{x ^ {2}}} + {{{4} \cdot {x}}} + {22}}$).
+
 ** WORKING Matching And Generating [0/4]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 16:19>
