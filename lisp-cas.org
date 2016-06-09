@@ -1,5 +1,5 @@
-#+Title: Simple Algebraic Manipulation
-#+Subtitle: An approach to allow for the solving and simplification of expressions
+#+Title: Computer Algebra Systems in Lisp
+#+Subtitle:
 #+AUTHOR: Samuel W. Flint
 #+EMAIL: swflint@flintfam.org
 #+DATE: \today
@@ -37,23 +37,28 @@
     (org-babel-tangle))
 #+END_SRC
 
-* DONE Introduction                                                   :nonum:
-CLOSED: [2016-05-01 Sun 14:33]
+* WORKING Introduction                                                :nonum:
 :PROPERTIES:
-:CREATED:  <2016-04-30 Sat 22:55>
+:CREATED:  <2016-06-09 Thu 09:19>
 :END:
-
-As a part of my lisp-based Computer Algebra System, an algebraic manipulation toolkit is required.  This will be used to simplify equations, or for that matter solve them.  This creates this toolkit, but does not create a complete simplifier or solver.  It does this by providing manipulators and automatic rewriters.  These together will provide simplification and solving utilities.
 
 * TOC                                                                :ignore:
 :PROPERTIES:
-:CREATED:  <2016-04-30 Sat 22:55>
+:CREATED:  <2016-06-09 Thu 09:19>
 :END:
 
 #+TOC: headlines 3
 #+TOC: listings
 
-* DONE Expression Typing [7/7]
+* WORKING Algebraic Manipulation [3/6]
+:PROPERTIES:
+:CREATED:  <2016-06-09 Thu 09:20>
+:ID:       b2c1fd45-b631-48f9-a093-66e1a0faa77f
+:END:
+
+As a part of my lisp-based Computer Algebra System, an algebraic manipulation toolkit is required.  This will be used to simplify equations, or for that matter solve them.  This creates this toolkit, but does not create a complete simplifier or solver.  It does this by providing manipulators and automatic rewriters.  These together will provide simplification and solving utilities.
+
+** DONE Expression Typing [7/7]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:15>
 :ID:       c6921b1e-d269-4243-acff-5a77685c331e
@@ -75,7 +80,7 @@ This includes a form of storage, the classification definition macro, a way to c
   <<possible-classifications>>
 #+END_SRC
 
-** DONE Define Classification
+*** DONE Define Classification
 CLOSED: [2016-05-04 Wed 19:30]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
@@ -103,7 +108,7 @@ Aside from defining the classification, it also pushes the classification name a
          ',name)))
 #+END_SRC
 
-** DONE Check Classification
+*** DONE Check Classification
 CLOSED: [2016-05-04 Wed 19:37]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
@@ -122,7 +127,7 @@ To check a classification, the classifier is obtained, unless the specified clas
                  expression)))
 #+END_SRC
 
-** DONE Classify Expression
+*** DONE Classify Expression
 CLOSED: [2016-05-04 Wed 19:44]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:09>
@@ -145,7 +150,7 @@ To completely classify an expression, the ~*classifications*~ alist is mapped ov
             (push name classifications))))))
 #+END_SRC
 
-** DONE Classification Case
+*** DONE Classification Case
 CLOSED: [2016-05-30 Mon 18:17]
 :PROPERTIES:
 :CREATED:  <2016-05-20 Fri 14:15>
@@ -171,7 +176,7 @@ Following the case pattern, and to allow for cleaner code, I've defined the clas
            ,@conditions))))
 #+END_SRC
 
-** DONE When Classified
+*** DONE When Classified
 CLOSED: [2016-05-30 Mon 19:18]
 :PROPERTIES:
 :CREATED:  <2016-05-30 Mon 18:31>
@@ -188,7 +193,7 @@ The ~when-classified-as~ macro takes a classification, variable and a body.  It 
        ,@body))
 #+END_SRC
 
-** DONE Classifications [13/13]
+*** DONE Classifications [13/13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
@@ -228,7 +233,7 @@ I must define several different classifications, ranging from simple numeric exp
   <<classify-trigonometrics>>
 #+END_SRC
 
-*** DONE Numbers
+**** DONE Numbers
 CLOSED: [2016-05-04 Wed 19:56]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:26>
@@ -244,7 +249,7 @@ Check to see if a given expression is a number using ~numberp~.
     (numberp expression))
 #+END_SRC
 
-*** DONE Variables
+**** DONE Variables
 CLOSED: [2016-05-04 Wed 19:57]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:26>
@@ -260,7 +265,7 @@ Check to see if a given expression is a variable, that is to say a symbol, using
     (symbolp expression))
 #+END_SRC
 
-*** DONE Non Atomics
+**** DONE Non Atomics
 CLOSED: [2016-05-04 Wed 19:59]
 :PROPERTIES:
 :CREATED:  <2016-05-04 Wed 19:52>
@@ -276,7 +281,7 @@ Check to see if a given expression is a non-atomic (any expression other than a 
     (listp expression))
 #+END_SRC
 
-*** DONE Additives
+**** DONE Additives
 CLOSED: [2016-05-04 Wed 20:01]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:26>
@@ -293,7 +298,7 @@ Check to see whether or not an expression is an additive by ensuring that it is 
       (eq '+ (first expression))))
 #+END_SRC
 
-*** DONE Subtractive
+**** DONE Subtractive
 CLOSED: [2016-05-04 Wed 20:02]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:26>
@@ -310,7 +315,7 @@ Check to see whether a given expression is a subtractive by ensuring it is non-a
       (eq '- (first expression))))
 #+END_SRC
 
-*** DONE Powers
+**** DONE Powers
 CLOSED: [2016-05-04 Wed 20:07]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:27>
@@ -329,7 +334,7 @@ This is used to classify "powers", that is to say, equations of the form $x^n$, 
          (classified-as-p (third expression) 'numeric))))
 #+END_SRC
 
-*** DONE Exponentials
+**** DONE Exponentials
 CLOSED: [2016-05-30 Mon 18:24]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 15:04>
@@ -352,7 +357,7 @@ This classifies both natural and non-natural exponentials.  It does so by ensuri
          (eq 'expt (first expression)))))
 #+END_SRC
 
-*** DONE Multiplicatives
+**** DONE Multiplicatives
 CLOSED: [2016-05-30 Mon 18:55]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:27>
@@ -369,7 +374,7 @@ To classify multiplicative expressions, it is first ensured that they are non-at
       (eq '* (first expression))))
 #+END_SRC
 
-*** DONE Logarithmics
+**** DONE Logarithmics
 CLOSED: [2016-05-30 Mon 18:30]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:27>
@@ -392,7 +397,7 @@ This defines the classifications for logarithmic expressions, for both natural a
          (eq 'log (first expression)))))
 #+END_SRC
 
-*** DONE Rationals
+**** DONE Rationals
 CLOSED: [2016-05-30 Mon 18:58]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:28>
@@ -410,7 +415,7 @@ Rationals are classified similarly to multiplicatives, checking to see whether o
          (eq '/ (first expression)))))
 #+END_SRC
 
-*** DONE Polynomial Terms
+**** DONE Polynomial Terms
 CLOSED: [2016-05-30 Mon 19:13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:28>
@@ -440,7 +445,7 @@ To classify a polynomial term, The expression is checked to see if it satisfies 
                    (classified-as-p (second expression) 'variable)))))))
 #+END_SRC
 
-*** DONE Polynomials
+**** DONE Polynomials
 CLOSED: [2016-05-08 Sun 16:46]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:28>
@@ -464,7 +469,7 @@ This determines whether or not a given expression is a polynomial, that is to sa
                    (rest expression))))))
 #+END_SRC
 
-*** DONE Trigonometrics
+**** DONE Trigonometrics
 CLOSED: [2016-05-30 Mon 19:15]
 :PROPERTIES:
 :CREATED:  <2016-05-04 Wed 13:38>
@@ -511,7 +516,7 @@ Trigonometrics are classified as many others are, they are first checked to see 
       (eq 'cot (first expression))))
 #+END_SRC
 
-** DONE Classification Storage
+*** DONE Classification Storage
 CLOSED: [2016-05-04 Wed 19:49]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:55>
@@ -526,7 +531,7 @@ The storage of classifications is simple, they are stored as an alist in the for
   (defvar *classifications* '())
 #+END_SRC
 
-* DONE Collect Variables
+** DONE Collect Variables
 CLOSED: [2016-05-31 Tue 18:54]
 :PROPERTIES:
 :CREATED:  <2016-05-20 Fri 15:15>
@@ -576,7 +581,7 @@ Variable collection is somewhat important, and to accomplish this, I use a recur
       (reverse variables)))
 #+END_SRC
 
-* WORKING Term Collection                                          :noexport:
+** WORKING Term Collection                                        :noexport:
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 22:59>
 :ID:       c1856735-914b-4f73-8825-3e5a062113d2
@@ -631,7 +636,7 @@ As there are various forms of expressions, and to provide for simplification, th
                        (cons :trigonometrics trigonometrics)))))
 #+END_SRC
 
-* WORKING Polynomial Related Functions [0/6]
+** WORKING Polynomial Related Functions [0/6]
 :PROPERTIES:
 :CREATED:  <2016-05-01 Sun 12:29>
 :ID:       984d0f52-4c52-4bfa-a150-f3289d25bdf1
@@ -648,7 +653,7 @@ As there are various forms of expressions, and to provide for simplification, th
   <<is-combinable>>
 #+END_SRC
 
-** TODO Get Coefficient
+*** TODO Get Coefficient
 :PROPERTIES:
 :CREATED:  <2016-05-31 Tue 19:08>
 :ID:       cbc927fc-ae5e-46bf-a028-2872b5c31831
@@ -666,7 +671,7 @@ As there are various forms of expressions, and to provide for simplification, th
                            (numeric term))))
 #+END_SRC
 
-** TODO Get Term Variables
+*** TODO Get Term Variables
 :PROPERTIES:
 :CREATED:  <2016-05-31 Tue 19:08>
 :ID:       55729698-bd51-48af-ab42-197871c54dbb
@@ -686,7 +691,7 @@ As there are various forms of expressions, and to provide for simplification, th
                            (numeric nil))))
 #+END_SRC
 
-** TODO Get Power
+*** TODO Get Power
 :PROPERTIES:
 :CREATED:  <2016-05-31 Tue 19:08>
 :ID:       7d5a10da-bb30-496f-b285-470057a46db0
@@ -707,7 +712,7 @@ As there are various forms of expressions, and to provide for simplification, th
                          (* 0)))
 #+END_SRC
 
-** TODO Same Order
+*** TODO Same Order
 :PROPERTIES:
 :CREATED:  <2016-05-31 Tue 19:08>
 :ID:       c56a1496-f4c2-4693-9448-5043570a752f
@@ -721,7 +726,7 @@ As there are various forms of expressions, and to provide for simplification, th
        (get-power term-b)))
 #+END_SRC
 
-** TODO Same Variable
+*** TODO Same Variable
 :PROPERTIES:
 :CREATED:  <2016-05-31 Tue 19:08>
 :ID:       3806c97a-12fa-4488-b38c-d9ff3570c139
@@ -735,7 +740,7 @@ As there are various forms of expressions, and to provide for simplification, th
         (term-variable term-b)))
 #+END_SRC
 
-** TODO Is Combinable
+*** TODO Is Combinable
 :PROPERTIES:
 :CREATED:  <2016-05-31 Tue 19:08>
 :ID:       db0410aa-bb12-4933-9be7-1a50d70ae90f
@@ -749,7 +754,7 @@ As there are various forms of expressions, and to provide for simplification, th
        (same-variable-p term-a term-b)))
 #+END_SRC
 
-* WORKING Expression Manipulators [2/8]
+** WORKING Expression Manipulators [2/8]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 22:58>
 :ID:       4fe60cc1-be66-4d5e-8922-590554d99004
@@ -770,7 +775,7 @@ Foo
   <<trigonometric-manipulators>>
 #+END_SRC
 
-** DONE Manipulator Miscellaneous Functions
+*** DONE Manipulator Miscellaneous Functions
 CLOSED: [2016-05-08 Sun 10:34]
 :PROPERTIES:
 :CREATED:  <2016-05-03 Tue 15:38>
@@ -792,7 +797,7 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
         (reverse variables-list))))
 #+END_SRC
 
-** WORKING Define Expression Manipulator
+*** WORKING Define Expression Manipulator
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 22:57>
 :ID:       63909972-428d-47f3-9dc3-3e1fb213aa70
@@ -891,7 +896,7 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
        (DEFUN ,MANIPULATOR-NAME ,'(EXPRESSION-A EXPRESSION-B) ,@BODY)))))
 #+END_SRC
 
-** DONE External Manipulator
+*** DONE External Manipulator
 CLOSED: [2016-05-31 Tue 19:48]
 :PROPERTIES:
 :CREATED:  <2016-05-01 Sun 14:33>
@@ -909,7 +914,7 @@ The Expression Manipulators should not be touched outside of this package, as th
               expressions)))
 #+END_SRC
 
-** WORKING Addition
+*** WORKING Addition
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:08>
 :ID:       b794486c-e493-408f-b80c-a440edae1bc8
@@ -990,7 +995,7 @@ Foo
     (add expression-b expression-a))
 #+END_SRC
 
-** WORKING Subtraction
+*** WORKING Subtraction
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:08>
 :ID:       f675fd81-e995-41ee-9570-cc78261d9dc1
@@ -1026,7 +1031,7 @@ Foo
     (subtract expression-b expression-a))
 #+END_SRC
 
-** WORKING Multiplication
+*** WORKING Multiplication
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:08>
 :ID:       cddffdaa-10dd-425f-9697-3f0617162953
@@ -1059,7 +1064,7 @@ Foo
       `(* ,new-coefficient (expt ,variable ,power))))
 #+END_SRC
 
-** WORKING Division
+*** WORKING Division
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:09>
 :ID:       4c4f7034-555a-46b0-85b9-56a08cf48f9b
@@ -1084,7 +1089,7 @@ Foo
       `(* ,new-coefficient (expt ,variable ,power))))
 #+END_SRC
 
-** WORKING Trigonometric [0/6]
+*** WORKING Trigonometric [0/6]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:09>
 :ID:       ba4acf37-9074-429b-a2c8-a23094e1c86b
@@ -1103,7 +1108,7 @@ Foo
   <<cotangent-manipulators>>
 #+END_SRC
 
-*** WORKING Sine
+**** WORKING Sine
 :PROPERTIES:
 :CREATED:  <2016-05-08 Sun 16:22>
 :ID:       c733c6b3-a44a-488f-8b6e-38346830b257
@@ -1118,7 +1123,7 @@ Foo
     (sin expression-a))
 #+END_SRC
 
-*** WORKING Cosine
+**** WORKING Cosine
 :PROPERTIES:
 :CREATED:  <2016-05-08 Sun 16:22>
 :ID:       c2fbd362-6932-4483-8270-e3ad72a308fd
@@ -1133,7 +1138,7 @@ Foo
     (cosine expression-a))
 #+END_SRC
 
-*** WORKING Tangent
+**** WORKING Tangent
 :PROPERTIES:
 :CREATED:  <2016-05-08 Sun 16:22>
 :ID:       07222206-1c22-411e-a8ab-13e1a627e9ef
@@ -1148,7 +1153,7 @@ Foo
     (tan expression-a))
 #+END_SRC
 
-*** WORKING Cosecant
+**** WORKING Cosecant
 :PROPERTIES:
 :CREATED:  <2016-05-08 Sun 16:22>
 :ID:       e77c0317-7281-45ff-b86b-8d66fb8c38ef
@@ -1160,7 +1165,7 @@ Foo
   (define-operation cosecant 1 csc)
 #+END_SRC
 
-*** WORKING Secant
+**** WORKING Secant
 :PROPERTIES:
 :CREATED:  <2016-05-08 Sun 16:23>
 :ID:       6c377c7d-ec84-4fcf-be94-db89b832c2d8
@@ -1172,7 +1177,7 @@ Foo
   (define-operation secant 1 sec)
 #+END_SRC
 
-*** WORKING Cotangent
+**** WORKING Cotangent
 :PROPERTIES:
 :CREATED:  <2016-05-08 Sun 16:23>
 :ID:       70a9fb76-7ca7-4c7d-b25b-0fa94d390b6c
@@ -1184,7 +1189,7 @@ Foo
   (define-operation cotangent 1 cot)
 #+END_SRC
 
-* DONE Packaging
+** DONE Packaging
 CLOSED: [2016-05-05 Thu 21:21]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:07>
@@ -1220,4 +1225,900 @@ This assembles and packages the algebraic manipulation system into a single file
   <<polynomial-related-functions>>
 
   <<expression-manipulation>>
+#+END_SRC
+
+* DONE Derivation [5/5]
+:PROPERTIES:
+:CREATED:  <2016-06-09 Thu 09:21>
+:ID:       360bc5f4-39ac-4161-9326-00c3daaf368c
+:END:
+
+The calculation of derivatives has many uses.  However, the calculation of derivatives can often be tedious.  To make this faster, I've written the following program to make it faster.
+
+** DONE Expansions
+CLOSED: [2016-06-09 Thu 09:22]
+:PROPERTIES:
+:CREATED:  <2016-06-09 Thu 09:22>
+:END:
+
+This program works in terms of expansion functions, and application tests.  That is to say, there is a test to see if the expansion is valid for the given expression.
+
+*** Match Expressions
+:PROPERTIES:
+:ID:       39f69de5-6fcc-4ad4-984f-72fc0f77f11b
+:END:
+
+To be able to apply an expansion, you need to determine eligibility.  To do this, you need an expression that matches on two things, function name and arity.  To generate this, it takes an operation name and the arity.  Based on the arity type ($=$, $>$, $\leq$), it will construct a simple boolean statement in the format of $(function = operator) \land (argument-count == arity)$, where $==$ is one of the above arity types.
+
+#+Caption: Match Expressions
+#+Name: match-expressions
+#+BEGIN_SRC lisp
+  (defun generate-match-expression (on arity &optional (type '=))
+    (check-type on symbol)
+    (check-type type (member = > >=))
+    (check-type arity (integer 0))
+    (case type
+      (=
+       `(and (eq function ',on)
+           (= arg-count ,arity)))
+      (>
+       `(and (eq function ',on)
+           (> arg-count ,arity)))
+      (>=
+       `(and (eq function ',on)
+           (>= arg-count ,arity)))))
+#+END_SRC
+
+*** Definition
+:PROPERTIES:
+:ID:       d7430ac9-cc9a-4942-a8c7-4d21c1705ad4
+:END:
+
+To define an expansion requires just a bit of syntactic sugar in the form of the ~defexpansion~ macro.  This macro does 3 things, generate a test function, generate an expansion function and pushes the name of the expansion, the test function and the expansion function on to the rules list.
+
+To generate the test function, it uses the match-expression generator and wraps it into a function taking two arguments, a function and a list of arguments to the function.  The test is then made, acting as predicate function for whether or not the expansion is applicable.
+
+To generate the expansion function, a series of expressions is used as the body of the function, with the function destructured to form the arguments.
+
+#+Caption: Expansion Definition
+#+Name: expansion-definition
+#+BEGIN_SRC lisp
+  (defmacro defexpansion (name (on arity &optional (type '=)) (&rest arguments) &body expansion)
+    (let ((match-expression (generate-match-expression on arity type))
+          (test-name (symbolicate name '-test))
+          (expansion-name (symbolicate name '-expansion)))
+
+      `(progn
+         (defun ,test-name (function &rest arguments &aux (arg-count (length arguments)))
+           ,match-expression)
+         (defun ,expansion-name (,@arguments)
+           ,@expansion)
+         (setf (aget *rules* ',name)
+               (make-rule :name ',name
+                          :test-function #',test-name
+                          :expansion-function #',expansion-name))
+         ',name)))
+#+END_SRC
+
+*** Retrieval
+:PROPERTIES:
+:ID:       71d8545b-d5d1-4179-a0b1-3539c8e68105
+:END:
+
+To allow for the use of expansions, you must be able to retrieve the correct one from the expansions list.
+
+To do so, you need the second element of the list that is the ~(name test expansion)~ for the rule.  This is found by removing the expansions for which the test returns false for the given expression.
+
+#+Caption: Expansion Retrieval
+#+Name: expansion-retrieval
+#+BEGIN_SRC lisp
+  (defun get-expansion (expression)
+    (rule-expansion-function (rest (first
+                                    (remove-if-not #'(lambda (nte)
+                                                       (let ((test (rule-test-function (rest nte))))
+                                                         (apply test expression)))
+                                                   ,*rules*)))))
+#+END_SRC
+
+*** Storage
+:PROPERTIES:
+:ID:       0cf2d0ad-cdd1-4a5e-a849-615961c2e869
+:END:
+
+One of the more important parts of the program is a way to store expansions.  This is however, quite boring.  It's just a global variable (~*rules*~), containing a list of lists having the form of ~(name test-lambda expander-lambda)~.
+
+#+Caption: Expansion Storage
+#+Name: expansion-storage
+#+BEGIN_SRC lisp
+  (defstruct (rule (:type list))
+    name test-function expansion-function)
+
+  (defvar *rules* '())
+#+END_SRC
+
+** DONE Rules
+CLOSED: [2016-06-09 Thu 09:22]
+:PROPERTIES:
+:CREATED:  <2016-06-09 Thu 09:22>
+:END:
+
+There are many rules for derivation of equations.  These rules allow one to derive equations quickly and easily by matching equations up with relevant rules and applying those rules.
+
+*** Multiplication
+:PROPERTIES:
+:ID:       15f0ba68-9335-4d97-b3c7-418187895706
+:END:
+
+The derivatives of multiplication follows two rules, the Constant Multiple rule:
+
+\[ \frac{d}{dx} cf(x) = c \cdot f^\prime(x) ,\]
+
+which is a specialized version of the more generalized Product Rule:
+
+\[ \frac{d}{dx} f(x) \cdot g(x) = f(x) \cdot g^\prime(x) + g(x) \cdot f^\prime(x) .\]
+
+There are two forms of the Product Rule as implemented, both matching on the ~*~ function, but taking a different number of arguments.  The first takes 2 arguments, and is the main driver for derivation, following the two above rules.  The second takes 3 or more, and modifies the arguments slightly so as to make it a derivative of two different equations.
+
+#+Caption: Rules for Multiplication
+#+Name: multiplication
+#+BEGIN_SRC lisp
+  (defexpansion mult/2 (* 2) (first second)
+    (cond
+      ((numberp first)
+       `(* ,first ,(derive (if (listp second) second (list second)))))
+      ((numberp second)
+       `(* ,second ,(derive (if (listp first) first (list second)))))
+      (t
+       `(+ (* ,first ,(derive (if (listp second) second (list second))))
+           (* ,second ,(derive (if (listp first) first (list first))))))))
+
+  (defexpansion mult/3+ (* 3 >=) (first &rest rest)
+    (derive `(* ,first ,(cons '* rest))))
+#+END_SRC
+
+*** Division
+:PROPERTIES:
+:ID:       483285d3-f035-4b50-9f3f-4389d01b7504
+:END:
+
+Division follows the Quotient Rule, which is as follows:
+
+\[ \frac{d}{dx} \frac{f(x)}{g(x)} = \frac{f^\prime(x) \cdot g(x) - g^\prime(x) \cdot f(x)}{(g(x))^2} .\]
+
+The rule matches on the ~/~ function, and takes 2 arguments, a numerator and a denominator, its expansion is as above.
+
+#+Caption: Rules for Division
+#+Name: division
+#+BEGIN_SRC lisp
+  (defexpansion div/2 (/ 2) (numerator denominator)
+    `(/ (- (* ,numerator ,(derive (if (listp denominator) denominator (list denominator))))
+           (* ,denominator ,(derive (if (listp numerator) numerator (list numerator)))))
+        (expt ,denominator 2)))
+#+END_SRC
+
+*** Addition/Subtraction
+:PROPERTIES:
+:ID:       b4f6b80a-0904-491a-a0ca-850dcb6809c5
+:END:
+
+Addition and subtraction of functions in derivatives is simple, simply add or subtract the derivatives of the functions, as shown here:
+
+\[ \frac{d}{dx} f_1(x) + f_2(x) + \cdots + f_n(x) = f_1^\prime(x) + f_2^\prime(x) + \cdots + f_n^\prime(x) \]
+
+and here:
+
+\[ \frac{d}{dx} f_1(x) - f_2(x) - \cdots - f_n(x) = f_1^\prime(x) - f_2^\prime(x) - \cdots - f_n^\prime(x) .\]
+
+This is accomplished by matching on either ~+~ or ~-~, and taking 2 or more arguments, deriving all of the passed in equations and applying the respective operation.
+
+#+Caption: Rules for Addition and Subtraction
+#+Name: addition-subtraction
+#+BEGIN_SRC lisp
+  (defexpansion plus/2+ (+ 2 >=) (&rest clauses)
+    `(+ ,@(map 'list #'(lambda (clause)
+                         (if (listp clause)
+                             (derive clause)
+                             (derive (list clause))))
+               clauses)))
+
+  (defexpansion minus/2+ (- 2 >=) (&rest clauses)
+    `(- ,@(map 'list #'(lambda (clause)
+                         (if (listp clause)
+                             (derive clause)
+                             (derive (list clause))))
+               clauses)))
+#+END_SRC
+
+*** Exponentials and Logarithms
+:PROPERTIES:
+:ID:       eaed7558-82d0-4300-8e5f-eb48a06d4e64
+:END:
+
+The derivatives of exponential and logarithmic functions follow several rules.  For $e^x$ or $a^x$, the "Xerox" rule is used:
+
+\[ \frac{d}{dx} e^x = e^x ,\]
+
+and
+
+\[ \frac{d}{dx} a^x = a^x \cdot \ln x .\]
+
+Logarithmic functions follow the forms as shown:
+
+\[ \frac{d}{dx} \ln x = \frac{x^\prime}{x} ,\]
+
+and
+
+\[ \frac{d}{dx} \log_b x = \frac{x^\prime}{\ln b \cdot x} .\]
+
+However, equations of the form $x^n$ follow this form (The Power Rule):
+
+\[ \frac{d}{dx} x^n = x^\prime \cdot n \cdot x^{n-1} .\]
+
+The following rules match based on the appropriate Lisp functions and the number of arguments taken based on whether or not you are performing natural or unnatural operations.
+
+#+Caption: Rules for Exponentials and Logarithms
+#+Name: exponentials-logarithms
+#+BEGIN_SRC lisp
+  (defexpansion exp/1 (exp 1) (expression)
+    (if (listp expression)
+        `(* (exp ,expression) ,(derive expression))
+        (if (numberp expression)
+            0
+            `(exp ,expression))))
+
+  (defexpansion expt/2 (expt 2) (base exponent)
+    (if (numberp exponent)
+        (if (listp base)
+            `(* ,exponent (expt ,base ,(1- exponent)) ,(derive base))
+            `(* ,exponent (expt ,base ,(1- exponent))))
+        `(* (expt ,base ,exponent) (log ,base))))
+
+  (defexpansion log/1 (log 1) (expression)
+    `(/ ,(derive (if (listp expression) expression (list expression))) ,expression))
+
+  (defexpansion log/2 (log 2) (number base)
+    (declare (ignorable number base))
+    `(/ ,(derive (cons 'log number)) (* (log ,base) ,number)))
+#+END_SRC
+
+*** Trigonometric
+:PROPERTIES:
+:ID:       c0f40e80-8a19-4749-bc9b-b1e94ef6949a
+:END:
+
+The derivation of trigonometric functions is simply the application of the chain rule.  As such, each of the trig functions has a different derivative, as shown here:
+
+\[ \frac{d}{dx} \sin x = x^\prime \cdot \cos x ,\]
+
+\[ \frac{d}{dx} \cos x = x^\prime \cdot -\sin x ,\]
+
+\[ \frac{d}{dx} \tan x = x^\prime \cdot \sec^2 x ,\]
+
+\[ \frac{d}{dx} \csc x = x^\prime \cdot -\csc x \cdot \cot x ,\]
+
+\[ \frac{d}{dx} \sec x = x^\prime \cdot \sec x \cdot \tan x ,\]
+
+and
+
+\[ \frac{d}{dx} \cot x = x^\prime \cdot -\csc^2 x .\]
+
+These rules all match on their respective trig function and substitute as appropriate.
+
+#+Caption: Rules for Trigonometric Functions
+#+Name: trigonometrics
+#+BEGIN_SRC lisp
+  (defexpansion sin/1 (sin 1) (arg)
+    `(* (cos ,arg) ,(derive (if (listp arg) arg (list arg)))))
+
+  (defexpansion cos/1 (cos 1) (arg)
+    `(* (- (sin ,arg)) ,(derive (if (listp arg) arg (list arg)))))
+
+  (defexpansion tan/1 (tan 1) (arg)
+    `(* (expt (sec ,arg) 2) ,(derive (if (listp arg) arg (list arg)))))
+
+  (defexpansion csc/1 (csc 1) (arg)
+    `(* (- (csc ,arg)) (cot ,arg) ,(derive (if (listp arg) arg (list arg)))))
+
+  (defexpansion sec/1 (sec 1) (arg)
+    `(* (sec ,arg) (tan ,arg) ,(derive (if (listp arg) arg (list arg)))))
+
+  (defexpansion cot/1 (cot 1) (arg)
+    `(* (- (expt (csc ,arg) 2)) ,(derive (if (listp arg) arg (list arg)))))
+#+END_SRC
+
+** DONE Derivative Driver
+CLOSED: [2016-06-09 Thu 09:22]
+:PROPERTIES:
+:ID:       b03c5070-602a-412e-a6ce-3dda65630153
+:CREATED:  <2016-06-09 Thu 09:22>
+:END:
+
+This function is probably the most important user-facing function in the package.
+
+Derive takes a list, and based on the first element in the list, and the length of the list, it will do one of the following things:
+
+ - Number :: Return 0, the derivative of a number is 0, except in certain cases listed above.
+ - Symbol, and length is 1 :: This is a variable.  Return 1, $\frac{d}{dx}x=1$.
+ - Expansion Function Available :: There is an expansion rule, use this to derive the equation.
+ - No Expansion Rule :: Signal an error, equation was likely malformed.
+
+#+Caption: Derivative Driver
+#+Name: derivative-driver
+#+BEGIN_SRC lisp
+  (defun derive (function)
+    (check-type function cons)
+    (let ((op (first function)))
+      (cond
+        ((numberp op)
+         0)
+        ((and (symbolp op)
+            (= 1 (length function)))
+         1)
+        (t
+         (let ((expansion-function (get-expansion function)))
+           (if (functionp expansion-function)
+               (apply expansion-function (rest function))
+               (error "Undefined expansion: ~a" op)))))))
+#+END_SRC
+
+** DONE Miscellaneous Functions
+CLOSED: [2016-06-09 Thu 09:22]
+:PROPERTIES:
+:ID:       41439f82-466f-46a5-b706-df43e5f23650
+:CREATED:  <2016-06-09 Thu 09:22>
+:END:
+
+As Common Lisp does not have cosecant or secant functions, and they appear in the definitions of the derivatives of some trigonometric functions, I define them here as follows:
+
+\[ \csc x = \frac{1}{\sin x} \]
+
+\[ \sec x = \frac{1}{\cos x} \]
+
+I also take the liberty of defining two macros, a ~define-equation-functions~ macro and ~take-derivative~.  The first defines two functions, one that is the original equation, and the second being the derivative of the original equation.  The ~take-derivative~ macro does simply that, but allows you to write the equation without having to quote it, providing a little bit of syntactic sugar.
+
+#+Caption: Miscellaneous Functions
+#+Name: misc-functions
+#+BEGIN_SRC lisp
+  (defun csc (x)
+    "csc -- (csc x)
+  Calculate the cosecant of x"
+    (/ (sin x)))
+
+  (defun sec (x)
+    "sec -- (sec x)
+  Calculate the secant of x"
+    (/ (cos x)))
+
+  (defmacro define-equation-functions (name variable equation)
+    (let ((derivative-name (symbolicate 'd/d- variable '- name))
+          (derivative (derive equation)))
+      `(progn
+         (defun ,name (,variable)
+           ,equation)
+         (defun ,derivative-name (,variable)
+           ,derivative))))
+
+  (defmacro take-derivative (equation)
+    (let ((derivative (derive equation)))
+      `',derivative))
+#+END_SRC
+
+** DONE Packaging
+CLOSED: [2016-06-09 Thu 09:22]
+:PROPERTIES:
+:ID:       e15262d2-23d5-4306-a68b-387a21265b6e
+:CREATED:  <2016-06-09 Thu 09:22>
+:END:
+
+Now that the functions, macros and rules are defined, it's time to put them together into a package.  This package has only one dependency, Common Lisp itself, and exports the following five symbols: ~derive~, ~csc~, ~sec~, ~define-equation-functions~ and ~take-derivative~.
+
+#+Caption: Packaging
+#+Name: packaging
+#+BEGIN_SRC lisp :tangle "derive.lisp"
+  ;;;; derive.lisp
+  ;;;;
+  ;;;; Copyright (c) 2015 Samuel W. Flint <swflint@flintfam.org>
+
+  (defpackage #:derive
+    (:use #:cl
+          #:com.informatimago.common-lisp.cesarum.list)
+    (:import-from #:alexandria
+                  #:symbolicate)
+    (:export :derive
+             :csc
+             :sec
+             :define-equation-functions
+             :take-derivative))
+
+  (in-package #:derive)
+
+  ;;; "derive" goes here.
+
+  <<expansion-storage>>
+
+  <<expansion-retrieval>>
+
+  <<match-expressions>>
+
+  <<expansion-definition>>
+
+  <<derivative-driver>>
+
+  <<multiplication>>
+
+  <<division>>
+
+  <<addition-subtraction>>
+
+  <<exponentials-logarithms>>
+
+  <<trigonometrics>>
+
+  <<misc-functions>>
+
+  ;;; End derive
+#+END_SRC
+
+* WORKING Lisp Equation Conversion to LaTeX [0/5]
+:PROPERTIES:
+:CREATED:  <2016-06-09 Thu 09:23>
+:ID:       ed9f4311-bf9f-42df-8f46-254658b93c10
+:END:
+
+** WORKING Matching And Generating [0/4]
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 16:19>
+:END:
+
+*** TODO Match Test
+:PROPERTIES:
+:ID:       9d165cb9-95f2-4006-a8a1-73a0750b2000
+:CREATED:  <2016-04-30 Sat 16:19>
+:END:
+
+#+Caption: Generate Match Test
+#+Name: gen-match-test
+#+BEGIN_SRC lisp
+  (defun generate-match-expression (op arity &optional (type '=))
+    (declare (symbol op type)
+             (integer arity))
+    (ecase type
+      (=
+       `(and (eq function ',op)
+           (= arg-count ,arity)))
+      (>
+       `(and (eq function ',op)
+           (> arg-count ,arity)))
+      (>=
+       `(and (eq function ',op)
+           (>= arg-count ,arity)))))
+#+END_SRC
+
+*** TODO Define Rule
+:PROPERTIES:
+:ID:       d4f77ac3-a059-4fb6-b936-1b9e972646ee
+:CREATED:  <2016-04-30 Sat 16:19>
+:END:
+
+#+Caption: Define Matching Rule
+#+Name: def-match-rule
+#+BEGIN_SRC lisp
+  (defmacro defrule (name (on arity &optional type) (&rest arguments) &body rule)
+    (let ((match-expression (generate-match-expression on arity type))
+          (test-name (symbolicate name '-test))
+          (expansion-name (symbolicate name '-expansion)))
+      `(progn
+         (defun ,test-name (function &rest arguments &aux (arg-count (length arguments)))
+           ,match-expression)
+         (defun ,expansion-name (,@arguments)
+           ,@rule)
+         (setf (aget *rules* ',name)
+               (make-rule :name ',name
+                          :test-function #',test-name
+                          :expansion-function #',expansion-name))
+         ',name)))
+#+END_SRC
+
+*** TODO Store Rules
+:PROPERTIES:
+:ID:       002ea704-4286-429f-9149-0f29fb73c503
+:CREATED:  <2016-04-30 Sat 16:19>
+:END:
+
+#+Caption: Rule Storage
+#+Name: rule-storage
+#+BEGIN_SRC lisp
+  (defstruct (rule (:type list))
+    name test-function expansion-function)
+
+  (defvar *rules* '())
+#+END_SRC
+
+*** TODO Retrieve Rule
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 15:25>
+:ID:       e3f34100-d0a5-4039-8b9d-115cfcb0804e
+:END:
+
+#+Caption: Retrieve Rule
+#+Name: retrieve-rule
+#+BEGIN_SRC lisp
+  (defun get-expansion (expression)
+    (rule-expansion-function (rest
+                              (first
+                               (remove-if-not #'(lambda (nte)
+                                                  (let ((test (rule-test-function (rest nte))))
+                                                    (apply test expression)))
+                                              ,*rules*)))))
+#+END_SRC
+
+** WORKING Rules [0/10]
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 16:19>
+:END:
+
+*** TODO Multiplication
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 16:19>
+:ID:       5417a6bf-f265-418a-984b-6bfd14b79a80
+:END:
+
+#+Caption: Multiplication Rule
+#+Name: multiplication-rule
+#+BEGIN_SRC lisp
+  (defrule multiplication (* 2 >=) (&rest elements)
+    (format nil "{~{{~a}~^ \\cdot ~}}"
+            (map 'list #'convert-to-tex
+                 (map 'list #'ensure-list
+                      elements))))
+#+END_SRC
+
+*** TODO Division
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 16:19>
+:ID:       056aa99c-f2b9-4ab6-99ba-bfb87e3baed5
+:END:
+
+#+Caption: Division Rule
+#+Name: division-rule
+#+BEGIN_SRC lisp
+  (defrule division (/ 2 =) (a b)
+    (format nil "{\\frac{~a}{~a}}"
+            (convert-to-tex (ensure-list a))
+            (convert-to-tex (ensure-list b))))
+#+END_SRC
+
+*** TODO Addition
+:PROPERTIES:
+:ID:       68f3dac3-9f0a-4fee-8da6-a39f4491f3ce
+:CREATED:  <2016-04-30 Sat 16:19>
+:END:
+
+#+Caption: Rule for addition
+#+Name: addition-rule
+#+BEGIN_SRC lisp
+  (defrule addition (+ 2 >=) (&rest elements)
+           (format nil "{~{{~a}~^ + ~}}"
+                   (map 'list #'convert-to-tex
+                        (map 'list #'ensure-list
+                             elements))))
+#+END_SRC
+
+*** TODO Subtraction
+:PROPERTIES:
+:ID:       9a908130-af5e-4c87-bb07-13bd66c35fcf
+:CREATED:  <2016-04-30 Sat 16:19>
+:END:
+
+#+Caption: Subtraction Rule
+#+Name: subtraction-rule
+#+BEGIN_SRC lisp
+  (defrule subtraction (- 2 >=) (&rest elements)
+    (format nil "{~{{~a}~^ - ~}}"
+            (map 'list #'convert-to-tex
+                 (map 'list #'ensure-list
+                      elements))))
+#+END_SRC
+
+*** TODO Exponentials and Logarithmics
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 16:19>
+:ID:       269dc47f-5062-4081-a08e-d50188af6a57
+:END:
+
+#+Caption: Exponentials and Logarithms
+#+Name: exponentials-and-logarithms
+#+BEGIN_SRC lisp
+  (defrule exp (exp 1 =) (expression)
+    (format nil "{e^{~a}}"
+            (convert-to-tex (ensure-list expression))))
+
+  (defrule expt (expt 2 =) (base exponent)
+    (format nil "{~a ^ {~a}}"
+            (convert-to-tex (ensure-list base))
+            (convert-to-tex (ensure-list exponent))))
+
+  (defrule natlog (log 1 =) (expression)
+    (format nil "{\\ln {~a}}"
+            (convert-to-tex (ensure-list expression))))
+
+  (defrule logarithm (log 2 =) (expression base)
+    (format nil "{\\log_{~a}~a}"
+            (convert-to-tex (ensure-list base))
+            (convert-to-tex (ensure-list expression))))
+#+END_SRC
+
+*** TODO Trigonometrics
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 16:19>
+:ID:       837806c9-7174-43a3-80b2-355b645d46ed
+:END:
+
+#+Caption: Trigonometric Functions
+#+Name: trigonometrics
+#+BEGIN_SRC lisp
+  (defrule sin (sin 1 =) (arg)
+    (format nil "{\\sin {~a}}"
+            (convert-to-tex (ensure-list arg))))
+
+  (defrule cos (cos 1 =) (arg)
+    (format nil "{\\cos {~a}}"
+            (convert-to-tex (ensure-list arg))))
+
+  (defrule tan (tan 1 =) (arg)
+    (format nil "{\\tan {~a}}"
+            (convert-to-tex (ensure-list arg))))
+
+  (defrule csc (csc 1 =) (arg)
+    (format nil "{\\csc {~a}}"
+            (convert-to-tex (ensure-list arg))))
+
+  (defrule sec (sec 1 =) (arg)
+    (format nil "{\\sec {~a}}"
+            (convert-to-tex (ensure-list arg))))
+
+  (defrule cot (cot 1 =) (arg)
+    (format nil "{\\cot {~a}}"
+            (convert-to-tex (ensure-list arg))))
+#+END_SRC
+
+*** TODO Logic
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 18:29>
+:ID:       74d12931-343f-4982-945d-738a3e38a1db
+:END:
+
+#+Caption: Logic Rules
+#+Name: logic-rules
+#+BEGIN_SRC lisp
+  (defrule and (and 2 >=) (&rest elements)
+    (format nil "{~{{~a}~^ \\wedge ~}}"
+            (map 'list #'convert-to-tex
+                 (map 'list #'ensure-list elements))))
+
+  (defrule or (or 2 >=) (&rest elements)
+    (format nil "{~{{~a}~^ \\vee ~}}"
+            (map 'list #'convert-to-tex
+                 (map 'list #'ensure-list elements))))
+
+  (defrule not (not 1 =) (&rest elements)
+    (format nil "{\\not {~a}}"
+            (map 'list #'convert-to-tex
+                 (map 'list #'ensure-list elements))))
+#+END_SRC
+
+*** TODO Equality
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 18:29>
+:ID:       f75273d2-d523-4404-925b-af6fd01c7520
+:END:
+
+#+Caption: Equality Rules
+#+Name: equality-rules
+#+BEGIN_SRC lisp
+  (defrule = (= 2 =) (lhs rhs)
+    (format nil "{{~a} = {~a}}"
+            (convert-to-tex (ensure-list lhs))
+            (convert-to-tex (ensure-list rhs))))
+#+END_SRC
+
+*** TODO Summation and Integration
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 18:30>
+:ID:       dda2827a-cee5-4efc-bd9a-4dd953829b5c
+:END:
+
+#+Caption: Summation and Integration
+#+Name: summation-and-integration
+#+BEGIN_SRC lisp
+  (defrule sum (sum 3 =) (start stop expression)
+    (format nil "{\\sum_{~a}^{~a} {~a}}"
+            (convert-to-tex (ensure-list start))
+            (convert-to-tex (ensure-list stop))
+            (convert-to-tex (ensure-list expression))))
+
+  (defrule integrate (integrate 4 =) (from to expression wrt)
+    (format nil "{\\int_{~a}^{~a} ~a\\,\mathrm{d}~a}"
+            (convert-to-tex (ensure-list from))
+            (convert-to-tex (ensure-list to))
+            (convert-to-tex (ensure-list expression))
+            (convert-to-tex (ensure-list wrt))))
+#+END_SRC
+
+*** TODO Specialty
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 18:30>
+:ID:       f4e6b309-289d-4b32-bc55-4740ec86a113
+:END:
+
+#+Caption: Specialty
+#+Name: specialty
+#+BEGIN_SRC lisp
+  (defrule parens (parens 2 =) (type inside)
+    (let* ((types '((square . ("[" . "]"))
+                    (curly . ("{" . "}"))
+                    (smooth . ("(" . ")"))))
+           (left (cadr (assoc type types)))
+           (right (cddr (assoc type types))))
+      (format nil "{\\left~a {~a} \\right~a}"
+              left
+              (convert-to-tex (ensure-list inside))
+              right)))
+#+END_SRC
+
+** TODO Conversion Driver
+:PROPERTIES:
+:ID:       b395bdb7-7b98-49a1-b6d6-4256fb40d4fa
+:CREATED:  <2016-04-30 Sat 16:19>
+:END:
+
+#+Caption: Conversion Driver
+#+Name: conversion-driver
+#+BEGIN_SRC lisp
+  (defvar *tex-outputp* nil)
+  (declaim (special *tex-outputp*))
+
+  (defmacro with-tex-output (&body body)
+    `(if *tex-outputp*
+         (progn
+           ,@body)
+         (let ((*tex-outputp* t))
+           (format nil "$~a$"
+                   (progn
+                     ,@body)))))
+
+  (defun convert-to-tex (function)
+    (check-type function cons)
+    (let ((op (first function)))
+      (with-tex-output
+        (cond
+          ((numberp op)
+           (format nil "~a" op))
+          ((and (symbolp op)
+              (= 1 (length function)))
+           (let ((symbol-pair (assoc op *special-symbols-to-sequences*)))
+             (if (null symbol-pair)
+                 (string-downcase op)
+                 (cdr symbol-pair))))
+          (t
+           (let ((expansion-function (get-expansion function)))
+             (if (functionp expansion-function)
+                 (apply expansion-function (rest function))
+                 (error "Undefined expansion for operation: ~a." op))))))))
+#+END_SRC
+
+** TODO Miscellaneous Functions
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 16:09>
+:ID:       a4ab8a72-0b09-453c-b936-2470d5429c05
+:END:
+
+#+Caption: Misc Functions
+#+Name: misc-functions
+#+BEGIN_SRC lisp
+  (defun ensure-list (list)
+    (if (listp list)
+        list
+        (list list)))
+
+  (defvar *special-symbols-to-sequences*
+    '((alpha . "\\alpha")
+      (beta . "\\beta")
+      (gamma . "\\gamma")
+      (delta . "\\delta")
+      (epsilon . "\\epsilon")
+      (varepsilon . "\\varepsilon")
+      (zeta . "\\zeta")
+      (eta . "\\eta")
+      (theta . "\\theta")
+      (vartheta . "\\vartheta")
+      (gamma . "\\gamma") (kappa . "\\kappa")
+      (lambda . "\\lambda")
+      (mu . "\\mu")
+      (nu . "\\nu")
+      (xi . "\\xi")
+      (omicron . "\\o")
+      (pi . "\\pi")
+      (varpi . "\\varpi")
+      (rho . "\\rho")
+      (varrho . "\\varrho")
+      (sigma . "\\sigma")
+      (varsigm . "\\varsigm")
+      (tau . "\\tau")
+      (upsilon . "\\upsilon")
+      (phi . "\\phi")
+      (varphi . "\\varphi")
+      (chi . "\\chi")
+      (psi . "\\psi")
+      (omega . "\\omega")
+      (big-gamma . "\\Gamma")
+      (big-delta . "\\Delta")
+      (big-theta . "\\Theta")
+      (big-lambda . "\\Lambda")
+      (big-xi . "\\Xi")
+      (big-pi . "\\Pi")
+      (big-sigma . "\\Sigma")
+      (big-upsilon . "\\Upsilon")
+      (big-phi . "\\Phi")
+      (big-psi . "\\Psi")
+      (big-omega . "\\Omega")))
+#+END_SRC
+
+** TODO Putting it Together
+:PROPERTIES:
+:ID:       fdef3016-cb12-43ad-ba5f-14dd6ccd973c
+:CREATED:  <2016-04-30 Sat 16:25>
+:END:
+
+#+Caption: Packaging
+#+Name: packaging
+#+BEGIN_SRC lisp :tangle "to-tex.lisp"
+  ;;;; to-tex.lisp
+  ;;;;
+  ;;;; Copyright (c) 2015 Samuel W. Flint <swflint@flintfam.org>
+
+  (defpackage #:to-tex
+    (:use #:cl
+          #:com.informatimago.common-lisp.cesarum.list)
+    (:import-from #:alexandria
+                  #:symbolicate)
+    (:export #:convert-to-tex))
+
+  (in-package #:to-tex)
+
+    ;;; "to-tex" goes here.
+
+  <<misc-functions>>
+
+  <<rule-storage>>
+
+  <<gen-match-test>>
+
+  <<def-match-rule>>
+
+  <<retrieve-rule>>
+
+  <<conversion-driver>>
+
+  <<addition-rule>>
+
+  <<subtraction-rule>>
+
+  <<multiplication-rule>>
+
+  <<division-rule>>
+
+  <<exponentials-and-logarithms>>
+
+  <<trigonometrics>>
+
+  <<logic-rules>>
+
+  <<equality-rules>>
+
+  <<summation-and-integration>>
+
+  <<specialty>>
+
+  ;;; End to-tex
 #+END_SRC
