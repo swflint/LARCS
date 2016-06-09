@@ -50,6 +50,20 @@ This is my Computer Algebra System, and it contains the following components:
  - [[id:360bc5f4-39ac-4161-9326-00c3daaf368c][Derivation]]
  - [[id:ed9f4311-bf9f-42df-8f46-254658b93c10][Lisp Equation Conversion to LaTeX]]
 
+* DONE What's in a name?                                              :nonum:
+CLOSED: [2016-06-09 Thu 12:48]
+:PROPERTIES:
+:CREATED:  <2016-06-09 Thu 12:37>
+:END:
+
+The CAS contained in this is called LARCS, or the Lisp Automated Rewrite and Calculation System.  This describes the system as follows:
+
+ - Lisp :: The CAS is written in Lisp.  This is not novel, as other CAS have been written in Lisp before (Macsyma/Maxima), but it is unusual in that most new ones have been written in other languages.
+ - Automated :: The CAS will perform rewrites and calculations automatically.
+ - Rewrite :: The system is built on the concept of a rewrite system.  This workse because to perform many actions in the algebra, you rewrite an equation in one way or another.
+ - Calculation :: The ability to go from a symbolic equation, something like $3x^3 + x^2 + 10x - 3$ (~(+ (* 3 (expt x 3)) (expt x 2) (* 10 x) -3)~), to the result where $x \gets 4$ (245).
+ - System :: A complete library and application for symbolic algebra.
+
 * TOC                                                                :ignore:
 :PROPERTIES:
 :CREATED:  <2016-06-09 Thu 09:19>
