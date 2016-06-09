@@ -42,6 +42,14 @@
 :CREATED:  <2016-06-09 Thu 09:19>
 :END:
 
+It's a bold move to do what this does, building a Computer Algebra System from scratch, but I'm doing it anyway.  I've chosen to do this because I wanted to understand how most CASs work, and that can be accomplished by either reading thhe source code for one, or by building one.  While there are several very good CASs, the majority of them are non-free, and thus I'm not able to learn how exactly they work.  Those that are free software are either not complete, or are too complex to be able to learn from easily.
+
+This is my Computer Algebra System, and it contains the following components:
+
+ - [[id:b2c1fd45-b631-48f9-a093-66e1a0faa77f][Algebraic Manipulation]]
+ - [[id:360bc5f4-39ac-4161-9326-00c3daaf368c][Derivation]]
+ - [[id:ed9f4311-bf9f-42df-8f46-254658b93c10][Lisp Equation Conversion to LaTeX]]
+
 * TOC                                                                :ignore:
 :PROPERTIES:
 :CREATED:  <2016-06-09 Thu 09:19>
