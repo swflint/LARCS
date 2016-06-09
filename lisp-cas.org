@@ -97,15 +97,15 @@ To accomplish the goal of providing a complete system to manipulate algebraic ex
 This includes a form of storage, the classification definition macro, a way to check a classification, an expression classifier, and all possible classifications.
 
 #+Caption: Determine Expression Type
-#+Name: determine-expression-type
+#+Name: am-determine-expression-type
 #+BEGIN_SRC lisp
-  <<classification-storage>>
-  <<define-classification>>
-  <<check-classification>>
-  <<classify-expression>>
-  <<classification-case>>
-  <<when-classified>>
-  <<possible-classifications>>
+  <<am-classification-storage>>
+  <<am-define-classification>>
+  <<am-check-classification>>
+  <<am-classify-expression>>
+  <<am-classification-case>>
+  <<am-when-classified>>
+  <<am-possible-classifications>>
 #+END_SRC
 
 *** DONE Define Classification
@@ -123,7 +123,7 @@ This is the classification definition macro, ~define-classification~.  It takes 
 Aside from defining the classification, it also pushes the classification name and the classifier onto the stack, which can be used for direct classification checking or to completely classify an expression.
 
 #+Caption: Define Classification
-#+Name: define-classification
+#+Name: am-define-classification
 #+BEGIN_SRC lisp
   (defmacro define-classification (name &body body)
     (check-type name symbol)
@@ -146,7 +146,7 @@ CLOSED: [2016-05-04 Wed 19:37]
 To check a classification, the classifier is obtained, unless the specified classifier is ~*~, in which case, ~t~ is always returned.  If the classification is not, the classifier function is called on the expression, the result of which is returned.
 
 #+Caption: Check Classification
-#+Name: check-classification
+#+Name: am-check-classification
 #+BEGIN_SRC lisp
   (defun classified-as-p (expression classification)
     (if (eq '* classification)
@@ -165,7 +165,7 @@ CLOSED: [2016-05-04 Wed 19:44]
 To completely classify an expression, the ~*classifications*~ alist is mapped over, checking to see if each classification is applicable to the expression, if so, the name being returned, otherwise ~nil~.  All nils are removed, leaving the complete classification, which is returned for use.
 
 #+Caption: Classify Expression
-#+Name: classify-expression
+#+Name: am-classify-expression
 #+BEGIN_SRC lisp
   (defun classify (expression)
     (let ((classifications '()))
@@ -188,7 +188,7 @@ CLOSED: [2016-05-30 Mon 18:17]
 Following the case pattern, and to allow for cleaner code, I've defined the classification case macro.  It does this by taking a variable name and a list of cases.  These are then mapped over, producing clauses suitable for a ~cond~ expression, to which this macro finally expands, binding the complete classification of the given expression to ~the-classification~.
 
 #+Caption: Classification Case
-#+Name: classification-case
+#+Name: am-classification-case
 #+BEGIN_SRC lisp
   (defmacro classification-case (var &rest cases)
     (declare (slime-indent (as case)))
@@ -214,7 +214,7 @@ CLOSED: [2016-05-30 Mon 19:18]
 The ~when-classified-as~ macro takes a classification, variable and a body.  It expands to a ~when~ form, with the classification and variable put into a ~classified-as-p~ call becoming the predicate, determining whether or not the body is run.
 
 #+Caption: When Classified
-#+Name: when-classified
+#+Name: am-when-classified
 #+BEGIN_SRC lisp
   (defmacro when-classified-as (classification variable &body body)
     `(when (classified-as-p ,variable ',classification)
@@ -244,21 +244,21 @@ I must define several different classifications, ranging from simple numeric exp
  - Trigonometrics
 
 #+Caption: Possible Classifications
-#+Name: possible-classifications
+#+Name: am-possible-classifications
 #+BEGIN_SRC lisp
-  <<classify-numbers>>
-  <<classify-variables>>
-  <<classify-non-atomics>>
-  <<classify-additives>>
-  <<classify-subtractives>>
-  <<classify-powers>>
-  <<classify-exponentials>>
-  <<classify-multiplicatives>>
-  <<classify-logarithmics>>
-  <<classify-rationals>>
-  <<classify-polynomial-term>>
-  <<classify-polynomials>>
-  <<classify-trigonometrics>>
+  <<am-classify-numbers>>
+  <<am-classify-variables>>
+  <<am-classify-non-atomics>>
+  <<am-classify-additives>>
+  <<am-classify-subtractives>>
+  <<am-classify-powers>>
+  <<am-classify-exponentials>>
+  <<am-classify-multiplicatives>>
+  <<am-classify-logarithmics>>
+  <<am-classify-rationals>>
+  <<am-classify-polynomial-term>>
+  <<am-classify-polynomials>>
+  <<am-classify-trigonometrics>>
 #+END_SRC
 
 **** DONE Numbers
@@ -271,7 +271,7 @@ CLOSED: [2016-05-04 Wed 19:56]
 Check to see if a given expression is a number using ~numberp~.
 
 #+Caption: Classify Numbers
-#+Name: classify-numbers
+#+Name: am-classify-numbers
 #+BEGIN_SRC lisp
   (define-classification numeric
     (numberp expression))
@@ -287,7 +287,7 @@ CLOSED: [2016-05-04 Wed 19:57]
 Check to see if a given expression is a variable, that is to say a symbol, using ~symbolp~.
 
 #+Caption: Classify Variables
-#+Name: classify-variables
+#+Name: am-classify-variables
 #+BEGIN_SRC lisp
   (define-classification variable
     (symbolp expression))
@@ -303,7 +303,7 @@ CLOSED: [2016-05-04 Wed 19:59]
 Check to see if a given expression is a non-atomic (any expression other than a number or a variable) using ~listp~.
 
 #+Caption: Classify Non-Atomics
-#+Name: classify-non-atomics
+#+Name: am-classify-non-atomics
 #+BEGIN_SRC lisp
   (define-classification non-atomic
     (listp expression))
@@ -319,7 +319,7 @@ CLOSED: [2016-05-04 Wed 20:01]
 Check to see whether or not an expression is an additive by ensuring that it is non-atomic and the first element is the symbol ~+~.
 
 #+Caption: Classify Additives
-#+Name: classify-additives
+#+Name: am-classify-additives
 #+BEGIN_SRC lisp
   (define-classification additive
     (when-classified-as non-atomic expression
@@ -336,7 +336,7 @@ CLOSED: [2016-05-04 Wed 20:02]
 Check to see whether a given expression is a subtractive by ensuring it is non-atomic and the first element is the symbol ~-~.
 
 #+Caption: Classify Subtractives
-#+Name: classify-subtractives
+#+Name: am-classify-subtractives
 #+BEGIN_SRC lisp
   (define-classification subtractive
     (when-classified-as non-atomic expression
@@ -353,7 +353,7 @@ CLOSED: [2016-05-04 Wed 20:07]
 This is used to classify "powers", that is to say, equations of the form $x^n$, where $n$ is any numeric.  It does so by first ensuring that the expression is non-atomic, following that, it checks to see if the first element in the expression is the symbol ~expt~, the second is a variable and the third a numeric.
 
 #+Caption: Classify Powers
-#+Name: classify-powers
+#+Name: am-classify-powers
 #+BEGIN_SRC lisp
   (define-classification power
     (when-classified-as non-atomic expression
@@ -372,7 +372,7 @@ CLOSED: [2016-05-30 Mon 18:24]
 This classifies both natural and non-natural exponentials.  It does so by ensuring that natural exponentials ($e^x$) are of the form ~(exp x)~, and non-natural exponentials ($a^x$) are of the form ~(expt base power)~.
 
 #+Caption: Classify Exponentials
-#+Name: classify-exponentials
+#+Name: am-classify-exponentials
 #+BEGIN_SRC lisp
   (define-classification natural-exponential
     (when-classified-as non-atomic expression
@@ -395,7 +395,7 @@ CLOSED: [2016-05-30 Mon 18:55]
 To classify multiplicative expressions, it is first ensured that they are non-atomic, and then, the first element is tested to see if it is equal to the symbol ~*~.
 
 #+Caption: Classify Multiplicatives
-#+Name: classify-multiplicatives
+#+Name: am-classify-multiplicatives
 #+BEGIN_SRC lisp
   (define-classification multiplicative
     (when-classified-as non-atomic expression
@@ -412,7 +412,7 @@ CLOSED: [2016-05-30 Mon 18:30]
 This defines the classifications for logarithmic expressions, for both natural and non-natural bases.  For natural bases ($\ln x$), it ensures that expressions are of the form ~(log x)~, and for non-natural bases ($\log_{b}x$) are of the form ~(log expression base-expression)~.
 
 #+Caption: Classify Lograthmics
-#+Name: classify-logarithmics
+#+Name: am-classify-logarithmics
 #+BEGIN_SRC lisp
   (define-classification natural-logarithmic
     (when-classified-as non-atomic expression
@@ -435,7 +435,7 @@ CLOSED: [2016-05-30 Mon 18:58]
 Rationals are classified similarly to multiplicatives, checking to see whether or not they are non-atomic and checking whether or not the first element is ~/~, but rationals are also defined as only having three elements, the operation and two following operands, and thus, the length is also checked.
 
 #+Caption: Classify Rationals
-#+Name: classify-rationals
+#+Name: am-classify-rationals
 #+BEGIN_SRC lisp
   (define-classification rational
     (when-classified-as non-atomic expression
@@ -457,7 +457,7 @@ To classify a polynomial term, The expression is checked to see if it satisfies 
  - Multiplicative that composed of a numeric and a power or variable.
 
 #+Caption: Classify Polynomial Term
-#+Name: classify-polynomial-term
+#+Name: am-classify-polynomial-term
 #+BEGIN_SRC lisp
   (define-classification polynomial-term
     (or (classified-as-p expression 'numeric)
@@ -483,7 +483,7 @@ CLOSED: [2016-05-08 Sun 16:46]
 This determines whether or not a given expression is a polynomial, that is to say it is either ~additive~ or ~subtractive~, and each and every term is classified as ~polynomial-term~, that is to say, a ~numeric~, ~power~, or a ~multiplicative~ consisting of a ~numeric~ followed by a ~power~.
 
 #+Caption: Classify Polynomials
-#+Name: classify-polynomials
+#+Name: am-classify-polynomials
 #+BEGIN_SRC lisp
   (define-classification polynomial
     (when-classified-as non-atomic expression
@@ -513,7 +513,7 @@ Trigonometrics are classified as many others are, they are first checked to see 
  - ~cot~
 
 #+Caption: Classify Trigonometrics
-#+Name: classify-trigonometrics
+#+Name: am-classify-trigonometrics
 #+BEGIN_SRC lisp
   (define-classification trigonometric
     (when-classified-as non-atomic expression
@@ -554,7 +554,7 @@ CLOSED: [2016-05-04 Wed 19:49]
 The storage of classifications is simple, they are stored as an alist in the form of ~(name . classifier)~, in the list ~*classifications*~.
 
 #+Caption: Classification Storage
-#+Name: classification-storage
+#+Name: am-classification-storage
 #+BEGIN_SRC lisp
   (defvar *classifications* '())
 #+END_SRC
@@ -594,7 +594,7 @@ Variable collection is somewhat important, and to accomplish this, I use a recur
 [[file:imgs/variable-collection.png]]
 
 #+Caption: Collect Variables
-#+Name: collect-variables
+#+Name: am-collect-variables
 #+BEGIN_SRC lisp
   (defun collect-variables (expression)
     (let ((variables '()))
@@ -618,7 +618,7 @@ Variable collection is somewhat important, and to accomplish this, I use a recur
 As there are various forms of expressions, and to provide for simplification, there must be a way to collect terms and return them in a way that allows a programmer to select all sub-expressions of a type within a large expression.
 
 #+Caption: Collect Terms
-#+Name: collect-terms
+#+Name: am-collect-terms
 #+BEGIN_SRC lisp
   (defun collect-terms (expression &aux (terms (rest expression)))
     (let ((numerics '())
@@ -671,14 +671,14 @@ As there are various forms of expressions, and to provide for simplification, th
 :END:
 
 #+Caption: Polynomial Related Functions
-#+Name: polynomial-related-functions
+#+Name: am-polynomial-related-functions
 #+BEGIN_SRC lisp
-  <<get-coefficient>>
-  <<get-term-variable>>
-  <<get-power>>
-  <<same-order>>
-  <<same-variable>>
-  <<is-combinable>>
+  <<am-get-coefficient>>
+  <<am-get-term-variable>>
+  <<am-get-power>>
+  <<am-same-order>>
+  <<am-same-variable>>
+  <<am-is-combinable>>
 #+END_SRC
 
 *** TODO Get Coefficient
@@ -688,7 +688,7 @@ As there are various forms of expressions, and to provide for simplification, th
 :END:
 
 #+Caption: Get Coefficient
-#+Name: get-coefficient
+#+Name: am-get-coefficient
 #+BEGIN_SRC lisp
   (defun coefficient (term)
     (when (classified-as-p term 'polynomial-term)
@@ -706,7 +706,7 @@ As there are various forms of expressions, and to provide for simplification, th
 :END:
 
 #+Caption: Get Term Variable
-#+Name: get-term-variable
+#+Name: am-get-term-variable
 #+BEGIN_SRC lisp
   (defun term-variable (term)
     (when (classified-as-p term 'polynomial-term)
@@ -726,7 +726,7 @@ As there are various forms of expressions, and to provide for simplification, th
 :END:
 
 #+Caption: Get Power
-#+Name: get-power
+#+Name: am-get-power
 #+BEGIN_SRC lisp
   (defun get-power (term)
     (classification-case term
@@ -747,7 +747,7 @@ As there are various forms of expressions, and to provide for simplification, th
 :END:
 
 #+Caption: Same Order
-#+Name: same-order
+#+Name: am-same-order
 #+BEGIN_SRC lisp
   (defun same-order-p (term-a term-b)
     (= (get-power term-a)
@@ -761,7 +761,7 @@ As there are various forms of expressions, and to provide for simplification, th
 :END:
 
 #+Caption: Same Variable
-#+Name: same-variable
+#+Name: am-same-variable
 #+BEGIN_SRC lisp
   (defun same-variable-p (term-a term-b)
     (eq (term-variable term-a)
@@ -775,7 +775,7 @@ As there are various forms of expressions, and to provide for simplification, th
 :END:
 
 #+Caption: Is Combinable
-#+Name: is-combinable
+#+Name: am-is-combinable
 #+BEGIN_SRC lisp
   (defun single-term-combinable-p (term-a term-b)
     (and (same-order-p term-a term-b)
@@ -791,16 +791,16 @@ As there are various forms of expressions, and to provide for simplification, th
 Foo
 
 #+Caption: Expression Manipulation
-#+Name: expression-manipulation
+#+Name: am-expression-manipulation
 #+BEGIN_SRC lisp
-  <<misc-manipulator-functions>>
-  <<define-expression-manipulator>>
-  <<external-manipulator>>
-  <<addition-manipulator>>
-  <<subtraction-manipulator>>
-  <<multiplication-manipulators>>
-  <<division-manipulators>>
-  <<trigonometric-manipulators>>
+  <<am-misc-manipulator-functions>>
+  <<am-define-expression-manipulator>>
+  <<am-external-manipulator>>
+  <<am-addition-manipulator>>
+  <<am-subtraction-manipulator>>
+  <<am-multiplication-manipulators>>
+  <<am-division-manipulators>>
+  <<am-trigonometric-manipulators>>
 #+END_SRC
 
 *** DONE Manipulator Miscellaneous Functions
@@ -813,7 +813,7 @@ CLOSED: [2016-05-08 Sun 10:34]
 This defines the ~*manipulator-map*~, where the manipulators for various functions are stored, and defines a function to generate an arguments list given a count of arguments.
 
 #+Caption: Misc Manipulator Functions
-#+Name: misc-manipulator-functions
+#+Name: am-misc-manipulator-functions
 #+BEGIN_SRC lisp
   (defvar *manipulator-map* '())
 
@@ -832,7 +832,7 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
 :END:
 
 #+Caption: Define Expression Manipulator
-#+Name: define-expression-manipulator
+#+Name: am-define-expression-manipulator
 #+BEGIN_SRC lisp
   (defmacro define-operation (name arity short)
     (declare (slime-indent (as defun)))
@@ -879,18 +879,18 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
 
 
 #+Caption: Expression Manipulation Example
-#+Name: ex-manip-example
+#+Name: am-ex-manip-example
 #+BEGIN_SRC lisp :results output raw :exports results :cache yes
   (load "manipulation")
   (in-package #:manipulator)
 
-  (format t "#+Caption: Expression Manipulator Expansion~%#+Name: ex-manip-expansion~%#+BEGIN_SRC lisp :exports code~%~a~%#+END_SRC"
+  (format t "#+Caption: Expression Manipulator Expansion~%#+Name: am-ex-manip-expansion~%#+BEGIN_SRC lisp :exports code~%~a~%#+END_SRC"
           (macroexpand-1 '(define-operation frobnicate 2 frob)))
 #+END_SRC
 
 #+RESULTS[8b2d6e575e0d168f96d4bba85d6dd90a56c5c5a6]: ex-manip-example
 #+Caption: Expression Manipulator Expansion
-#+Name: ex-manip-expansion
+#+Name: am-ex-manip-expansion
 #+BEGIN_SRC lisp :exports code
 (PROGN
  (PUSH '(FROB . FROBNICATE) *MANIPULATOR-MAP*)
@@ -934,7 +934,7 @@ CLOSED: [2016-05-31 Tue 19:48]
 The Expression Manipulators should not be touched outside of this package, as they are not designed to be used outside of it.  Instead, they should be used through this simple function.  It takes an action and a list of expressions.  The function used to perform the action correctly is determined, and used to reduce the expressions.
 
 #+Caption: External Manipulator
-#+Name: external-manipulator
+#+Name: am-external-manipulator
 #+BEGIN_SRC lisp
   (defun manipulate (action &rest expressions)
     (let ((the-manipulator (cdr (assoc action *manipulator-map*))))
@@ -951,7 +951,7 @@ The Expression Manipulators should not be touched outside of this package, as th
 Foo
 
 #+Caption: Addition Manipulator
-#+Name: addition-manipulator
+#+Name: am-addition-manipulator
 #+BEGIN_SRC lisp
   (define-operation add 2 +)
 
@@ -1032,7 +1032,7 @@ Foo
 Foo
 
 #+Caption: Subtraction Manipulator
-#+Name: subtraction-manipulator
+#+Name: am-subtraction-manipulator
 #+BEGIN_SRC lisp
   (define-operation subtract 2 -)
 
@@ -1068,7 +1068,7 @@ Foo
 Foo
 
 #+Caption: Multiplication Manipulators
-#+Name: multiplication-manipulators
+#+Name: am-multiplication-manipulators
 #+BEGIN_SRC lisp
   (define-operation multiply 2 *)
 
@@ -1101,7 +1101,7 @@ Foo
 Foo
 
 #+Caption: Division Manipulators
-#+Name: division-manipulators
+#+Name: am-division-manipulators
 #+BEGIN_SRC lisp
   (define-operation division 2 /)
 
@@ -1126,14 +1126,14 @@ Foo
 Foo
 
 #+Caption: Trigonometric Manipulators
-#+Name: trigonometric-manipulators
+#+Name: am-trigonometric-manipulators
 #+BEGIN_SRC lisp
-  <<sine-manipulators>>
-  <<cosine-manipulators>>
-  <<tangent-manipulators>>
-  <<cosecant-manipulators>>
-  <<secant-manipulators>>
-  <<cotangent-manipulators>>
+  <<am-sine-manipulators>>
+  <<am-cosine-manipulators>>
+  <<am-tangent-manipulators>>
+  <<am-cosecant-manipulators>>
+  <<am-secant-manipulators>>
+  <<am-cotangent-manipulators>>
 #+END_SRC
 
 **** WORKING Sine
@@ -1145,7 +1145,7 @@ Foo
 Foo
 
 #+Caption: Sine Manipulators
-#+Name: sine-manipulators
+#+Name: am-sine-manipulators
 #+BEGIN_SRC lisp
   (define-operation sine 1 sin)
 
@@ -1162,7 +1162,7 @@ Foo
 Foo
 
 #+Caption: Cosine Manipulators
-#+Name: cosine-manipulators
+#+Name: am-cosine-manipulators
 #+BEGIN_SRC lisp
   (define-operation cosine 1 cos)
 
@@ -1179,7 +1179,7 @@ Foo
 Foo
 
 #+Caption: Tangent Manipulators
-#+Name: tangent-manipulators
+#+Name: am-tangent-manipulators
 #+BEGIN_SRC lisp
   (define-operation tangent 1 tan)
 
@@ -1196,7 +1196,7 @@ Foo
 Foo
 
 #+Caption: Cosecant Manipulators
-#+Name: cosecant-manipulators
+#+Name: am-cosecant-manipulators
 #+BEGIN_SRC lisp
   (define-operation cosecant 1 csc)
 #+END_SRC
@@ -1210,7 +1210,7 @@ Foo
 Foo
 
 #+Caption: Secant Manipulators
-#+Name: secant-manipulators
+#+Name: am-secant-manipulators
 #+BEGIN_SRC lisp
   (define-operation secant 1 sec)
 #+END_SRC
@@ -1224,7 +1224,7 @@ Foo
 Foo
 
 #+Caption: Cotangent Manipulators
-#+Name: cotangent-manipulators
+#+Name: am-cotangent-manipulators
 #+BEGIN_SRC lisp
   (define-operation cotangent 1 cot)
 #+END_SRC
@@ -1239,7 +1239,7 @@ CLOSED: [2016-05-05 Thu 21:21]
 This assembles and packages the algebraic manipulation system into a single file and library.  To do so, it must first define a package, import specific symbols from other packages, and export symbols from itself.  It then includes the remainder of the functionality, placing it in the file ~manipulation.lisp~.
 
 #+Caption: Packaging
-#+Name: packaging
+#+Name: am-packaging
 #+BEGIN_SRC lisp :tangle "manipulation.lisp"
   (defpackage #:manipulator
     (:use #:cl)
@@ -1256,15 +1256,15 @@ This assembles and packages the algebraic manipulation system into a single file
 
   (declaim (declaration slime-indent))
 
-  <<determine-expression-type>>
+  <<am-determine-expression-type>>
 
-  <<collect-variables>>
+  <<am-collect-variables>>
 
-  <<collect-terms>>
+  <<am-collect-terms>>
 
-  <<polynomial-related-functions>>
+  <<am-polynomial-related-functions>>
 
-  <<expression-manipulation>>
+  <<am-expression-manipulation>>
 #+END_SRC
 
 * DONE Derivation [5/5]
