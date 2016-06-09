@@ -1,5 +1,5 @@
-#+Title: Computer Algebra Systems in Lisp
-#+Subtitle:
+#+Title: LARCS
+#+Subtitle: The "Lisp Automated Rewrite and Calculation System"
 #+AUTHOR: Samuel W. Flint
 #+EMAIL: swflint@flintfam.org
 #+DATE: \today
