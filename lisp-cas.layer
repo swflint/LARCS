@@ -1,7 +1,8 @@
 ;; -*- emacs-lisp -*-
 
 (define-buffer-layer lisp-cas
-  :files ("~/Projects/lisp-cas/"
+  :files ("~/Projects/lisp-cas/lisp-cas.layer"
           "~/Projects/lisp-cas/lisp-cas.org"
-          "~/Projects/lisp-cas/rules-application.org")
-  :buffer-to-select "lisp-cas")
+          "~/Projects/lisp-cas/rules-application.org"
+          "~/Projects/lisp-cas/")
+  :buffer-to-select "lisp-cas.org")
