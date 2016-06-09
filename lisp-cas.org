@@ -14,7 +14,10 @@
 #+LATEX_CLASS_OPTIONS: [10pt,twoside]
 #+LATEX_HEADER: \pagestyle{headings}
 
-* COMMENT Export
+* Export                                                           :noexport:
+:PROPERTIES:
+:CREATED:  <2016-06-09 Thu 12:49>
+:END:
 
 #+Caption: Export Document
 #+Name: export-document
@@ -27,7 +30,10 @@
     (org-latex-export-to-pdf))
 #+END_SRC
 
-* COMMENT Tangle
+* Tangle                                                           :noexport:
+:PROPERTIES:
+:CREATED:  <2016-06-09 Thu 12:50>
+:END:
 
 #+Caption: Tangle Document
 #+Name: tangle-document
