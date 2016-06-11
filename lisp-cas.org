@@ -78,7 +78,7 @@ The CAS contained in this is called LARCS, or the Lisp Automated Rewrite and Cal
 #+TOC: headlines 3
 #+TOC: listings
 
-* WORKING Algebraic Manipulation [3/6]
+* WORKING Algebraic Manipulation [3/7]
 :PROPERTIES:
 :CREATED:  <2016-06-09 Thu 09:20>
 :ID:       b2c1fd45-b631-48f9-a093-66e1a0faa77f
@@ -1266,6 +1266,26 @@ This assembles and packages the algebraic manipulation system into a single file
 
   <<am-expression-manipulation>>
 #+END_SRC
+
+* WORKING Solver [0/3]
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 17:55>
+:END:
+
+** TODO Techniques
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 17:55>
+:END:
+
+** TODO Rules
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 17:56>
+:END:
+
+** TODO Assembly
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 17:56>
+:END:
 
 * DONE Derivation [5/5]
 :PROPERTIES:
