@@ -1734,6 +1734,26 @@ Now that the functions, macros and rules are defined, it's time to put them toge
   ;;; End derive
 #+END_SRC
 
+* WORKING Symbolic Integration [0/3]
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 18:02>
+:END:
+
+** TODO Rules
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 18:02>
+:END:
+
+** TODO Techniques
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 18:02>
+:END:
+
+** TODO Assembly
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 18:02>
+:END:
+
 * WORKING Lisp Equation Conversion to LaTeX [0/5]
 :PROPERTIES:
 :CREATED:  <2016-06-09 Thu 09:23>
