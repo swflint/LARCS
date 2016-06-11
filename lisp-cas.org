@@ -1287,6 +1287,21 @@ This assembles and packages the algebraic manipulation system into a single file
 :CREATED:  <2016-06-11 Sat 17:56>
 :END:
 
+* WORKING Trigonometric Solver [0/2]
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 17:58>
+:END:
+
+** TODO Rules
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 17:58>
+:END:
+
+** TODO Assembly
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 17:58>
+:END:
+
 * DONE Derivation [5/5]
 :PROPERTIES:
 :CREATED:  <2016-06-09 Thu 09:21>
