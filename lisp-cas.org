@@ -89,7 +89,7 @@ The CAS contained in this is called LARCS, or the Lisp Automated Rewrite and Cal
 :ID:       b2c1fd45-b631-48f9-a093-66e1a0faa77f
 :END:
 
-As a part of my lisp-based Computer Algebra System, an algebraic manipulation toolkit is required.  This will be used to simplify equations, or for that matter solve them.  This creates this toolkit, but does not create a complete simplifier or solver.  It does this by providing manipulators and automatic rewriters.  These together will provide simplification and solving utilities.
+At the core of LARCS is the algebraic manipulation library.  This provides a way for other libraries to add, subtract, multiply and divide symbolically, essentially giving a programmer the ability to create or manipulate equations.  While it is neither a solver nor a simplifier, it provides the base for both of them by providing manipulators and automatic expression rewriters.
 
 ** DONE Expression Typing [7/7]
 :PROPERTIES:
