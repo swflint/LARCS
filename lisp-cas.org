@@ -1302,7 +1302,7 @@ This assembles and packages the algebraic manipulation system into a single file
 :CREATED:  <2016-06-11 Sat 17:58>
 :END:
 
-* DONE Derivation [5/5]
+* WORKING Derivation [0/5]
 :PROPERTIES:
 :CREATED:  <2016-06-09 Thu 09:21>
 :ID:       360bc5f4-39ac-4161-9326-00c3daaf368c
@@ -1310,7 +1310,7 @@ This assembles and packages the algebraic manipulation system into a single file
 
 The calculation of derivatives has many uses.  However, the calculation of derivatives can often be tedious.  To make this faster, I've written the following program to make it faster.
 
-** DONE Expansions
+** WORKING Expansions [0/4]
 CLOSED: [2016-06-09 Thu 09:22]
 :PROPERTIES:
 :CREATED:  <2016-06-09 Thu 09:22>
@@ -1318,9 +1318,10 @@ CLOSED: [2016-06-09 Thu 09:22]
 
 This program works in terms of expansion functions, and application tests.  That is to say, there is a test to see if the expansion is valid for the given expression.
 
-*** Match Expressions
+*** TODO Match Expressions
 :PROPERTIES:
 :ID:       39f69de5-6fcc-4ad4-984f-72fc0f77f11b
+:CREATED:  <2016-06-11 Sat 22:20>
 :END:
 
 To be able to apply an expansion, you need to determine eligibility.  To do this, you need an expression that matches on two things, function name and arity.  To generate this, it takes an operation name and the arity.  Based on the arity type ($=$, $>$, $\leq$), it will construct a simple boolean statement in the format of $(function = operator) \land (argument-count == arity)$, where $==$ is one of the above arity types.
@@ -1344,9 +1345,10 @@ To be able to apply an expansion, you need to determine eligibility.  To do this
            (>= arg-count ,arity)))))
 #+END_SRC
 
-*** Definition
+*** WORKING Definition
 :PROPERTIES:
 :ID:       d7430ac9-cc9a-4942-a8c7-4d21c1705ad4
+:CREATED:  <2016-06-11 Sat 22:20>
 :END:
 
 To define an expansion requires just a bit of syntactic sugar in the form of the ~defexpansion~ macro.  This macro does 3 things, generate a test function, generate an expansion function and pushes the name of the expansion, the test function and the expansion function on to the rules list.
@@ -1375,9 +1377,10 @@ To generate the expansion function, a series of expressions is used as the body 
          ',name)))
 #+END_SRC
 
-*** Retrieval
+*** WORKING Retrieval
 :PROPERTIES:
 :ID:       71d8545b-d5d1-4179-a0b1-3539c8e68105
+:CREATED:  <2016-06-11 Sat 22:20>
 :END:
 
 To allow for the use of expansions, you must be able to retrieve the correct one from the expansions list.
@@ -1395,9 +1398,10 @@ To do so, you need the second element of the list that is the ~(name test expans
                                                    ,*rules*)))))
 #+END_SRC
 
-*** Storage
+*** TODO Storage
 :PROPERTIES:
 :ID:       0cf2d0ad-cdd1-4a5e-a849-615961c2e869
+:CREATED:  <2016-06-11 Sat 22:20>
 :END:
 
 One of the more important parts of the program is a way to store expansions.  This is however, quite boring.  It's just a global variable (~*rules*~), containing a list of lists having the form of ~(name test-lambda expander-lambda)~.
@@ -1411,7 +1415,7 @@ One of the more important parts of the program is a way to store expansions.  Th
   (defvar *rules* '())
 #+END_SRC
 
-** DONE Rules
+** WORKING Rules [0/5]
 CLOSED: [2016-06-09 Thu 09:22]
 :PROPERTIES:
 :CREATED:  <2016-06-09 Thu 09:22>
@@ -1419,9 +1423,10 @@ CLOSED: [2016-06-09 Thu 09:22]
 
 There are many rules for derivation of equations.  These rules allow one to derive equations quickly and easily by matching equations up with relevant rules and applying those rules.
 
-*** Multiplication
+*** TODO Multiplication
 :PROPERTIES:
 :ID:       15f0ba68-9335-4d97-b3c7-418187895706
+:CREATED:  <2016-06-11 Sat 22:21>
 :END:
 
 The derivatives of multiplication follows two rules, the Constant Multiple rule:
@@ -1451,9 +1456,10 @@ There are two forms of the Product Rule as implemented, both matching on the ~*~
     (derive `(* ,first ,(cons '* rest))))
 #+END_SRC
 
-*** Division
+*** TODO Division
 :PROPERTIES:
 :ID:       483285d3-f035-4b50-9f3f-4389d01b7504
+:CREATED:  <2016-06-11 Sat 22:21>
 :END:
 
 Division follows the Quotient Rule, which is as follows:
@@ -1471,9 +1477,10 @@ The rule matches on the ~/~ function, and takes 2 arguments, a numerator and a d
         (expt ,denominator 2)))
 #+END_SRC
 
-*** Addition/Subtraction
+*** TODO Addition/Subtraction
 :PROPERTIES:
 :ID:       b4f6b80a-0904-491a-a0ca-850dcb6809c5
+:CREATED:  <2016-06-11 Sat 22:21>
 :END:
 
 Addition and subtraction of functions in derivatives is simple, simply add or subtract the derivatives of the functions, as shown here:
@@ -1504,9 +1511,10 @@ This is accomplished by matching on either ~+~ or ~-~, and taking 2 or more argu
                clauses)))
 #+END_SRC
 
-*** Exponentials and Logarithms
+*** TODO Exponentials and Logarithms
 :PROPERTIES:
 :ID:       eaed7558-82d0-4300-8e5f-eb48a06d4e64
+:CREATED:  <2016-06-11 Sat 22:21>
 :END:
 
 The derivatives of exponential and logarithmic functions follow several rules.  For $e^x$ or $a^x$, the "Xerox" rule is used:
@@ -1556,9 +1564,10 @@ The following rules match based on the appropriate Lisp functions and the number
     `(/ ,(derive (cons 'log number)) (* (log ,base) ,number)))
 #+END_SRC
 
-*** Trigonometric
+*** TODO Trigonometric
 :PROPERTIES:
 :ID:       c0f40e80-8a19-4749-bc9b-b1e94ef6949a
+:CREATED:  <2016-06-11 Sat 22:21>
 :END:
 
 The derivation of trigonometric functions is simply the application of the chain rule.  As such, each of the trig functions has a different derivative, as shown here:
@@ -1601,8 +1610,7 @@ These rules all match on their respective trig function and substitute as approp
     `(* (- (expt (csc ,arg) 2)) ,(derive (if (listp arg) arg (list arg)))))
 #+END_SRC
 
-** DONE Derivative Driver
-CLOSED: [2016-06-09 Thu 09:22]
+** TODO Derivative Driver
 :PROPERTIES:
 :ID:       b03c5070-602a-412e-a6ce-3dda65630153
 :CREATED:  <2016-06-09 Thu 09:22>
@@ -1636,8 +1644,7 @@ Derive takes a list, and based on the first element in the list, and the length 
                (error "Undefined expansion: ~a" op)))))))
 #+END_SRC
 
-** DONE Miscellaneous Functions
-CLOSED: [2016-06-09 Thu 09:22]
+** TODO Miscellaneous Functions
 :PROPERTIES:
 :ID:       41439f82-466f-46a5-b706-df43e5f23650
 :CREATED:  <2016-06-09 Thu 09:22>
@@ -1678,8 +1685,7 @@ I also take the liberty of defining two macros, a ~define-equation-functions~ ma
       `',derivative))
 #+END_SRC
 
-** DONE Packaging
-CLOSED: [2016-06-09 Thu 09:22]
+** TODO Packaging
 :PROPERTIES:
 :ID:       e15262d2-23d5-4306-a68b-387a21265b6e
 :CREATED:  <2016-06-09 Thu 09:22>
