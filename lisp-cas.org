@@ -78,6 +78,11 @@ The CAS contained in this is called LARCS, or the Lisp Automated Rewrite and Cal
 #+TOC: headlines 3
 #+TOC: listings
 
+* TODO Common Functionality
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 22:23>
+:END:
+
 * WORKING Algebraic Manipulation [3/7]
 :PROPERTIES:
 :CREATED:  <2016-06-09 Thu 09:20>
@@ -2225,3 +2230,13 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
 
   ;;; End to-tex
 #+END_SRC
+
+* TODO Library Assembly
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 22:30>
+:END:
+
+* TODO User Interface
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 22:31>
+:END:
