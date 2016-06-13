@@ -2236,7 +2236,43 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
 :CREATED:  <2016-06-11 Sat 22:30>
 :END:
 
-* TODO User Interface
+#+Caption: Library System Definition
+#+Name: library-system-definition
+#+BEGIN_SRC lisp :tangle "larcs-lib.asdf"
+
+#+END_SRC
+
+* WORKING Text User Interface [0/2]
 :PROPERTIES:
 :CREATED:  <2016-06-11 Sat 22:31>
+:END:
+
+** TODO System Definition
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 14:51>
+:END:
+
+** TODO Functionality
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 14:51>
+:END:
+
+* WORKING Graphical User Interface [0/3]
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 14:51>
+:END:
+
+** TODO System Definition
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 14:51>
+:END:
+
+** TODO Interface Elements
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 14:52>
+:END:
+
+** TODO Interface Functionality
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 14:52>
 :END:
