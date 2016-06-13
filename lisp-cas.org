@@ -196,7 +196,6 @@ Following the case pattern, and to allow for cleaner code, I've defined the clas
 #+Name: am-classification-case
 #+BEGIN_SRC lisp
   (defmacro classification-case (var &rest cases)
-    (declare (slime-indent (as case)))
     (let ((conditions (map 'list #'(lambda (case)
                                      (destructuring-bind (type &body body) case
                                        (if (eq type 't)
@@ -840,7 +839,6 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
 #+Name: am-define-expression-manipulator
 #+BEGIN_SRC lisp
   (defmacro define-operation (name arity short)
-    (declare (slime-indent (as defun)))
     (check-type name symbol)
     (check-type arity (integer 1 26))
     (check-type short symbol)
@@ -874,7 +872,6 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
            (funcall (first (,get-operations-name ,@args))
                     ,@args))
          (defmacro ,manipulator-define-name ((,@expression-types) &body body)
-           (declare (slime-indent (as defun)))
            (let ((manipulator-name (symbolicate ',base-manipulator-name ,@expression-types)))
              `(progn
                 (setf ,',rules-name (append ,',rules-name '(((,,@expression-types) . ,manipulator-name))))
@@ -886,14 +883,26 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
 #+Caption: Expression Manipulation Example
 #+Name: am-ex-manip-example
 #+BEGIN_SRC lisp :results output raw :exports results :cache yes
+  (defpackage #:manipulator
+    (:use #:cl)
+    (:import-from #:alexandria
+                  #:symbolicate)
+    (:export #:manipulate
+             #:classify
+             #:classified-as-p
+             #:classification-case
+             #:collect-variables
+             #:collect-terms))
+
   (load "manipulation")
+
   (in-package #:manipulator)
 
   (format t "#+Caption: Expression Manipulator Expansion~%#+Name: am-ex-manip-expansion~%#+BEGIN_SRC lisp :exports code~%~a~%#+END_SRC"
           (macroexpand-1 '(define-operation frobnicate 2 frob)))
 #+END_SRC
 
-#+RESULTS[8b2d6e575e0d168f96d4bba85d6dd90a56c5c5a6]: ex-manip-example
+#+RESULTS[afda1ba1b7d141e2f3a5f29167d0ac0f2a03c0c9]: am-ex-manip-example
 #+Caption: Expression Manipulator Expansion
 #+Name: am-ex-manip-expansion
 #+BEGIN_SRC lisp :exports code
@@ -1246,20 +1255,7 @@ This assembles and packages the algebraic manipulation system into a single file
 #+Caption: Packaging
 #+Name: am-packaging
 #+BEGIN_SRC lisp :tangle "manipulation.lisp"
-  (defpackage #:manipulator
-    (:use #:cl)
-    (:import-from #:alexandria
-                  #:symbolicate)
-    (:export #:manipulate
-             #:classify
-             #:classified-as-p
-             #:classification-case
-             #:collect-variables
-             #:collect-terms))
-
   (in-package #:manipulator)
-
-  (declaim (declaration slime-indent))
 
   <<am-determine-expression-type>>
 
@@ -1450,12 +1446,12 @@ There are two forms of the Product Rule as implemented, both matching on the ~*~
   (defexpansion mult/2 (* 2) (first second)
     (cond
       ((numberp first)
-       `(* ,first ,(derive (if (listp second) second (list second)))))
+       `(* ,first ,(derive (ensure-list second))))
       ((numberp second)
        `(* ,second ,(derive (if (listp first) first (list second)))))
       (t
-       `(+ (* ,first ,(derive (if (listp second) second (list second))))
-           (* ,second ,(derive (if (listp first) first (list first))))))))
+       `(+ (* ,first ,(derive (ensure-list second)))
+           (* ,second ,(derive (ensure-list first)))))))
 
   (defexpansion mult/3+ (* 3 >=) (first &rest rest)
     (derive `(* ,first ,(cons '* rest))))
@@ -1477,8 +1473,8 @@ The rule matches on the ~/~ function, and takes 2 arguments, a numerator and a d
 #+Name: derive-division
 #+BEGIN_SRC lisp
   (defexpansion div/2 (/ 2) (numerator denominator)
-    `(/ (- (* ,numerator ,(derive (if (listp denominator) denominator (list denominator))))
-           (* ,denominator ,(derive (if (listp numerator) numerator (list numerator)))))
+    `(/ (- (* ,numerator ,(derive (ensure-list denominator)))
+           (* ,denominator ,(derive (ensure-list numerator))))
         (expt ,denominator 2)))
 #+END_SRC
 
@@ -1562,7 +1558,7 @@ The following rules match based on the appropriate Lisp functions and the number
         `(* (expt ,base ,exponent) (log ,base))))
 
   (defexpansion log/1 (log 1) (expression)
-    `(/ ,(derive (if (listp expression) expression (list expression))) ,expression))
+    `(/ ,(derive (ensure-list expression)) ,expression))
 
   (defexpansion log/2 (log 2) (number base)
     (declare (ignorable number base))
@@ -1597,22 +1593,22 @@ These rules all match on their respective trig function and substitute as approp
 #+Name: derive-trigonometrics
 #+BEGIN_SRC lisp
   (defexpansion sin/1 (sin 1) (arg)
-    `(* (cos ,arg) ,(derive (if (listp arg) arg (list arg)))))
+    `(* (cos ,arg) ,(derive (ensure-list arg))))
 
   (defexpansion cos/1 (cos 1) (arg)
-    `(* (- (sin ,arg)) ,(derive (if (listp arg) arg (list arg)))))
+    `(* (- (sin ,arg)) ,(derive (ensure-list arg))))
 
   (defexpansion tan/1 (tan 1) (arg)
-    `(* (expt (sec ,arg) 2) ,(derive (if (listp arg) arg (list arg)))))
+    `(* (expt (sec ,arg) 2) ,(derive (ensure-list arg))))
 
   (defexpansion csc/1 (csc 1) (arg)
-    `(* (- (csc ,arg)) (cot ,arg) ,(derive (if (listp arg) arg (list arg)))))
+    `(* (- (csc ,arg)) (cot ,arg) ,(derive (ensure-list arg))))
 
   (defexpansion sec/1 (sec 1) (arg)
-    `(* (sec ,arg) (tan ,arg) ,(derive (if (listp arg) arg (list arg)))))
+    `(* (sec ,arg) (tan ,arg) ,(derive (ensure-list arg))))
 
   (defexpansion cot/1 (cot 1) (arg)
-    `(* (- (expt (csc ,arg) 2)) ,(derive (if (listp arg) arg (list arg)))))
+    `(* (- (expt (csc ,arg) 2)) ,(derive (ensure-list arg))))
 #+END_SRC
 
 ** TODO Derivative Driver
@@ -1701,24 +1697,7 @@ Now that the functions, macros and rules are defined, it's time to put them toge
 #+Caption: Packaging
 #+Name: derive-packaging
 #+BEGIN_SRC lisp :tangle "derive.lisp"
-  ;;;; derive.lisp
-  ;;;;
-  ;;;; Copyright (c) 2015 Samuel W. Flint <swflint@flintfam.org>
-
-  (defpackage #:derive
-    (:use #:cl
-          #:com.informatimago.common-lisp.cesarum.list)
-    (:import-from #:alexandria
-                  #:symbolicate)
-    (:export :derive
-             :csc
-             :sec
-             :define-equation-functions
-             :take-derivative))
-
   (in-package #:derive)
-
-  ;;; "derive" goes here.
 
   <<derive-expansion-storage>>
 
@@ -1741,8 +1720,6 @@ Now that the functions, macros and rules are defined, it's time to put them toge
   <<derive-trigonometrics>>
 
   <<derive-misc-functions>>
-
-  ;;; End derive
 #+END_SRC
 
 * WORKING Symbolic Integration [0/3]
@@ -2124,11 +2101,6 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
 #+Caption: Misc Functions
 #+Name: tex-misc-functions
 #+BEGIN_SRC lisp
-  (defun ensure-list (list)
-    (if (listp list)
-        list
-        (list list)))
-
   (defvar *special-symbols-to-sequences*
     '((alpha . "\\alpha")
       (beta . "\\beta")
@@ -2181,20 +2153,7 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
 #+Caption: Packaging
 #+Name: tex-packaging
 #+BEGIN_SRC lisp :tangle "to-tex.lisp"
-  ;;;; to-tex.lisp
-  ;;;;
-  ;;;; Copyright (c) 2015 Samuel W. Flint <swflint@flintfam.org>
-
-  (defpackage #:to-tex
-    (:use #:cl
-          #:com.informatimago.common-lisp.cesarum.list)
-    (:import-from #:alexandria
-                  #:symbolicate)
-    (:export #:convert-to-tex))
-
   (in-package #:to-tex)
-
-    ;;; "to-tex" goes here.
 
   <<tex-misc-functions>>
 
@@ -2227,19 +2186,75 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
   <<tex-summation-and-integration>>
 
   <<tex-specialty>>
-
-  ;;; End to-tex
 #+END_SRC
 
-* TODO Library Assembly
+* WORKING Library Assembly [0/2]
 :PROPERTIES:
 :CREATED:  <2016-06-11 Sat 22:30>
 :END:
 
+** TODO Package Definition
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 15:00>
+:ID:       573a8352-8cbe-408c-8c27-3cf0b66da885
+:END:
+
+#+Caption: LARCS Packages
+#+Name: larcs-packages
+#+BEGIN_SRC lisp :tangle "larcs-packages.lisp"
+  (defpackage #:manipulator
+    (:use #:cl)
+    (:import-from #:alexandria
+                  #:symbolicate)
+    (:export #:manipulate
+             #:classify
+             #:classified-as-p
+             #:classification-case
+             #:collect-variables
+             #:collect-terms))
+
+  (defpackage #:derive
+    (:use #:cl)
+    (:import-from #:alexandria
+                  #:symbolicate)
+    (:import-from #:com.informatimago.common-lisp.cesarum.list
+                  #:aget
+                  #:ensure-list)
+    (:export :derive
+             :csc
+             :sec
+             :define-equation-functions
+             :take-derivative))
+
+  (defpackage #:to-tex
+    (:use #:cl)
+    (:import-from #:alexandria
+                  #:symbolicate)
+    (:import-from #:com.informatimago.common-lisp.cesarum.list
+                  #:aget
+                  #:ensure-list)
+    (:export #:convert-to-tex))
+#+END_SRC
+
+** TODO System Definition
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 14:58>
+:ID:       35b2ec01-a933-4b5b-af73-b6b7f1c45cb6
+:END:
+
 #+Caption: Library System Definition
 #+Name: library-system-definition
-#+BEGIN_SRC lisp :tangle "larcs-lib.asdf"
-
+#+BEGIN_SRC lisp :tangle "larcs-lib.asd"
+  (asdf:defsystem #:larcs-lib
+      :description "A CAS Library for use within Lisp Software."
+      :author "Samuel Flint <swflint@flintfam.org>"
+      :license "GNU GPLv3 or Later"
+      :depends-on (#:alexandria
+                   #:com.informatimago.common-lisp.cesarum.list)
+      :serial t
+      :components ((:file "larcs-packages")
+                   (:file "manipulation")
+                   (:file "derive")))
 #+END_SRC
 
 * WORKING Text User Interface [0/2]
