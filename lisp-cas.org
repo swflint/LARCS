@@ -78,7 +78,7 @@ The CAS contained in this is called LARCS, or the Lisp Automated Rewrite and Cal
 #+TOC: headlines 3
 #+TOC: listings
 
-* WORKING Common Functionality [0/3]
+* WORKING Common Functionality [0/4]
 :PROPERTIES:
 :CREATED:  <2016-06-11 Sat 22:23>
 :END:
@@ -94,20 +94,20 @@ To be able to apply an expansion, you need to determine eligibility.  To do this
 #+Caption: Match Expression Generation
 #+Name: common-match-expression-generation
 #+BEGIN_SRC lisp
-  (defun generate-match-expression (on arity &optional (type '=))
+  (defun generate-match-expression (on arity &optional (type '=) (function-var 'function) (arg-count-var 'arg-count))
     (check-type on symbol)
     (check-type type (member = > >=))
     (check-type arity (integer 0))
     (case type
       (=
-       `(and (eq function ',on)
-           (= arg-count ,arity)))
+       `(and (eq ,function-var ',on)
+           (= ,arg-count-var ,arity)))
       (>
-       `(and (eq function ',on)
-           (> arg-count ,arity)))
+       `(and (eq ,function-var ',on)
+           (> ,arg-count-var ,arity)))
       (>=
-       `(and (eq function ',on)
-           (>= arg-count ,arity)))))
+       `(and (eq ,function-var ',on)
+           (>= ,arg-count-var ,arity)))))
 #+END_SRC
 
 ** TODO Generate an Args List
@@ -127,6 +127,63 @@ To be able to apply an expansion, you need to determine eligibility.  To do this
         (reverse variables-list))))
 #+END_SRC
 
+** TODO Constants and Greeks
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 20:57>
+:ID:       907fcf64-51eb-4a2c-a8bc-29e4f75f1dd3
+:END:
+
+#+Caption: Constants and Greeks
+#+Name: constants-and-greeks
+#+BEGIN_SRC lisp
+  (defvar *special-symbols-to-sequences*
+    '((alpha . "\\alpha")
+      (beta . "\\beta")
+      (gamma . "\\gamma")
+      (delta . "\\delta")
+      (epsilon . "\\epsilon")
+      (varepsilon . "\\varepsilon")
+      (zeta . "\\zeta")
+      (eta . "\\eta")
+      (theta . "\\theta")
+      (vartheta . "\\vartheta")
+      (gamma . "\\gamma") (kappa . "\\kappa")
+      (lambda . "\\lambda")
+      (mu . "\\mu")
+      (nu . "\\nu")
+      (xi . "\\xi")
+      (omicron . "\\o")
+      (pi . "\\pi")
+      (varpi . "\\varpi")
+      (rho . "\\rho")
+      (varrho . "\\varrho")
+      (sigma . "\\sigma")
+      (varsigm . "\\varsigm")
+      (tau . "\\tau")
+      (upsilon . "\\upsilon")
+      (phi . "\\phi")
+      (varphi . "\\varphi")
+      (chi . "\\chi")
+      (psi . "\\psi")
+      (omega . "\\omega")
+      (big-gamma . "\\Gamma")
+      (big-delta . "\\Delta")
+      (big-theta . "\\Theta")
+      (big-lambda . "\\Lambda")
+      (big-xi . "\\Xi")
+      (big-pi . "\\Pi")
+      (big-sigma . "\\Sigma")
+      (big-upsilon . "\\Upsilon")
+      (big-phi . "\\Phi")
+      (big-psi . "\\Psi")
+      (big-omega . "\\Omega")))
+
+  (defvar *constant-names*
+    (mapcar #'car *special-symbols-to-sequences*))
+
+  (mapcar #'export *constant-names*)
+#+END_SRC
+
 ** TODO Assembly
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 17:20>
@@ -141,17 +198,11 @@ To be able to apply an expansion, you need to determine eligibility.  To do this
   <<common-match-expression-generation>>
 
   <<common-generate-an-args-list>>
+
+  <<constants-and-greeks>>
 #+END_SRC
 
-* WORKING Algebraic Manipulation [3/7]
-:PROPERTIES:
-:CREATED:  <2016-06-09 Thu 09:20>
-:ID:       b2c1fd45-b631-48f9-a093-66e1a0faa77f
-:END:
-
-At the core of LARCS is the algebraic manipulation library.  This provides a way for other libraries to add, subtract, multiply and divide symbolically, essentially giving a programmer the ability to create or manipulate equations.  While it is neither a solver nor a simplifier, it provides the base for both of them by providing manipulators and automatic expression rewriters.
-
-** DONE Expression Typing [7/7]
+* DONE Expression Typing [7/7]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:15>
 :ID:       c6921b1e-d269-4243-acff-5a77685c331e
@@ -162,18 +213,19 @@ To accomplish the goal of providing a complete system to manipulate algebraic ex
 This includes a form of storage, the classification definition macro, a way to check a classification, an expression classifier, and all possible classifications.
 
 #+Caption: Determine Expression Type
-#+Name: am-determine-expression-type
-#+BEGIN_SRC lisp
-  <<am-classification-storage>>
-  <<am-define-classification>>
-  <<am-check-classification>>
-  <<am-classify-expression>>
-  <<am-classification-case>>
-  <<am-when-classified>>
-  <<am-possible-classifications>>
+#+Name: et-determine-expression-type
+#+BEGIN_SRC lisp :tangle "larcs-classify.lisp"
+  (in-package #:larcs.classify)
+  <<et-classification-storage>>
+  <<et-define-classification>>
+  <<et-check-classification>>
+  <<et-classify-expression>>
+  <<et-classification-case>>
+  <<et-when-classified>>
+  <<et-possible-classifications>>
 #+END_SRC
 
-*** DONE Define Classification
+** DONE Define Classification
 CLOSED: [2016-05-04 Wed 19:30]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
@@ -188,7 +240,7 @@ This is the classification definition macro, ~define-classification~.  It takes 
 Aside from defining the classification, it also pushes the classification name and the classifier onto the stack, which can be used for direct classification checking or to completely classify an expression.
 
 #+Caption: Define Classification
-#+Name: am-define-classification
+#+Name: et-define-classification
 #+BEGIN_SRC lisp
   (defmacro define-classification (name &body body)
     (check-type name symbol)
@@ -198,10 +250,11 @@ Aside from defining the classification, it also pushes the classification name a
            (declare (ignorable length))
            ,@body)
          (pushnew '(,name . ,classifier-name) *classifications*)
+         (export ',name)
          ',name)))
 #+END_SRC
 
-*** DONE Check Classification
+** DONE Check Classification
 CLOSED: [2016-05-04 Wed 19:37]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
@@ -211,7 +264,7 @@ CLOSED: [2016-05-04 Wed 19:37]
 To check a classification, the classifier is obtained, unless the specified classifier is ~*~, in which case, ~t~ is always returned.  If the classification is not, the classifier function is called on the expression, the result of which is returned.
 
 #+Caption: Check Classification
-#+Name: am-check-classification
+#+Name: et-check-classification
 #+BEGIN_SRC lisp
   (defun classified-as-p (expression classification)
     (if (eq '* classification)
@@ -220,7 +273,7 @@ To check a classification, the classifier is obtained, unless the specified clas
                  expression)))
 #+END_SRC
 
-*** DONE Classify Expression
+** DONE Classify Expression
 CLOSED: [2016-05-04 Wed 19:44]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:09>
@@ -230,7 +283,7 @@ CLOSED: [2016-05-04 Wed 19:44]
 To completely classify an expression, the ~*classifications*~ alist is mapped over, checking to see if each classification is applicable to the expression, if so, the name being returned, otherwise ~nil~.  All nils are removed, leaving the complete classification, which is returned for use.
 
 #+Caption: Classify Expression
-#+Name: am-classify-expression
+#+Name: et-classify-expression
 #+BEGIN_SRC lisp
   (defun classify (expression)
     (let ((classifications '()))
@@ -243,7 +296,7 @@ To completely classify an expression, the ~*classifications*~ alist is mapped ov
             (push name classifications))))))
 #+END_SRC
 
-*** DONE Classification Case
+** DONE Classification Case
 CLOSED: [2016-05-30 Mon 18:17]
 :PROPERTIES:
 :CREATED:  <2016-05-20 Fri 14:15>
@@ -253,7 +306,7 @@ CLOSED: [2016-05-30 Mon 18:17]
 Following the case pattern, and to allow for cleaner code, I've defined the classification case macro.  It does this by taking a variable name and a list of cases.  These are then mapped over, producing clauses suitable for a ~cond~ expression, to which this macro finally expands, binding the complete classification of the given expression to ~the-classification~.
 
 #+Caption: Classification Case
-#+Name: am-classification-case
+#+Name: et-classification-case
 #+BEGIN_SRC lisp
   (defmacro classification-case (var &rest cases)
     (let ((conditions (map 'list #'(lambda (case)
@@ -268,7 +321,7 @@ Following the case pattern, and to allow for cleaner code, I've defined the clas
            ,@conditions))))
 #+END_SRC
 
-*** DONE When Classified
+** DONE When Classified
 CLOSED: [2016-05-30 Mon 19:18]
 :PROPERTIES:
 :CREATED:  <2016-05-30 Mon 18:31>
@@ -278,14 +331,14 @@ CLOSED: [2016-05-30 Mon 19:18]
 The ~when-classified-as~ macro takes a classification, variable and a body.  It expands to a ~when~ form, with the classification and variable put into a ~classified-as-p~ call becoming the predicate, determining whether or not the body is run.
 
 #+Caption: When Classified
-#+Name: am-when-classified
+#+Name: et-when-classified
 #+BEGIN_SRC lisp
   (defmacro when-classified-as (classification variable &body body)
     `(when (classified-as-p ,variable ',classification)
        ,@body))
 #+END_SRC
 
-*** DONE Classifications [13/13]
+** DONE Classifications [13/13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
@@ -308,24 +361,24 @@ I must define several different classifications, ranging from simple numeric exp
  - Trigonometrics
 
 #+Caption: Possible Classifications
-#+Name: am-possible-classifications
+#+Name: et-possible-classifications
 #+BEGIN_SRC lisp
-  <<am-classify-numbers>>
-  <<am-classify-variables>>
-  <<am-classify-non-atomics>>
-  <<am-classify-additives>>
-  <<am-classify-subtractives>>
-  <<am-classify-powers>>
-  <<am-classify-exponentials>>
-  <<am-classify-multiplicatives>>
-  <<am-classify-logarithmics>>
-  <<am-classify-rationals>>
-  <<am-classify-polynomial-term>>
-  <<am-classify-polynomials>>
-  <<am-classify-trigonometrics>>
+  <<et-classify-numbers>>
+  <<et-classify-variables>>
+  <<et-classify-non-atomics>>
+  <<et-classify-additives>>
+  <<et-classify-subtractives>>
+  <<et-classify-powers>>
+  <<et-classify-exponentials>>
+  <<et-classify-multiplicatives>>
+  <<et-classify-logarithmics>>
+  <<et-classify-rationals>>
+  <<et-classify-polynomial-term>>
+  <<et-classify-polynomials>>
+  <<et-classify-trigonometrics>>
 #+END_SRC
 
-**** DONE Numbers
+*** DONE Numbers
 CLOSED: [2016-05-04 Wed 19:56]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:26>
@@ -335,13 +388,13 @@ CLOSED: [2016-05-04 Wed 19:56]
 Check to see if a given expression is a number using ~numberp~.
 
 #+Caption: Classify Numbers
-#+Name: am-classify-numbers
+#+Name: et-classify-numbers
 #+BEGIN_SRC lisp
   (define-classification numeric
     (numberp expression))
 #+END_SRC
 
-**** DONE Variables
+*** DONE Variables
 CLOSED: [2016-05-04 Wed 19:57]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:26>
@@ -351,13 +404,13 @@ CLOSED: [2016-05-04 Wed 19:57]
 Check to see if a given expression is a variable, that is to say a symbol, using ~symbolp~.
 
 #+Caption: Classify Variables
-#+Name: am-classify-variables
+#+Name: et-classify-variables
 #+BEGIN_SRC lisp
   (define-classification variable
     (symbolp expression))
 #+END_SRC
 
-**** DONE Non Atomics
+*** DONE Non Atomics
 CLOSED: [2016-05-04 Wed 19:59]
 :PROPERTIES:
 :CREATED:  <2016-05-04 Wed 19:52>
@@ -367,13 +420,13 @@ CLOSED: [2016-05-04 Wed 19:59]
 Check to see if a given expression is a non-atomic (any expression other than a number or a variable) using ~listp~.
 
 #+Caption: Classify Non-Atomics
-#+Name: am-classify-non-atomics
+#+Name: et-classify-non-atomics
 #+BEGIN_SRC lisp
   (define-classification non-atomic
     (listp expression))
 #+END_SRC
 
-**** DONE Additives
+*** DONE Additives
 CLOSED: [2016-05-04 Wed 20:01]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:26>
@@ -383,14 +436,14 @@ CLOSED: [2016-05-04 Wed 20:01]
 Check to see whether or not an expression is an additive by ensuring that it is non-atomic and the first element is the symbol ~+~.
 
 #+Caption: Classify Additives
-#+Name: am-classify-additives
+#+Name: et-classify-additives
 #+BEGIN_SRC lisp
   (define-classification additive
     (when-classified-as non-atomic expression
       (eq '+ (first expression))))
 #+END_SRC
 
-**** DONE Subtractive
+*** DONE Subtractive
 CLOSED: [2016-05-04 Wed 20:02]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:26>
@@ -400,14 +453,14 @@ CLOSED: [2016-05-04 Wed 20:02]
 Check to see whether a given expression is a subtractive by ensuring it is non-atomic and the first element is the symbol ~-~.
 
 #+Caption: Classify Subtractives
-#+Name: am-classify-subtractives
+#+Name: et-classify-subtractives
 #+BEGIN_SRC lisp
   (define-classification subtractive
     (when-classified-as non-atomic expression
       (eq '- (first expression))))
 #+END_SRC
 
-**** DONE Powers
+*** DONE Powers
 CLOSED: [2016-05-04 Wed 20:07]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:27>
@@ -417,7 +470,7 @@ CLOSED: [2016-05-04 Wed 20:07]
 This is used to classify "powers", that is to say, equations of the form $x^n$, where $n$ is any numeric.  It does so by first ensuring that the expression is non-atomic, following that, it checks to see if the first element in the expression is the symbol ~expt~, the second is a variable and the third a numeric.
 
 #+Caption: Classify Powers
-#+Name: am-classify-powers
+#+Name: et-classify-powers
 #+BEGIN_SRC lisp
   (define-classification power
     (when-classified-as non-atomic expression
@@ -426,7 +479,7 @@ This is used to classify "powers", that is to say, equations of the form $x^n$, 
          (classified-as-p (third expression) 'numeric))))
 #+END_SRC
 
-**** DONE Exponentials
+*** DONE Exponentials
 CLOSED: [2016-05-30 Mon 18:24]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 15:04>
@@ -436,7 +489,7 @@ CLOSED: [2016-05-30 Mon 18:24]
 This classifies both natural and non-natural exponentials.  It does so by ensuring that natural exponentials ($e^x$) are of the form ~(exp x)~, and non-natural exponentials ($a^x$) are of the form ~(expt base power)~.
 
 #+Caption: Classify Exponentials
-#+Name: am-classify-exponentials
+#+Name: et-classify-exponentials
 #+BEGIN_SRC lisp
   (define-classification natural-exponential
     (when-classified-as non-atomic expression
@@ -449,7 +502,7 @@ This classifies both natural and non-natural exponentials.  It does so by ensuri
          (eq 'expt (first expression)))))
 #+END_SRC
 
-**** DONE Multiplicatives
+*** DONE Multiplicatives
 CLOSED: [2016-05-30 Mon 18:55]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:27>
@@ -459,14 +512,14 @@ CLOSED: [2016-05-30 Mon 18:55]
 To classify multiplicative expressions, it is first ensured that they are non-atomic, and then, the first element is tested to see if it is equal to the symbol ~*~.
 
 #+Caption: Classify Multiplicatives
-#+Name: am-classify-multiplicatives
+#+Name: et-classify-multiplicatives
 #+BEGIN_SRC lisp
   (define-classification multiplicative
     (when-classified-as non-atomic expression
       (eq '* (first expression))))
 #+END_SRC
 
-**** DONE Logarithmics
+*** DONE Logarithmics
 CLOSED: [2016-05-30 Mon 18:30]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:27>
@@ -476,7 +529,7 @@ CLOSED: [2016-05-30 Mon 18:30]
 This defines the classifications for logarithmic expressions, for both natural and non-natural bases.  For natural bases ($\ln x$), it ensures that expressions are of the form ~(log x)~, and for non-natural bases ($\log_{b}x$) are of the form ~(log expression base-expression)~.
 
 #+Caption: Classify Lograthmics
-#+Name: am-classify-logarithmics
+#+Name: et-classify-logarithmics
 #+BEGIN_SRC lisp
   (define-classification natural-logarithmic
     (when-classified-as non-atomic expression
@@ -489,7 +542,7 @@ This defines the classifications for logarithmic expressions, for both natural a
          (eq 'log (first expression)))))
 #+END_SRC
 
-**** DONE Rationals
+*** DONE Rationals
 CLOSED: [2016-05-30 Mon 18:58]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:28>
@@ -499,7 +552,7 @@ CLOSED: [2016-05-30 Mon 18:58]
 Rationals are classified similarly to multiplicatives, checking to see whether or not they are non-atomic and checking whether or not the first element is ~/~, but rationals are also defined as only having three elements, the operation and two following operands, and thus, the length is also checked.
 
 #+Caption: Classify Rationals
-#+Name: am-classify-rationals
+#+Name: et-classify-rationals
 #+BEGIN_SRC lisp
   (define-classification rational
     (when-classified-as non-atomic expression
@@ -507,7 +560,7 @@ Rationals are classified similarly to multiplicatives, checking to see whether o
          (eq '/ (first expression)))))
 #+END_SRC
 
-**** DONE Polynomial Terms
+*** DONE Polynomial Terms
 CLOSED: [2016-05-30 Mon 19:13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:28>
@@ -521,7 +574,7 @@ To classify a polynomial term, The expression is checked to see if it satisfies 
  - Multiplicative that composed of a numeric and a power or variable.
 
 #+Caption: Classify Polynomial Term
-#+Name: am-classify-polynomial-term
+#+Name: et-classify-polynomial-term
 #+BEGIN_SRC lisp
   (define-classification polynomial-term
     (or (classified-as-p expression 'numeric)
@@ -537,7 +590,7 @@ To classify a polynomial term, The expression is checked to see if it satisfies 
                    (classified-as-p (second expression) 'variable)))))))
 #+END_SRC
 
-**** DONE Polynomials
+*** DONE Polynomials
 CLOSED: [2016-05-08 Sun 16:46]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:28>
@@ -547,7 +600,7 @@ CLOSED: [2016-05-08 Sun 16:46]
 This determines whether or not a given expression is a polynomial, that is to say it is either ~additive~ or ~subtractive~, and each and every term is classified as ~polynomial-term~, that is to say, a ~numeric~, ~power~, or a ~multiplicative~ consisting of a ~numeric~ followed by a ~power~.
 
 #+Caption: Classify Polynomials
-#+Name: am-classify-polynomials
+#+Name: et-classify-polynomials
 #+BEGIN_SRC lisp
   (define-classification polynomial
     (when-classified-as non-atomic expression
@@ -561,7 +614,7 @@ This determines whether or not a given expression is a polynomial, that is to sa
                    (rest expression))))))
 #+END_SRC
 
-**** DONE Trigonometrics
+*** DONE Trigonometrics
 CLOSED: [2016-05-30 Mon 19:15]
 :PROPERTIES:
 :CREATED:  <2016-05-04 Wed 13:38>
@@ -577,7 +630,7 @@ Trigonometrics are classified as many others are, they are first checked to see 
  - ~cot~
 
 #+Caption: Classify Trigonometrics
-#+Name: am-classify-trigonometrics
+#+Name: et-classify-trigonometrics
 #+BEGIN_SRC lisp
   (define-classification trigonometric
     (when-classified-as non-atomic expression
@@ -608,7 +661,7 @@ Trigonometrics are classified as many others are, they are first checked to see 
       (eq 'cot (first expression))))
 #+END_SRC
 
-*** DONE Classification Storage
+** DONE Classification Storage
 CLOSED: [2016-05-04 Wed 19:49]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:55>
@@ -618,10 +671,18 @@ CLOSED: [2016-05-04 Wed 19:49]
 The storage of classifications is simple, they are stored as an alist in the form of ~(name . classifier)~, in the list ~*classifications*~.
 
 #+Caption: Classification Storage
-#+Name: am-classification-storage
+#+Name: et-classification-storage
 #+BEGIN_SRC lisp
   (defvar *classifications* '())
 #+END_SRC
+
+* WORKING Algebraic Manipulation [2/6]
+:PROPERTIES:
+:CREATED:  <2016-06-09 Thu 09:20>
+:ID:       b2c1fd45-b631-48f9-a093-66e1a0faa77f
+:END:
+
+At the core of LARCS is the algebraic manipulation library.  This provides a way for other libraries to add, subtract, multiply and divide symbolically, essentially giving a programmer the ability to create or manipulate equations.  While it is neither a solver nor a simplifier, it provides the base for both of them by providing manipulators and automatic expression rewriters.
 
 ** DONE Collect Variables
 CLOSED: [2016-05-31 Tue 18:54]
@@ -1294,8 +1355,7 @@ Foo
   (define-operation cotangent 1 cot)
 #+END_SRC
 
-** DONE Packaging
-CLOSED: [2016-05-05 Thu 21:21]
+** TODO Assembly
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:07>
 :ID:       d487ed31-295b-4274-aef2-b45e4fa7bec2
@@ -1386,7 +1446,7 @@ To generate the expansion function, a series of expressions is used as the body 
 #+Name: derive-expansion-definition
 #+BEGIN_SRC lisp
   (defmacro defexpansion (name (on arity &optional (type '=)) (&rest arguments) &body expansion)
-    (let ((match-expression (generate-match-expression on arity type))
+    (let ((match-expression (generate-match-expression on arity type 'function 'arg-count))
           (test-name (symbolicate name '-test))
           (expansion-name (symbolicate name '-expansion)))
 
@@ -1710,7 +1770,7 @@ I also take the liberty of defining two macros, a ~define-equation-functions~ ma
       `',derivative))
 #+END_SRC
 
-** TODO Packaging
+** TODO Assembly
 :PROPERTIES:
 :ID:       e15262d2-23d5-4306-a68b-387a21265b6e
 :CREATED:  <2016-06-09 Thu 09:22>
@@ -1744,6 +1804,153 @@ Now that the functions, macros and rules are defined, it's time to put them toge
   <<derive-trigonometrics>>
 
   <<derive-misc-functions>>
+#+END_SRC
+
+* WORKING Symbolic Differentiation, Redux [0/4]
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 22:45>
+:END:
+
+** WORKING Rule Definition [0/3]
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 22:51>
+:END:
+
+*** TODO Definition
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 22:51>
+:ID:       de915ee7-47bd-4f7f-ad06-39f0201a4651
+:END:
+
+#+Caption: Rule Definition
+#+Name: sd-rule-definition
+#+BEGIN_SRC lisp
+  (defmacro define-derivative (expression-type (&rest arguments-list) &body body)
+    (let ((expansion-name (symbolicate expression-type '-expansion)))
+      `(progn
+         (when (not (member ',expression-type (mapcar #'car *rules*)))
+           (setq *rules* (append '((,expression-type . ,expansion-name)) *rules*)))
+         (defun ,expansion-name (,@arguments-list)
+           ,@body))))
+#+END_SRC
+
+*** TODO Retrieval
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 23:08>
+:ID:       97d8b24e-dd75-4919-a953-cba8035cb691
+:END:
+
+#+Caption: Rule Retrieval
+#+Name: sd-rule-retrieval
+#+BEGIN_SRC lisp
+  (defun get-rule (expression)
+    (cdr (first (remove-if #'(lambda (pair)
+                               (let ((type (first pair)))
+                                 (not (classified-as-p expression type))))
+                           ,*rules*))))
+#+END_SRC
+
+*** TODO Storage
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 22:52>
+:ID: 372dc2d7-ee67-4eba-a9f7-3633eaf0996e
+:END:
+
+#+Caption: Rule Storage
+#+Name: sd-rule-storage
+#+BEGIN_SRC lisp
+  (defvar *rules* '())
+#+END_SRC
+
+** WORKING Rules [0/3]
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 22:52>
+:ID:       fdcebadd-b53d-4f59-99a4-4a3782e017a2
+:END:
+
+#+Caption: Rules
+#+Name: sd-rules
+#+BEGIN_SRC lisp
+  <<sd-numbers>>
+  <<sd-variables>>
+#+END_SRC
+
+*** TODO Numbers
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 23:18>
+:ID:       bb1f9175-2e86-43a3-94b3-9467d233539c
+:END:
+
+#+Caption: Numbers
+#+Name: sd-numbers
+#+BEGIN_SRC lisp
+  (define-derivative numeric (&rest junk)
+    (declare (ignorable junk))
+    0)
+#+END_SRC
+
+*** TODO Variables
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 23:19>
+:ID:       ecc17ca3-2989-4908-aded-4b6e20b1855c
+:END:
+
+#+Caption: Variables
+#+Name: sd-variables
+#+BEGIN_SRC lisp
+  (define-derivative variable (&rest junk)
+    (declare (ignorable junk))
+    1)
+#+END_SRC
+
+*** TODO Polynomial Terms
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 23:33>
+:END:
+
+#+Caption: Polynomial Terms
+#+Name: sd-polynomial-terms
+#+BEGIN_SRC lisp
+  (define-derivative polynomial-term (&rest stuff)
+    (if (not (= (length stuff) 2))
+        (if (classified-as-p 'numeric (first stuff))
+            0
+            1)
+        (if (classified-as-p 'power (second stuff))
+            (let ((power (third (second stuff)))
+                  (coefficient ))))))
+#+END_SRC
+
+** TODO Driver
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 22:59>
+:ID:       b40ed5ad-2eb7-43b1-bab7-39592894e5be
+:END:
+
+#+Caption: Derivative Driver
+#+Name: sd-derivative-driver
+#+BEGIN_SRC lisp
+  (defun differentiate (function)
+    (let ((rule (get-rule function)))
+      (when rule
+        (apply rule (if (listp function) (rest function) (list function))))))
+#+END_SRC
+
+** TODO Assembly
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 22:46>
+:ID:       d87d49e3-8245-4ff0-aaf0-57b9e19edeba
+:END:
+
+#+Caption: Symbolic Differentiation
+#+Name: sd-symbolic-differentiation
+#+BEGIN_SRC lisp :tangle "larcs-differentiate.lisp"
+  (in-package #:larcs.differentiate)
+  <<sd-rule-storage>>
+  <<sd-rule-definition>>
+  <<sd-rule-retrieval>>
+  <<sd-rules>>
+  <<sd-derivative-driver>>
 #+END_SRC
 
 * WORKING Symbolic Integration [0/3]
@@ -1789,7 +1996,7 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
 #+Name: tex-def-match-rule
 #+BEGIN_SRC lisp
   (defmacro defrule (name (on arity &optional type) (&rest arguments) &body rule)
-    (let ((match-expression (generate-match-expression on arity type))
+    (let ((match-expression (generate-match-expression on arity type 'function 'arg-count))
           (test-name (symbolicate name '-test))
           (expansion-name (symbolicate name '-expansion)))
       `(progn
@@ -2101,50 +2308,50 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
 #+Caption: Misc Functions
 #+Name: tex-misc-functions
 #+BEGIN_SRC lisp
-  (defvar *special-symbols-to-sequences*
-    '((alpha . "\\alpha")
-      (beta . "\\beta")
-      (gamma . "\\gamma")
-      (delta . "\\delta")
-      (epsilon . "\\epsilon")
-      (varepsilon . "\\varepsilon")
-      (zeta . "\\zeta")
-      (eta . "\\eta")
-      (theta . "\\theta")
-      (vartheta . "\\vartheta")
-      (gamma . "\\gamma") (kappa . "\\kappa")
-      (lambda . "\\lambda")
-      (mu . "\\mu")
-      (nu . "\\nu")
-      (xi . "\\xi")
-      (omicron . "\\o")
-      (pi . "\\pi")
-      (varpi . "\\varpi")
-      (rho . "\\rho")
-      (varrho . "\\varrho")
-      (sigma . "\\sigma")
-      (varsigm . "\\varsigm")
-      (tau . "\\tau")
-      (upsilon . "\\upsilon")
-      (phi . "\\phi")
-      (varphi . "\\varphi")
-      (chi . "\\chi")
-      (psi . "\\psi")
-      (omega . "\\omega")
-      (big-gamma . "\\Gamma")
-      (big-delta . "\\Delta")
-      (big-theta . "\\Theta")
-      (big-lambda . "\\Lambda")
-      (big-xi . "\\Xi")
-      (big-pi . "\\Pi")
-      (big-sigma . "\\Sigma")
-      (big-upsilon . "\\Upsilon")
-      (big-phi . "\\Phi")
-      (big-psi . "\\Psi")
-      (big-omega . "\\Omega")))
+  ;; (defvar *special-symbols-to-sequences*
+  ;;   '((alpha . "\\alpha")
+  ;;     (beta . "\\beta")
+  ;;     (gamma . "\\gamma")
+  ;;     (delta . "\\delta")
+  ;;     (epsilon . "\\epsilon")
+  ;;     (varepsilon . "\\varepsilon")
+  ;;     (zeta . "\\zeta")
+  ;;     (eta . "\\eta")
+  ;;     (theta . "\\theta")
+  ;;     (vartheta . "\\vartheta")
+  ;;     (gamma . "\\gamma") (kappa . "\\kappa")
+  ;;     (lambda . "\\lambda")
+  ;;     (mu . "\\mu")
+  ;;     (nu . "\\nu")
+  ;;     (xi . "\\xi")
+  ;;     (omicron . "\\o")
+  ;;     (pi . "\\pi")
+  ;;     (varpi . "\\varpi")
+  ;;     (rho . "\\rho")
+  ;;     (varrho . "\\varrho")
+  ;;     (sigma . "\\sigma")
+  ;;     (varsigm . "\\varsigm")
+  ;;     (tau . "\\tau")
+  ;;     (upsilon . "\\upsilon")
+  ;;     (phi . "\\phi")
+  ;;     (varphi . "\\varphi")
+  ;;     (chi . "\\chi")
+  ;;     (psi . "\\psi")
+  ;;     (omega . "\\omega")
+  ;;     (big-gamma . "\\Gamma")
+  ;;     (big-delta . "\\Delta")
+  ;;     (big-theta . "\\Theta")
+  ;;     (big-lambda . "\\Lambda")
+  ;;     (big-xi . "\\Xi")
+  ;;     (big-pi . "\\Pi")
+  ;;     (big-sigma . "\\Sigma")
+  ;;     (big-upsilon . "\\Upsilon")
+  ;;     (big-phi . "\\Phi")
+  ;;     (big-psi . "\\Psi")
+  ;;     (big-omega . "\\Omega")))
 #+END_SRC
 
-** TODO Putting it Together
+** TODO Assembly
 :PROPERTIES:
 :ID:       fdef3016-cb12-43ad-ba5f-14dd6ccd973c
 :CREATED:  <2016-04-30 Sat 16:25>
@@ -2207,37 +2414,66 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
     (:import-from #:alexandria
                   #:symbolicate)
     (:export #:generate-match-expression
-             #:gen-args-list))
+             #:gen-args-list
+             #:*special-symbols-to-sequences*
+             #:*constant-names*))
 
-  (defpackage #:larcs.manipulate
+  (defpackage #:larcs.classify
     (:use #:cl
           #:larcs.common)
     (:import-from #:alexandria
                   #:symbolicate)
-    (:export #:manipulate
-             #:classify
+    (:export #:classify
              #:classified-as-p
-             #:classification-case
+             #:classification-case))
+
+  (defpackage #:larcs.manipulate
+    (:use #:cl
+          #:larcs.common
+          #:larcs.classify)
+    (:import-from #:alexandria
+                  #:symbolicate)
+    (:export #:manipulate
              #:collect-variables
-             #:collect-terms))
+             #:collect-terms
+             #:coefficient
+             #:term-variable
+             #:get-power
+             #:same-order-p
+             #:save-variable-p
+             #:single-term-combinable-p))
 
   (defpackage #:larcs.derive
     (:use #:cl
-          #:larcs.common)
+          #:larcs.common
+          #:larcs.classify)
     (:import-from #:alexandria
                   #:symbolicate)
     (:import-from #:com.informatimago.common-lisp.cesarum.list
                   #:aget
                   #:ensure-list)
     (:export :derive
-             :csc
-             :sec
+             :define-equation-functions
+             :take-derivative))
+
+  (defpackage #:larcs.differentiate
+    (:use #:cl
+          #:larcs.common
+          #:larcs.classify
+          #:larcs.manipulate)
+    (:import-from #:alexandria
+                  #:symbolicate)
+    (:import-from #:com.informatimago.common-lisp.cesarum.list
+                  #:aget
+                  #:ensure-list)
+    (:export :derive
              :define-equation-functions
              :take-derivative))
 
   (defpackage #:larcs.to-tex
     (:use #:cl
-          #:larcs.common)
+          #:larcs.common
+          #:larcs.classify)
     (:import-from #:alexandria
                   #:symbolicate)
     (:import-from #:com.informatimago.common-lisp.cesarum.list
@@ -2264,8 +2500,10 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
     :serial t
     :components ((:file "larcs-packages")
                  (:file "larcs-common")
+                 (:file "larcs-classify")
                  (:file "larcs-manipulation")
                  (:file "larcs-derive")
+                 (:file. "larcs-differentiate")
                  (:file "larcs-tex")))
 #+END_SRC
 
