@@ -78,10 +78,68 @@ The CAS contained in this is called LARCS, or the Lisp Automated Rewrite and Cal
 #+TOC: headlines 3
 #+TOC: listings
 
-* TODO Common Functionality
+* WORKING Common Functionality [0/3]
 :PROPERTIES:
 :CREATED:  <2016-06-11 Sat 22:23>
 :END:
+
+** TODO Match Expression Generation
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 17:18>
+:ID:       f7876b1d-3b67-48c1-863a-85e1b3026ed6
+:END:
+
+#+Caption: Match Expression Generation
+#+Name: common-match-expression-generation
+#+BEGIN_SRC lisp
+  (defun generate-match-expression (on arity &optional (type '=))
+    (check-type on symbol)
+    (check-type type (member = > >=))
+    (check-type arity (integer 0))
+    (case type
+      (=
+       `(and (eq function ',on)
+           (= arg-count ,arity)))
+      (>
+       `(and (eq function ',on)
+           (> arg-count ,arity)))
+      (>=
+       `(and (eq function ',on)
+           (>= arg-count ,arity)))))
+#+END_SRC
+
+** TODO Generate an Args List
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 17:19>
+:ID:       49596957-2fc6-4458-ad85-99cbcf337b42
+:END:
+
+#+Caption: Generate an Args List
+#+Name: common-generate-an-args-list
+#+BEGIN_SRC lisp
+  (defun gen-args-list (count)
+    (let ((letters '(a b c d e f g h i j k l m n o p q r s t u v w x y z)))
+      (let ((variables-list '()))
+        (dotimes (i count)
+          (pushnew (symbolicate 'expression- (nth i letters)) variables-list))
+        (reverse variables-list))))
+#+END_SRC
+
+** TODO Assembly
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 17:20>
+:ID:       d583d5e4-a2c9-432c-9486-cc6baa4239f4
+:END:
+
+#+Caption: Assemble Common Functions
+#+Name: assemble-common-functions
+#+BEGIN_SRC lisp :tangle "larcs-common.lisp"
+  (in-package #:larcs.common)
+
+  <<common-match-expression-generation>>
+
+  <<common-generate-an-args-list>>
+#+END_SRC
 
 * WORKING Algebraic Manipulation [3/7]
 :PROPERTIES:
@@ -821,12 +879,12 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
 #+BEGIN_SRC lisp
   (defvar *manipulator-map* '())
 
-  (defun gen-args-list (count)
-    (let ((letters '(a b c d e f g h i j k l m n o p q r s t u v w x y z)))
-      (let ((variables-list '()))
-        (dotimes (i count)
-          (pushnew (symbolicate 'expression- (nth i letters)) variables-list))
-        (reverse variables-list))))
+  ;; (defun gen-args-list (count)
+  ;;   (let ((letters '(a b c d e f g h i j k l m n o p q r s t u v w x y z)))
+  ;;     (let ((variables-list '()))
+  ;;       (dotimes (i count)
+  ;;         (pushnew (symbolicate 'expression- (nth i letters)) variables-list))
+  ;;       (reverse variables-list))))
 #+END_SRC
 
 *** WORKING Define Expression Manipulator
@@ -842,6 +900,12 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
     (check-type name symbol)
     (check-type arity (integer 1 26))
     (check-type short symbol)
+    ;; (flet ((gen-args-list (count)
+    ;;          (let ((letters '(a b c d e f g h i j k l m n o p q r s t u v w x y z)))
+    ;;            (let ((variables-list '()))
+    ;;              (dotimes (i count)
+    ;;                (pushnew (symbolicate 'expression- (nth i letters)) variables-list))
+    ;;              (reverse variables-list))))))
     (let* ((args (gen-args-list arity))
            (expression-types (map 'list #'(lambda (x)
                                             (symbolicate x '-type)) args))
@@ -852,9 +916,9 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
            (get-operations-name (symbolicate 'get- name '-manipulators))
            (type-check-list (let ((i 0))
                               (loop for arg in args
-                                    collect (prog1
-                                                `(classified-as-p ,arg (nth ,i types))
-                                              (incf i))))))
+                                 collect (prog1
+                                             `(classified-as-p ,arg (nth ,i types))
+                                           (incf i))))))
       `(progn
          (push '(,short . ,name) *manipulator-map*)
          (defvar ,rules-name '())
@@ -879,8 +943,7 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
                   ,@body)))))))
 #+END_SRC
 
-
-#+Caption: Expression Manipulation Example
+#+Caption: Manipulation Example
 #+Name: am-ex-manip-example
 #+BEGIN_SRC lisp :results output raw :exports results :cache yes
   (defpackage #:manipulator
@@ -894,7 +957,7 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
              #:collect-variables
              #:collect-terms))
 
-  (load "manipulation")
+  (load "larcs-manipulation")
 
   (in-package #:manipulator)
 
@@ -902,7 +965,7 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
           (macroexpand-1 '(define-operation frobnicate 2 frob)))
 #+END_SRC
 
-#+RESULTS[afda1ba1b7d141e2f3a5f29167d0ac0f2a03c0c9]: am-ex-manip-example
+#+RESULTS[130aac3873c71d5e7f3a237792267b51206600c5]: am-ex-manip-example
 #+Caption: Expression Manipulator Expansion
 #+Name: am-ex-manip-expansion
 #+BEGIN_SRC lisp :exports code
@@ -926,7 +989,6 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
             EXPRESSION-A EXPRESSION-B))
  (DEFMACRO DEFINE-FROBNICATE-MANIPULATOR
            ((EXPRESSION-A-TYPE EXPRESSION-B-TYPE) &BODY BODY)
-   (DECLARE (SLIME-INDENT (AS DEFUN)))
    (LET ((MANIPULATOR-NAME
           (SYMBOLICATE 'FROBNICATE-MANIPULATOR- EXPRESSION-A-TYPE
                        EXPRESSION-B-TYPE)))
@@ -1254,8 +1316,8 @@ This assembles and packages the algebraic manipulation system into a single file
 
 #+Caption: Packaging
 #+Name: am-packaging
-#+BEGIN_SRC lisp :tangle "manipulation.lisp"
-  (in-package #:manipulator)
+#+BEGIN_SRC lisp :tangle "larcs-manipulation.lisp"
+  (in-package #:larcs.manipulate)
 
   <<am-determine-expression-type>>
 
@@ -1330,20 +1392,20 @@ To be able to apply an expansion, you need to determine eligibility.  To do this
 #+Caption: Match Expressions
 #+Name: derive-match-expressions
 #+BEGIN_SRC lisp
-  (defun generate-match-expression (on arity &optional (type '=))
-    (check-type on symbol)
-    (check-type type (member = > >=))
-    (check-type arity (integer 0))
-    (case type
-      (=
-       `(and (eq function ',on)
-           (= arg-count ,arity)))
-      (>
-       `(and (eq function ',on)
-           (> arg-count ,arity)))
-      (>=
-       `(and (eq function ',on)
-           (>= arg-count ,arity)))))
+  ;; (defun generate-match-expression (on arity &optional (type '=))
+  ;;   (check-type on symbol)
+  ;;   (check-type type (member = > >=))
+  ;;   (check-type arity (integer 0))
+  ;;   (case type
+  ;;     (=
+  ;;      `(and (eq function ',on)
+  ;;          (= arg-count ,arity)))
+  ;;     (>
+  ;;      `(and (eq function ',on)
+  ;;          (> arg-count ,arity)))
+  ;;     (>=
+  ;;      `(and (eq function ',on)
+  ;;          (>= arg-count ,arity)))))
 #+END_SRC
 
 *** WORKING Definition
@@ -1362,6 +1424,20 @@ To generate the expansion function, a series of expressions is used as the body 
 #+Name: derive-expansion-definition
 #+BEGIN_SRC lisp
   (defmacro defexpansion (name (on arity &optional (type '=)) (&rest arguments) &body expansion)
+    ;; (flet ((generate-match-expression (on arity &optional (type '=))
+    ;;          (check-type on symbol)
+    ;;          (check-type type (member = > >=))
+    ;;          (check-type arity (integer 0))
+    ;;          (case type
+    ;;            (=
+    ;;             `(and (eq function ',on)
+    ;;                 (= arg-count ,arity)))
+    ;;            (>
+    ;;             `(and (eq function ',on)
+    ;;                 (> arg-count ,arity)))
+    ;;            (>=
+    ;;             `(and (eq function ',on)
+    ;;                 (>= arg-count ,arity)))))))
     (let ((match-expression (generate-match-expression on arity type))
           (test-name (symbolicate name '-test))
           (expansion-name (symbolicate name '-expansion)))
@@ -1696,8 +1772,8 @@ Now that the functions, macros and rules are defined, it's time to put them toge
 
 #+Caption: Packaging
 #+Name: derive-packaging
-#+BEGIN_SRC lisp :tangle "derive.lisp"
-  (in-package #:derive)
+#+BEGIN_SRC lisp :tangle "larcs-derive.lisp"
+  (in-package #:larcs.derive)
 
   <<derive-expansion-storage>>
 
@@ -1764,19 +1840,19 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
 #+Caption: Generate Match Test
 #+Name: tex-gen-match-test
 #+BEGIN_SRC lisp
-  (defun generate-match-expression (op arity &optional (type '=))
-    (declare (symbol op type)
-             (integer arity))
-    (ecase type
-      (=
-       `(and (eq function ',op)
-           (= arg-count ,arity)))
-      (>
-       `(and (eq function ',op)
-           (> arg-count ,arity)))
-      (>=
-       `(and (eq function ',op)
-           (>= arg-count ,arity)))))
+  ;; (defun generate-match-expression (op arity &optional (type '=))
+  ;;   (declare (symbol op type)
+  ;;            (integer arity))
+  ;;   (ecase type
+  ;;     (=
+  ;;      `(and (eq function ',op)
+  ;;          (= arg-count ,arity)))
+  ;;     (>
+  ;;      `(and (eq function ',op)
+  ;;          (> arg-count ,arity)))
+  ;;     (>=
+  ;;      `(and (eq function ',op)
+  ;;          (>= arg-count ,arity)))))
 #+END_SRC
 
 *** TODO Define Rule
@@ -1789,6 +1865,20 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
 #+Name: tex-def-match-rule
 #+BEGIN_SRC lisp
   (defmacro defrule (name (on arity &optional type) (&rest arguments) &body rule)
+    ;; (flet ((generate-match-expression (on arity &optional (type '=))
+    ;;          (check-type on symbol)
+    ;;          (check-type type (member = > >=))
+    ;;          (check-type arity (integer 0))
+    ;;          (case type
+    ;;            (=
+    ;;             `(and (eq function ',on)
+    ;;                 (= arg-count ,arity)))
+    ;;            (>
+    ;;             `(and (eq function ',on)
+    ;;                 (> arg-count ,arity)))
+    ;;            (>=
+    ;;             `(and (eq function ',on)
+    ;;                 (>= arg-count ,arity)))))))
     (let ((match-expression (generate-match-expression on arity type))
           (test-name (symbolicate name '-test))
           (expansion-name (symbolicate name '-expansion)))
@@ -2152,8 +2242,8 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
 
 #+Caption: Packaging
 #+Name: tex-packaging
-#+BEGIN_SRC lisp :tangle "to-tex.lisp"
-  (in-package #:to-tex)
+#+BEGIN_SRC lisp :tangle "larcs-tex.lisp"
+  (in-package #:larcs.to-tex)
 
   <<tex-misc-functions>>
 
@@ -2193,7 +2283,7 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
 :CREATED:  <2016-06-11 Sat 22:30>
 :END:
 
-** TODO Package Definition
+** TODO Package Definitions
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 15:00>
 :ID:       573a8352-8cbe-408c-8c27-3cf0b66da885
@@ -2202,8 +2292,16 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
 #+Caption: LARCS Packages
 #+Name: larcs-packages
 #+BEGIN_SRC lisp :tangle "larcs-packages.lisp"
-  (defpackage #:manipulator
+  (defpackage #:larcs.common
     (:use #:cl)
+    (:import-from #:alexandria
+                  #:symbolicate)
+    (:export #:generate-match-expression
+             #:gen-args-list))
+
+  (defpackage #:larcs.manipulate
+    (:use #:cl
+          #:larcs.common)
     (:import-from #:alexandria
                   #:symbolicate)
     (:export #:manipulate
@@ -2213,8 +2311,9 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
              #:collect-variables
              #:collect-terms))
 
-  (defpackage #:derive
-    (:use #:cl)
+  (defpackage #:larcs.derive
+    (:use #:cl
+          #:larcs.common)
     (:import-from #:alexandria
                   #:symbolicate)
     (:import-from #:com.informatimago.common-lisp.cesarum.list
@@ -2226,8 +2325,9 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
              :define-equation-functions
              :take-derivative))
 
-  (defpackage #:to-tex
-    (:use #:cl)
+  (defpackage #:larcs.to-tex
+    (:use #:cl
+          #:larcs.common)
     (:import-from #:alexandria
                   #:symbolicate)
     (:import-from #:com.informatimago.common-lisp.cesarum.list
@@ -2238,7 +2338,7 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
 
 ** TODO System Definition
 :PROPERTIES:
-:CREATED:  <2016-06-13 Mon 14:58>
+:CREATED:  <2016-06-13 Mon 15:00>
 :ID:       35b2ec01-a933-4b5b-af73-b6b7f1c45cb6
 :END:
 
@@ -2246,15 +2346,17 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
 #+Name: library-system-definition
 #+BEGIN_SRC lisp :tangle "larcs-lib.asd"
   (asdf:defsystem #:larcs-lib
-      :description "A CAS Library for use within Lisp Software."
-      :author "Samuel Flint <swflint@flintfam.org>"
-      :license "GNU GPLv3 or Later"
-      :depends-on (#:alexandria
-                   #:com.informatimago.common-lisp.cesarum.list)
-      :serial t
-      :components ((:file "larcs-packages")
-                   (:file "manipulation")
-                   (:file "derive")))
+    :description "A CAS Library for use within Lisp Software."
+    :author "Samuel Flint <swflint@flintfam.org>"
+    :license "GNU GPLv3 or Later"
+    :depends-on (#:alexandria
+                 #:com.informatimago)
+    :serial t
+    :components ((:file "larcs-packages")
+                 (:file "larcs-common")
+                 (:file "larcs-manipulation")
+                 (:file "larcs-derive")
+                 (:file "larcs-tex")))
 #+END_SRC
 
 * WORKING Text User Interface [0/2]
