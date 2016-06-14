@@ -89,6 +89,8 @@ The CAS contained in this is called LARCS, or the Lisp Automated Rewrite and Cal
 :ID:       f7876b1d-3b67-48c1-863a-85e1b3026ed6
 :END:
 
+To be able to apply an expansion, you need to determine eligibility.  To do this, you need an expression that matches on two things, function name and arity.  To generate this, it takes an operation name and the arity.  Based on the arity type ($=$, $>$, $\leq$), it will construct a simple boolean statement in the format of $(function = operator) \land (argument-count == arity)$, where $==$ is one of the above arity types.
+
 #+Caption: Match Expression Generation
 #+Name: common-match-expression-generation
 #+BEGIN_SRC lisp
@@ -878,13 +880,6 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
 #+Name: am-misc-manipulator-functions
 #+BEGIN_SRC lisp
   (defvar *manipulator-map* '())
-
-  ;; (defun gen-args-list (count)
-  ;;   (let ((letters '(a b c d e f g h i j k l m n o p q r s t u v w x y z)))
-  ;;     (let ((variables-list '()))
-  ;;       (dotimes (i count)
-  ;;         (pushnew (symbolicate 'expression- (nth i letters)) variables-list))
-  ;;       (reverse variables-list))))
 #+END_SRC
 
 *** WORKING Define Expression Manipulator
@@ -900,12 +895,6 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
     (check-type name symbol)
     (check-type arity (integer 1 26))
     (check-type short symbol)
-    ;; (flet ((gen-args-list (count)
-    ;;          (let ((letters '(a b c d e f g h i j k l m n o p q r s t u v w x y z)))
-    ;;            (let ((variables-list '()))
-    ;;              (dotimes (i count)
-    ;;                (pushnew (symbolicate 'expression- (nth i letters)) variables-list))
-    ;;              (reverse variables-list))))))
     (let* ((args (gen-args-list arity))
            (expression-types (map 'list #'(lambda (x)
                                             (symbolicate x '-type)) args))
@@ -1373,40 +1362,13 @@ This assembles and packages the algebraic manipulation system into a single file
 
 The calculation of derivatives has many uses.  However, the calculation of derivatives can often be tedious.  To make this faster, I've written the following program to make it faster.
 
-** WORKING Expansions [0/4]
+** WORKING Expansions [0/3]
 CLOSED: [2016-06-09 Thu 09:22]
 :PROPERTIES:
 :CREATED:  <2016-06-09 Thu 09:22>
 :END:
 
 This program works in terms of expansion functions, and application tests.  That is to say, there is a test to see if the expansion is valid for the given expression.
-
-*** TODO Match Expressions
-:PROPERTIES:
-:ID:       39f69de5-6fcc-4ad4-984f-72fc0f77f11b
-:CREATED:  <2016-06-11 Sat 22:20>
-:END:
-
-To be able to apply an expansion, you need to determine eligibility.  To do this, you need an expression that matches on two things, function name and arity.  To generate this, it takes an operation name and the arity.  Based on the arity type ($=$, $>$, $\leq$), it will construct a simple boolean statement in the format of $(function = operator) \land (argument-count == arity)$, where $==$ is one of the above arity types.
-
-#+Caption: Match Expressions
-#+Name: derive-match-expressions
-#+BEGIN_SRC lisp
-  ;; (defun generate-match-expression (on arity &optional (type '=))
-  ;;   (check-type on symbol)
-  ;;   (check-type type (member = > >=))
-  ;;   (check-type arity (integer 0))
-  ;;   (case type
-  ;;     (=
-  ;;      `(and (eq function ',on)
-  ;;          (= arg-count ,arity)))
-  ;;     (>
-  ;;      `(and (eq function ',on)
-  ;;          (> arg-count ,arity)))
-  ;;     (>=
-  ;;      `(and (eq function ',on)
-  ;;          (>= arg-count ,arity)))))
-#+END_SRC
 
 *** WORKING Definition
 :PROPERTIES:
@@ -1424,20 +1386,6 @@ To generate the expansion function, a series of expressions is used as the body 
 #+Name: derive-expansion-definition
 #+BEGIN_SRC lisp
   (defmacro defexpansion (name (on arity &optional (type '=)) (&rest arguments) &body expansion)
-    ;; (flet ((generate-match-expression (on arity &optional (type '=))
-    ;;          (check-type on symbol)
-    ;;          (check-type type (member = > >=))
-    ;;          (check-type arity (integer 0))
-    ;;          (case type
-    ;;            (=
-    ;;             `(and (eq function ',on)
-    ;;                 (= arg-count ,arity)))
-    ;;            (>
-    ;;             `(and (eq function ',on)
-    ;;                 (> arg-count ,arity)))
-    ;;            (>=
-    ;;             `(and (eq function ',on)
-    ;;                 (>= arg-count ,arity)))))))
     (let ((match-expression (generate-match-expression on arity type))
           (test-name (symbolicate name '-test))
           (expansion-name (symbolicate name '-expansion)))
@@ -1826,34 +1774,10 @@ Now that the functions, macros and rules are defined, it's time to put them toge
 
 The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be inserted into a document for whatever reason, and it does so using rewrite rules, this time, rewriting s-expressions (~(+ (* 3 (expt x 3)) (expt x 2) (* 4 x) 22)~) to the \LaTeX{} equivalent, ~${{{{3} \cdot {{x ^ {3}}}}} + {{x ^ {2}}} + {{{4} \cdot {x}}} + {22}}$~ (${{{{3} \cdot {{x ^ {3}}}}} + {{x ^ {2}}} + {{{4} \cdot {x}}} + {22}}$).
 
-** WORKING Matching And Generating [0/4]
+** WORKING Matching And Generating [0/3]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 16:19>
 :END:
-
-*** TODO Match Test
-:PROPERTIES:
-:ID:       9d165cb9-95f2-4006-a8a1-73a0750b2000
-:CREATED:  <2016-04-30 Sat 16:19>
-:END:
-
-#+Caption: Generate Match Test
-#+Name: tex-gen-match-test
-#+BEGIN_SRC lisp
-  ;; (defun generate-match-expression (op arity &optional (type '=))
-  ;;   (declare (symbol op type)
-  ;;            (integer arity))
-  ;;   (ecase type
-  ;;     (=
-  ;;      `(and (eq function ',op)
-  ;;          (= arg-count ,arity)))
-  ;;     (>
-  ;;      `(and (eq function ',op)
-  ;;          (> arg-count ,arity)))
-  ;;     (>=
-  ;;      `(and (eq function ',op)
-  ;;          (>= arg-count ,arity)))))
-#+END_SRC
 
 *** TODO Define Rule
 :PROPERTIES:
@@ -1865,20 +1789,6 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
 #+Name: tex-def-match-rule
 #+BEGIN_SRC lisp
   (defmacro defrule (name (on arity &optional type) (&rest arguments) &body rule)
-    ;; (flet ((generate-match-expression (on arity &optional (type '=))
-    ;;          (check-type on symbol)
-    ;;          (check-type type (member = > >=))
-    ;;          (check-type arity (integer 0))
-    ;;          (case type
-    ;;            (=
-    ;;             `(and (eq function ',on)
-    ;;                 (= arg-count ,arity)))
-    ;;            (>
-    ;;             `(and (eq function ',on)
-    ;;                 (> arg-count ,arity)))
-    ;;            (>=
-    ;;             `(and (eq function ',on)
-    ;;                 (>= arg-count ,arity)))))))
     (let ((match-expression (generate-match-expression on arity type))
           (test-name (symbolicate name '-test))
           (expansion-name (symbolicate name '-expansion)))
