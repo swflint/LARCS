@@ -202,7 +202,7 @@ To be able to apply an expansion, you need to determine eligibility.  To do this
   <<constants-and-greeks>>
 #+END_SRC
 
-* DONE Expression Typing [7/7]
+* WORKING Expression Typing [0/8]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:15>
 :ID:       c6921b1e-d269-4243-acff-5a77685c331e
@@ -212,21 +212,7 @@ To accomplish the goal of providing a complete system to manipulate algebraic ex
 
 This includes a form of storage, the classification definition macro, a way to check a classification, an expression classifier, and all possible classifications.
 
-#+Caption: Determine Expression Type
-#+Name: et-determine-expression-type
-#+BEGIN_SRC lisp :tangle "larcs-classify.lisp"
-  (in-package #:larcs.classify)
-  <<et-classification-storage>>
-  <<et-define-classification>>
-  <<et-check-classification>>
-  <<et-classify-expression>>
-  <<et-classification-case>>
-  <<et-when-classified>>
-  <<et-possible-classifications>>
-#+END_SRC
-
-** DONE Define Classification
-CLOSED: [2016-05-04 Wed 19:30]
+** TODO Define Classification
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       d8826a51-50b8-467a-9e52-158502bd4138
@@ -254,8 +240,7 @@ Aside from defining the classification, it also pushes the classification name a
          ',name)))
 #+END_SRC
 
-** DONE Check Classification
-CLOSED: [2016-05-04 Wed 19:37]
+** TODO Check Classification
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       6505b0b1-ffd8-4dd6-b81a-3e49483d8437
@@ -273,8 +258,7 @@ To check a classification, the classifier is obtained, unless the specified clas
                  expression)))
 #+END_SRC
 
-** DONE Classify Expression
-CLOSED: [2016-05-04 Wed 19:44]
+** TODO Classify Expression
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:09>
 :ID:       82d75d54-1d33-400b-86a3-7d16af938ac8
@@ -296,8 +280,7 @@ To completely classify an expression, the ~*classifications*~ alist is mapped ov
             (push name classifications))))))
 #+END_SRC
 
-** DONE Classification Case
-CLOSED: [2016-05-30 Mon 18:17]
+** TODO Classification Case
 :PROPERTIES:
 :CREATED:  <2016-05-20 Fri 14:15>
 :ID:       19a4e467-baa0-47eb-9267-93ff3801b1fd
@@ -321,8 +304,7 @@ Following the case pattern, and to allow for cleaner code, I've defined the clas
            ,@conditions))))
 #+END_SRC
 
-** DONE When Classified
-CLOSED: [2016-05-30 Mon 19:18]
+** TODO When Classified
 :PROPERTIES:
 :CREATED:  <2016-05-30 Mon 18:31>
 :ID:       5c7c3e0b-9170-48e9-a414-6ac4528f9ac3
@@ -338,7 +320,7 @@ The ~when-classified-as~ macro takes a classification, variable and a body.  It 
        ,@body))
 #+END_SRC
 
-** DONE Classifications [13/13]
+** WORKING Classifications [0/13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
@@ -378,8 +360,7 @@ I must define several different classifications, ranging from simple numeric exp
   <<et-classify-trigonometrics>>
 #+END_SRC
 
-*** DONE Numbers
-CLOSED: [2016-05-04 Wed 19:56]
+*** TODO Numbers
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:26>
 :ID:       42081153-7cc5-42ff-a17f-53e171c6d1a7
@@ -394,8 +375,7 @@ Check to see if a given expression is a number using ~numberp~.
     (numberp expression))
 #+END_SRC
 
-*** DONE Variables
-CLOSED: [2016-05-04 Wed 19:57]
+*** TODO Variables
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:26>
 :ID:       4c676754-ef9a-485f-91a2-8f1bd83c7659
@@ -410,8 +390,7 @@ Check to see if a given expression is a variable, that is to say a symbol, using
     (symbolp expression))
 #+END_SRC
 
-*** DONE Non Atomics
-CLOSED: [2016-05-04 Wed 19:59]
+*** TODO Non Atomics
 :PROPERTIES:
 :CREATED:  <2016-05-04 Wed 19:52>
 :ID:       414df063-0be1-4849-8b9f-d71aa828be2a
@@ -426,8 +405,7 @@ Check to see if a given expression is a non-atomic (any expression other than a 
     (listp expression))
 #+END_SRC
 
-*** DONE Additives
-CLOSED: [2016-05-04 Wed 20:01]
+*** TODO Additives
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:26>
 :ID:       736d79dc-f34c-4247-b592-690d7f2fddd9
@@ -443,8 +421,7 @@ Check to see whether or not an expression is an additive by ensuring that it is 
       (eq '+ (first expression))))
 #+END_SRC
 
-*** DONE Subtractive
-CLOSED: [2016-05-04 Wed 20:02]
+*** TODO Subtractive
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:26>
 :ID:       c59d086f-2f49-485a-8f96-57d85e774f60
@@ -460,8 +437,7 @@ Check to see whether a given expression is a subtractive by ensuring it is non-a
       (eq '- (first expression))))
 #+END_SRC
 
-*** DONE Powers
-CLOSED: [2016-05-04 Wed 20:07]
+*** TODO Powers
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:27>
 :ID:       cc15dd10-7cc0-4370-9e69-daf903b30ad5
@@ -479,8 +455,7 @@ This is used to classify "powers", that is to say, equations of the form $x^n$, 
          (classified-as-p (third expression) 'numeric))))
 #+END_SRC
 
-*** DONE Exponentials
-CLOSED: [2016-05-30 Mon 18:24]
+*** TODO Exponentials
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 15:04>
 :ID:       a11fdd94-d56c-4749-bb22-dca75159dbcb
@@ -502,8 +477,7 @@ This classifies both natural and non-natural exponentials.  It does so by ensuri
          (eq 'expt (first expression)))))
 #+END_SRC
 
-*** DONE Multiplicatives
-CLOSED: [2016-05-30 Mon 18:55]
+*** TODO Multiplicatives
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:27>
 :ID:       feb85a20-93e3-45a1-be01-9893ecc07c53
@@ -519,8 +493,7 @@ To classify multiplicative expressions, it is first ensured that they are non-at
       (eq '* (first expression))))
 #+END_SRC
 
-*** DONE Logarithmics
-CLOSED: [2016-05-30 Mon 18:30]
+*** TODO Logarithmics
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:27>
 :ID:       0b733d75-e1ab-413f-8f8a-6a8a47db409c
@@ -542,8 +515,7 @@ This defines the classifications for logarithmic expressions, for both natural a
          (eq 'log (first expression)))))
 #+END_SRC
 
-*** DONE Rationals
-CLOSED: [2016-05-30 Mon 18:58]
+*** TODO Rationals
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:28>
 :ID:       a4505a66-c249-4438-a6df-81e21718e23e
@@ -560,8 +532,7 @@ Rationals are classified similarly to multiplicatives, checking to see whether o
          (eq '/ (first expression)))))
 #+END_SRC
 
-*** DONE Polynomial Terms
-CLOSED: [2016-05-30 Mon 19:13]
+*** TODO Polynomial Terms
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:28>
 :ID:       37da52b7-98a0-4a16-8a17-a62fcff2ba59
@@ -590,8 +561,7 @@ To classify a polynomial term, The expression is checked to see if it satisfies 
                    (classified-as-p (second expression) 'variable)))))))
 #+END_SRC
 
-*** DONE Polynomials
-CLOSED: [2016-05-08 Sun 16:46]
+*** TODO Polynomials
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:28>
 :ID:       8cd9045b-81dd-4571-930a-a852f81969c9
@@ -614,8 +584,7 @@ This determines whether or not a given expression is a polynomial, that is to sa
                    (rest expression))))))
 #+END_SRC
 
-*** DONE Trigonometrics
-CLOSED: [2016-05-30 Mon 19:15]
+*** TODO Trigonometrics
 :PROPERTIES:
 :CREATED:  <2016-05-04 Wed 13:38>
 :ID:       6f433cad-4b81-4a6f-ab65-981f4a924812
@@ -661,8 +630,7 @@ Trigonometrics are classified as many others are, they are first checked to see 
       (eq 'cot (first expression))))
 #+END_SRC
 
-** DONE Classification Storage
-CLOSED: [2016-05-04 Wed 19:49]
+** TODO Classification Storage
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:55>
 :ID:       ff35cd33-3c10-4a45-a2c5-32bc3fdc1acc
@@ -674,6 +642,25 @@ The storage of classifications is simple, they are stored as an alist in the for
 #+Name: et-classification-storage
 #+BEGIN_SRC lisp
   (defvar *classifications* '())
+#+END_SRC
+
+** TODO Assembly
+:PROPERTIES:
+:CREATED:  <2016-06-14 Tue 16:59>
+:ID:       bb1d3eb5-b9bf-4378-9716-87ab57dcc8a3
+:END:
+
+#+Caption: Expression Typing Assembly
+#+Name: et-assembly
+#+BEGIN_SRC lisp :tangle "larcs-classify.lisp"
+  (in-package #:larcs.classify)
+  <<et-classification-storage>>
+  <<et-define-classification>>
+  <<et-check-classification>>
+  <<et-classify-expression>>
+  <<et-classification-case>>
+  <<et-when-classified>>
+  <<et-possible-classifications>>
 #+END_SRC
 
 * WORKING Algebraic Manipulation [2/6]
