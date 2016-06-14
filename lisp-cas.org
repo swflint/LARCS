@@ -2259,6 +2259,14 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
 :CREATED:  <2016-06-13 Mon 14:51>
 :END:
 
+#+Caption: GUI System Definition
+#+Name: gui-system-definition
+#+BEGIN_SRC lisp
+  '(#:alexandria
+    #:command-line-arguments
+    #:commonqt)
+#+END_SRC
+
 ** TODO Interface Elements
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 14:52>
