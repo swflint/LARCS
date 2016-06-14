@@ -1873,6 +1873,7 @@ Now that the functions, macros and rules are defined, it's time to put them toge
 #+BEGIN_SRC lisp
   <<sd-numbers>>
   <<sd-variables>>
+  <<sd-polynomial-terms>>
 #+END_SRC
 
 *** TODO Numbers
@@ -1906,19 +1907,24 @@ Now that the functions, macros and rules are defined, it's time to put them toge
 *** TODO Polynomial Terms
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 23:33>
+:ID:       6ca719d7-b584-4ae6-ae44-23bed186c6e9
 :END:
 
 #+Caption: Polynomial Terms
 #+Name: sd-polynomial-terms
 #+BEGIN_SRC lisp
-  (define-derivative polynomial-term (&rest stuff)
-    (if (not (= (length stuff) 2))
-        (if (classified-as-p 'numeric (first stuff))
-            0
-            1)
-        (if (classified-as-p 'power (second stuff))
-            (let ((power (third (second stuff)))
-                  (coefficient ))))))
+  (define-derivative polynomial-term (&rest term)
+    (let* ((polynomial `(* ,@term))
+           (coefficient (coefficient polynomial))
+           (variable (term-variable polynomial))
+           (power (get-power polynomial)))
+      (cond
+        ((= 1 power)
+         coefficient)
+        ((= 2 power)
+         `(* ,(* coefficient power) ,variable))
+        (t
+         `(* ,(* coefficient power) (expt ,variable ,(1- power)))))))
 #+END_SRC
 
 ** TODO Driver
@@ -2503,7 +2509,7 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
                  (:file "larcs-classify")
                  (:file "larcs-manipulation")
                  (:file "larcs-derive")
-                 (:file. "larcs-differentiate")
+                 (:file "larcs-differentiate")
                  (:file "larcs-tex")))
 #+END_SRC
 
