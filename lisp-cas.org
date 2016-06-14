@@ -1707,7 +1707,7 @@ This assembles and packages the algebraic manipulation system into a single file
 :CREATED:  <2016-06-11 Sat 18:02>
 :END:
 
-* WORKING Conversion from Symbolic Expressions to Typeset Display Formats [0/5]
+* WORKING Symbolic Form to Typeset [0/5]
 :PROPERTIES:
 :CREATED:  <2016-06-09 Thu 09:23>
 :ID:       ed9f4311-bf9f-42df-8f46-254658b93c10
