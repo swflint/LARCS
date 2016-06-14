@@ -1414,399 +1414,7 @@ This assembles and packages the algebraic manipulation system into a single file
 :CREATED:  <2016-06-11 Sat 17:58>
 :END:
 
-* WORKING Symbolic Differentiation [0/5]
-:PROPERTIES:
-:CREATED:  <2016-06-09 Thu 09:21>
-:ID:       360bc5f4-39ac-4161-9326-00c3daaf368c
-:END:
-
-The calculation of derivatives has many uses.  However, the calculation of derivatives can often be tedious.  To make this faster, I've written the following program to make it faster.
-
-** WORKING Expansions [0/3]
-CLOSED: [2016-06-09 Thu 09:22]
-:PROPERTIES:
-:CREATED:  <2016-06-09 Thu 09:22>
-:END:
-
-This program works in terms of expansion functions, and application tests.  That is to say, there is a test to see if the expansion is valid for the given expression.
-
-*** WORKING Definition
-:PROPERTIES:
-:ID:       d7430ac9-cc9a-4942-a8c7-4d21c1705ad4
-:CREATED:  <2016-06-11 Sat 22:20>
-:END:
-
-To define an expansion requires just a bit of syntactic sugar in the form of the ~defexpansion~ macro.  This macro does 3 things, generate a test function, generate an expansion function and pushes the name of the expansion, the test function and the expansion function on to the rules list.
-
-To generate the test function, it uses the match-expression generator and wraps it into a function taking two arguments, a function and a list of arguments to the function.  The test is then made, acting as predicate function for whether or not the expansion is applicable.
-
-To generate the expansion function, a series of expressions is used as the body of the function, with the function destructured to form the arguments.
-
-#+Caption: Expansion Definition
-#+Name: derive-expansion-definition
-#+BEGIN_SRC lisp
-  (defmacro defexpansion (name (on arity &optional (type '=)) (&rest arguments) &body expansion)
-    (let ((match-expression (generate-match-expression on arity type 'function 'arg-count))
-          (test-name (symbolicate name '-test))
-          (expansion-name (symbolicate name '-expansion)))
-
-      `(progn
-         (defun ,test-name (function &rest arguments &aux (arg-count (length arguments)))
-           ,match-expression)
-         (defun ,expansion-name (,@arguments)
-           ,@expansion)
-         (setf (aget *rules* ',name)
-               (make-rule :name ',name
-                          :test-function #',test-name
-                          :expansion-function #',expansion-name))
-         ',name)))
-#+END_SRC
-
-*** WORKING Retrieval
-:PROPERTIES:
-:ID:       71d8545b-d5d1-4179-a0b1-3539c8e68105
-:CREATED:  <2016-06-11 Sat 22:20>
-:END:
-
-To allow for the use of expansions, you must be able to retrieve the correct one from the expansions list.
-
-To do so, you need the second element of the list that is the ~(name test expansion)~ for the rule.  This is found by removing the expansions for which the test returns false for the given expression.
-
-#+Caption: Expansion Retrieval
-#+Name: derive-expansion-retrieval
-#+BEGIN_SRC lisp
-  (defun get-expansion (expression)
-    (rule-expansion-function (rest (first
-                                    (remove-if-not #'(lambda (nte)
-                                                       (let ((test (rule-test-function (rest nte))))
-                                                         (apply test expression)))
-                                                   ,*rules*)))))
-#+END_SRC
-
-*** TODO Storage
-:PROPERTIES:
-:ID:       0cf2d0ad-cdd1-4a5e-a849-615961c2e869
-:CREATED:  <2016-06-11 Sat 22:20>
-:END:
-
-One of the more important parts of the program is a way to store expansions.  This is however, quite boring.  It's just a global variable (~*rules*~), containing a list of lists having the form of ~(name test-lambda expander-lambda)~.
-
-#+Caption: Expansion Storage
-#+Name: derive-expansion-storage
-#+BEGIN_SRC lisp
-  (defstruct (rule (:type list))
-    name test-function expansion-function)
-
-  (defvar *rules* '())
-#+END_SRC
-
-** WORKING Rules [0/5]
-CLOSED: [2016-06-09 Thu 09:22]
-:PROPERTIES:
-:CREATED:  <2016-06-09 Thu 09:22>
-:END:
-
-There are many rules for derivation of equations.  These rules allow one to derive equations quickly and easily by matching equations up with relevant rules and applying those rules.
-
-*** TODO Multiplication
-:PROPERTIES:
-:ID:       15f0ba68-9335-4d97-b3c7-418187895706
-:CREATED:  <2016-06-11 Sat 22:21>
-:END:
-
-The derivatives of multiplication follows two rules, the Constant Multiple rule:
-
-\[ \frac{d}{dx} cf(x) = c \cdot f^\prime(x) ,\]
-
-which is a specialized version of the more generalized Product Rule:
-
-\[ \frac{d}{dx} f(x) \cdot g(x) = f(x) \cdot g^\prime(x) + g(x) \cdot f^\prime(x) .\]
-
-There are two forms of the Product Rule as implemented, both matching on the ~*~ function, but taking a different number of arguments.  The first takes 2 arguments, and is the main driver for derivation, following the two above rules.  The second takes 3 or more, and modifies the arguments slightly so as to make it a derivative of two different equations.
-
-#+Caption: Rules for Multiplication
-#+Name: derive-multiplication
-#+BEGIN_SRC lisp
-  (defexpansion mult/2 (* 2) (first second)
-    (cond
-      ((numberp first)
-       `(* ,first ,(derive (ensure-list second))))
-      ((numberp second)
-       `(* ,second ,(derive (if (listp first) first (list second)))))
-      (t
-       `(+ (* ,first ,(derive (ensure-list second)))
-           (* ,second ,(derive (ensure-list first)))))))
-
-  (defexpansion mult/3+ (* 3 >=) (first &rest rest)
-    (derive `(* ,first ,(cons '* rest))))
-#+END_SRC
-
-*** TODO Division
-:PROPERTIES:
-:ID:       483285d3-f035-4b50-9f3f-4389d01b7504
-:CREATED:  <2016-06-11 Sat 22:21>
-:END:
-
-Division follows the Quotient Rule, which is as follows:
-
-\[ \frac{d}{dx} \frac{f(x)}{g(x)} = \frac{f^\prime(x) \cdot g(x) - g^\prime(x) \cdot f(x)}{(g(x))^2} .\]
-
-The rule matches on the ~/~ function, and takes 2 arguments, a numerator and a denominator, its expansion is as above.
-
-#+Caption: Rules for Division
-#+Name: derive-division
-#+BEGIN_SRC lisp
-  (defexpansion div/2 (/ 2) (numerator denominator)
-    `(/ (- (* ,numerator ,(derive (ensure-list denominator)))
-           (* ,denominator ,(derive (ensure-list numerator))))
-        (expt ,denominator 2)))
-#+END_SRC
-
-*** TODO Addition/Subtraction
-:PROPERTIES:
-:ID:       b4f6b80a-0904-491a-a0ca-850dcb6809c5
-:CREATED:  <2016-06-11 Sat 22:21>
-:END:
-
-Addition and subtraction of functions in derivatives is simple, simply add or subtract the derivatives of the functions, as shown here:
-
-\[ \frac{d}{dx} f_1(x) + f_2(x) + \cdots + f_n(x) = f_1^\prime(x) + f_2^\prime(x) + \cdots + f_n^\prime(x) \]
-
-and here:
-
-\[ \frac{d}{dx} f_1(x) - f_2(x) - \cdots - f_n(x) = f_1^\prime(x) - f_2^\prime(x) - \cdots - f_n^\prime(x) .\]
-
-This is accomplished by matching on either ~+~ or ~-~, and taking 2 or more arguments, deriving all of the passed in equations and applying the respective operation.
-
-#+Caption: Rules for Addition and Subtraction
-#+Name: derive-addition-subtraction
-#+BEGIN_SRC lisp
-  (defexpansion plus/2+ (+ 2 >=) (&rest clauses)
-    `(+ ,@(map 'list #'(lambda (clause)
-                         (if (listp clause)
-                             (derive clause)
-                             (derive (list clause))))
-               clauses)))
-
-  (defexpansion minus/2+ (- 2 >=) (&rest clauses)
-    `(- ,@(map 'list #'(lambda (clause)
-                         (if (listp clause)
-                             (derive clause)
-                             (derive (list clause))))
-               clauses)))
-#+END_SRC
-
-*** TODO Exponentials and Logarithms
-:PROPERTIES:
-:ID:       eaed7558-82d0-4300-8e5f-eb48a06d4e64
-:CREATED:  <2016-06-11 Sat 22:21>
-:END:
-
-The derivatives of exponential and logarithmic functions follow several rules.  For $e^x$ or $a^x$, the "Xerox" rule is used:
-
-\[ \frac{d}{dx} e^x = e^x ,\]
-
-and
-
-\[ \frac{d}{dx} a^x = a^x \cdot \ln x .\]
-
-Logarithmic functions follow the forms as shown:
-
-\[ \frac{d}{dx} \ln x = \frac{x^\prime}{x} ,\]
-
-and
-
-\[ \frac{d}{dx} \log_b x = \frac{x^\prime}{\ln b \cdot x} .\]
-
-However, equations of the form $x^n$ follow this form (The Power Rule):
-
-\[ \frac{d}{dx} x^n = x^\prime \cdot n \cdot x^{n-1} .\]
-
-The following rules match based on the appropriate Lisp functions and the number of arguments taken based on whether or not you are performing natural or unnatural operations.
-
-#+Caption: Rules for Exponentials and Logarithms
-#+Name: derive-exponentials-logarithms
-#+BEGIN_SRC lisp
-  (defexpansion exp/1 (exp 1) (expression)
-    (if (listp expression)
-        `(* (exp ,expression) ,(derive expression))
-        (if (numberp expression)
-            0
-            `(exp ,expression))))
-
-  (defexpansion expt/2 (expt 2) (base exponent)
-    (if (numberp exponent)
-        (if (listp base)
-            `(* ,exponent (expt ,base ,(1- exponent)) ,(derive base))
-            `(* ,exponent (expt ,base ,(1- exponent))))
-        `(* (expt ,base ,exponent) (log ,base))))
-
-  (defexpansion log/1 (log 1) (expression)
-    `(/ ,(derive (ensure-list expression)) ,expression))
-
-  (defexpansion log/2 (log 2) (number base)
-    (declare (ignorable number base))
-    `(/ ,(derive (cons 'log number)) (* (log ,base) ,number)))
-#+END_SRC
-
-*** TODO Trigonometric
-:PROPERTIES:
-:ID:       c0f40e80-8a19-4749-bc9b-b1e94ef6949a
-:CREATED:  <2016-06-11 Sat 22:21>
-:END:
-
-The derivation of trigonometric functions is simply the application of the chain rule.  As such, each of the trig functions has a different derivative, as shown here:
-
-\[ \frac{d}{dx} \sin x = x^\prime \cdot \cos x ,\]
-
-\[ \frac{d}{dx} \cos x = x^\prime \cdot -\sin x ,\]
-
-\[ \frac{d}{dx} \tan x = x^\prime \cdot \sec^2 x ,\]
-
-\[ \frac{d}{dx} \csc x = x^\prime \cdot -\csc x \cdot \cot x ,\]
-
-\[ \frac{d}{dx} \sec x = x^\prime \cdot \sec x \cdot \tan x ,\]
-
-and
-
-\[ \frac{d}{dx} \cot x = x^\prime \cdot -\csc^2 x .\]
-
-These rules all match on their respective trig function and substitute as appropriate.
-
-#+Caption: Rules for Trigonometric Functions
-#+Name: derive-trigonometrics
-#+BEGIN_SRC lisp
-  (defexpansion sin/1 (sin 1) (arg)
-    `(* (cos ,arg) ,(derive (ensure-list arg))))
-
-  (defexpansion cos/1 (cos 1) (arg)
-    `(* (- (sin ,arg)) ,(derive (ensure-list arg))))
-
-  (defexpansion tan/1 (tan 1) (arg)
-    `(* (expt (sec ,arg) 2) ,(derive (ensure-list arg))))
-
-  (defexpansion csc/1 (csc 1) (arg)
-    `(* (- (csc ,arg)) (cot ,arg) ,(derive (ensure-list arg))))
-
-  (defexpansion sec/1 (sec 1) (arg)
-    `(* (sec ,arg) (tan ,arg) ,(derive (ensure-list arg))))
-
-  (defexpansion cot/1 (cot 1) (arg)
-    `(* (- (expt (csc ,arg) 2)) ,(derive (ensure-list arg))))
-#+END_SRC
-
-** TODO Derivative Driver
-:PROPERTIES:
-:ID:       b03c5070-602a-412e-a6ce-3dda65630153
-:CREATED:  <2016-06-09 Thu 09:22>
-:END:
-
-This function is probably the most important user-facing function in the package.
-
-Derive takes a list, and based on the first element in the list, and the length of the list, it will do one of the following things:
-
- - Number :: Return 0, the derivative of a number is 0, except in certain cases listed above.
- - Symbol, and length is 1 :: This is a variable.  Return 1, $\frac{d}{dx}x=1$.
- - Expansion Function Available :: There is an expansion rule, use this to derive the equation.
- - No Expansion Rule :: Signal an error, equation was likely malformed.
-
-#+Caption: Derivative Driver
-#+Name: derive-derivative-driver
-#+BEGIN_SRC lisp
-  (defun derive (function)
-    (check-type function cons)
-    (let ((op (first function)))
-      (cond
-        ((numberp op)
-         0)
-        ((and (symbolp op)
-            (= 1 (length function)))
-         1)
-        (t
-         (let ((expansion-function (get-expansion function)))
-           (if (functionp expansion-function)
-               (apply expansion-function (rest function))
-               (error "Undefined expansion: ~a" op)))))))
-#+END_SRC
-
-** TODO Miscellaneous Functions
-:PROPERTIES:
-:ID:       41439f82-466f-46a5-b706-df43e5f23650
-:CREATED:  <2016-06-09 Thu 09:22>
-:END:
-
-As Common Lisp does not have cosecant or secant functions, and they appear in the definitions of the derivatives of some trigonometric functions, I define them here as follows:
-
-\[ \csc x = \frac{1}{\sin x} \]
-
-\[ \sec x = \frac{1}{\cos x} \]
-
-I also take the liberty of defining two macros, a ~define-equation-functions~ macro and ~take-derivative~.  The first defines two functions, one that is the original equation, and the second being the derivative of the original equation.  The ~take-derivative~ macro does simply that, but allows you to write the equation without having to quote it, providing a little bit of syntactic sugar.
-
-#+Caption: Miscellaneous Functions
-#+Name: derive-misc-functions
-#+BEGIN_SRC lisp
-  (defun csc (x)
-    "csc -- (csc x)
-  Calculate the cosecant of x"
-    (/ (sin x)))
-
-  (defun sec (x)
-    "sec -- (sec x)
-  Calculate the secant of x"
-    (/ (cos x)))
-
-  (defmacro define-equation-functions (name variable equation)
-    (let ((derivative-name (symbolicate 'd/d- variable '- name))
-          (derivative (derive equation)))
-      `(progn
-         (defun ,name (,variable)
-           ,equation)
-         (defun ,derivative-name (,variable)
-           ,derivative))))
-
-  (defmacro take-derivative (equation)
-    (let ((derivative (derive equation)))
-      `',derivative))
-#+END_SRC
-
-** TODO Assembly
-:PROPERTIES:
-:ID:       e15262d2-23d5-4306-a68b-387a21265b6e
-:CREATED:  <2016-06-09 Thu 09:22>
-:END:
-
-Now that the functions, macros and rules are defined, it's time to put them together into a package.  This package has only one dependency, Common Lisp itself, and exports the following five symbols: ~derive~, ~csc~, ~sec~, ~define-equation-functions~ and ~take-derivative~.
-
-#+Caption: Packaging
-#+Name: derive-packaging
-#+BEGIN_SRC lisp :tangle "larcs-derive.lisp"
-  (in-package #:larcs.derive)
-
-  <<derive-expansion-storage>>
-
-  <<derive-expansion-retrieval>>
-
-  <<derive-match-expressions>>
-
-  <<derive-expansion-definition>>
-
-  <<derive-derivative-driver>>
-
-  <<derive-multiplication>>
-
-  <<derive-division>>
-
-  <<derive-addition-subtraction>>
-
-  <<derive-exponentials-logarithms>>
-
-  <<derive-trigonometrics>>
-
-  <<derive-misc-functions>>
-#+END_SRC
-
-* WORKING Symbolic Differentiation, Redux [0/4]
+* WORKING Symbolic Differentiation [0/4]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 22:45>
 :END:
@@ -1829,7 +1437,7 @@ Now that the functions, macros and rules are defined, it's time to put them toge
     (let ((expansion-name (symbolicate expression-type '-expansion)))
       `(progn
          (when (not (member ',expression-type (mapcar #'car *rules*)))
-           (setq *rules* (append '((,expression-type . ,expansion-name)) *rules*)))
+           (setq *rules* (append *rules* '((,expression-type . ,expansion-name)))))
          (defun ,expansion-name (,@arguments-list)
            ,@body))))
 #+END_SRC
@@ -1862,7 +1470,7 @@ Now that the functions, macros and rules are defined, it's time to put them toge
   (defvar *rules* '())
 #+END_SRC
 
-** WORKING Rules [0/3]
+** WORKING Rules [0/9]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 22:52>
 :ID:       fdcebadd-b53d-4f59-99a4-4a3782e017a2
@@ -1874,6 +1482,11 @@ Now that the functions, macros and rules are defined, it's time to put them toge
   <<sd-numbers>>
   <<sd-variables>>
   <<sd-polynomial-terms>>
+  <<sd-multiplicatives>>
+  <<sd-rationals>>
+  <<sd-additives>>
+  <<sd-subtractives>>
+  <<sd-exponentials-and-logarithmics>>
 #+END_SRC
 
 *** TODO Numbers
@@ -1914,10 +1527,9 @@ Now that the functions, macros and rules are defined, it's time to put them toge
 #+Name: sd-polynomial-terms
 #+BEGIN_SRC lisp
   (define-derivative polynomial-term (&rest term)
-    (let* ((polynomial `(* ,@term))
-           (coefficient (coefficient polynomial))
-           (variable (term-variable polynomial))
-           (power (get-power polynomial)))
+    (let* ((coefficient (coefficient term))
+           (variable (term-variable term))
+           (power (get-power term)))
       (cond
         ((= 1 power)
          coefficient)
@@ -1925,6 +1537,135 @@ Now that the functions, macros and rules are defined, it's time to put them toge
          `(* ,(* coefficient power) ,variable))
         (t
          `(* ,(* coefficient power) (expt ,variable ,(1- power)))))))
+#+END_SRC
+
+*** TODO Multiplicatives
+:PROPERTIES:
+:CREATED:  <2016-06-14 Tue 09:57>
+:ID:       161906a4-5c14-4a84-bf1d-7fae9e20b14f
+:END:
+
+#+Caption: Multiplicatives
+#+Name: sd-multiplicatives
+#+BEGIN_SRC lisp
+  (define-derivative multiplicative (function first &rest rest)
+    (declare (ignore function))
+    (if (= 1 (length rest))
+        (let ((second (first rest)))
+          (cond
+            ((and (classified-as-p first 'numeric)
+                (classified-as-p second 'numeric))
+             (* first second))
+            ((classified-as-p first 'numeric)
+             `(* ,first ,(differentiate second)))
+            ((classified-as-p second 'numeric)
+             `(* ,second ,(differentiate first)))
+            (t
+             `(+ (* ,first ,(differentiate second))
+                 (* ,second ,(differentiate first))))))
+        (differentiate `(* ,first (* ,@rest)))))
+#+END_SRC
+
+*** TODO Rationals
+:PROPERTIES:
+:CREATED:  <2016-06-14 Tue 10:21>
+:ID:       cd681a61-a143-4e02-a6a9-e7b8f9b9c77d
+:END:
+
+#+Caption: Rational Derivatives
+#+Name: sd-rationals
+#+BEGIN_SRC lisp
+  (define-derivative rational (function numerator denominator)
+    (declare (ignore function))
+    `(/ (- (* ,numerator ,(differentiate denominator))
+           (* ,denominator ,(differentiate numerator)))
+        (expt ,denominator 2)))
+#+END_SRC
+
+*** TODO Additives
+:PROPERTIES:
+:CREATED:  <2016-06-14 Tue 10:30>
+:ID:       d3a07d51-977c-4b1e-9a63-0eb415977f46
+:END:
+
+#+Caption: Additives
+#+Name: sd-additives
+#+BEGIN_SRC lisp
+  (define-derivative additive (function &rest terms)
+    (declare (ignore function))
+    `(+ ,@(map 'list #'(lambda (term) (differentiate term)) terms)))
+#+END_SRC
+
+*** TODO Subtractives
+:PROPERTIES:
+:CREATED:  <2016-06-14 Tue 10:30>
+:ID:       063f61ee-6fd9-4286-9008-9c80ef0985a5
+:END:
+
+#+Caption: Subtractives
+#+Name: sd-subtractives
+#+BEGIN_SRC lisp
+  (define-derivative subtractive (function &rest terms)
+    (declare (ignore function))
+    `(- ,@(map 'list #'(lambda (term) (differentiate term)) terms)))
+#+END_SRC
+
+*** TODO Exponentials and Logarithmics
+:PROPERTIES:
+:CREATED:  <2016-06-14 Tue 10:37>
+:END:
+
+#+Caption: Exponentials and Logarithms
+#+Name: sd-exponentials-and-logarithms
+#+BEGIN_SRC lisp
+  (define-derivative natural-exponential (function expression)
+    (declare (ignore function))
+    `(exp ,expression))
+
+  (define-derivative exponential (function base power)
+    (declare (ignore function))
+    (if (numberp power)
+        (if (listp base)
+            `(* ,power (expt ,base ,(1- power)) ,(differentiate base))
+            `(* ,power (expt ,base ,(1- power))))
+        `(* (expt ,base ,power) (log ,base))))
+
+  (define-derivative natural-logarithmic (function expression)
+    (declare (ignore function))
+    `(/ ,(differentiate expression) ,expression))
+
+  (define-derivative logarithmic (function number base)
+    (declare (ignore function))
+    `(/ ,(differentiate (cons 'log number)) (* (log ,base) ,number)))
+#+END_SRC
+
+*** TODO Trigonometric Functions
+:PROPERTIES:
+:CREATED:  <2016-06-14 Tue 10:45>
+:END:
+
+#+Caption: Trigonometric Functions
+#+Name: sd-trigonometric-functions
+#+BEGIN_SRC lisp
+  (define-derivative sin (function expression)
+    (declare (ignore function))
+    `(* ,(differentiate expression) (cos ,expression)))
+
+  (define-derivative cos (function expression)
+    (declare (ignore function))
+    `(* ,(differentiate expression) (- (sin ,expression))))
+
+  (define-derivative tan (function expression)
+    (declare (ignore function))
+    `(* ,(differentiate expression) (expt (sec ,expression) 2)))
+
+  (define-derivative csc (function expression)
+    (declare (ignore function))
+    `(* ,(differentiate expression) (- (csc ,expression)) (cot ,expression)))
+
+  (define-derivative cot (function expression)
+    (declare (ignore function))
+    `(* ,(differentiate expression) (- (expt (csc ,expression) 2))))
 #+END_SRC
 
 ** TODO Driver
@@ -1939,7 +1680,7 @@ Now that the functions, macros and rules are defined, it's time to put them toge
   (defun differentiate (function)
     (let ((rule (get-rule function)))
       (when rule
-        (apply rule (if (listp function) (rest function) (list function))))))
+        (apply rule (ensure-list function)))))
 #+END_SRC
 
 ** TODO Assembly
@@ -2449,19 +2190,6 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
              #:save-variable-p
              #:single-term-combinable-p))
 
-  (defpackage #:larcs.derive
-    (:use #:cl
-          #:larcs.common
-          #:larcs.classify)
-    (:import-from #:alexandria
-                  #:symbolicate)
-    (:import-from #:com.informatimago.common-lisp.cesarum.list
-                  #:aget
-                  #:ensure-list)
-    (:export :derive
-             :define-equation-functions
-             :take-derivative))
-
   (defpackage #:larcs.differentiate
     (:use #:cl
           #:larcs.common
@@ -2472,9 +2200,7 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
     (:import-from #:com.informatimago.common-lisp.cesarum.list
                   #:aget
                   #:ensure-list)
-    (:export :derive
-             :define-equation-functions
-             :take-derivative))
+    (:export :differentiate))
 
   (defpackage #:larcs.to-tex
     (:use #:cl
