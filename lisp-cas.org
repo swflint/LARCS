@@ -2236,6 +2236,14 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
 :CREATED:  <2016-06-13 Mon 14:51>
 :END:
 
+#+Caption: Text User System Definition
+#+Name: text-ui-system-definition
+#+BEGIN_SRC lisp
+  '(#:alexandria
+    #:command-line-arguments
+    #:cl-readline)
+#+END_SRC
+
 ** TODO Functionality
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 14:51>
