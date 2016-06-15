@@ -316,7 +316,7 @@ Because case is such a useful tool, and because it provides a way to ensure that
 :ID:       5c7c3e0b-9170-48e9-a414-6ac4528f9ac3
 :END:
 
-The ~when-classified-as~ macro takes a classification, variable and a body.  It expands to a ~when~ form, with the classification and variable put into a ~classified-as-p~ call becoming the predicate, determining whether or not the body is run.
+# The ~when-classified-as~ macro takes a classification, variable and a body.  It expands to a ~when~ form, with the classification and variable put into a ~classified-as-p~ call becoming the predicate, determining whether or not the body is run.
 
 #+Caption: When Classified
 #+Name: et-when-classified
@@ -332,21 +332,21 @@ The ~when-classified-as~ macro takes a classification, variable and a body.  It 
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
 :END:
 
-I must define several different classifications, ranging from simple numeric expressions (numbers) to trigonometric expressions ($\sin$, $\cos$ and the lot).  They are as follows:
+# I must define several different classifications, ranging from simple numeric expressions (numbers) to trigonometric expressions ($\sin$, $\cos$ and the lot).  They are as follows:
 
- - Numbers
- - Variables
- - Non-Atomics
- - Additives
- - Subtractives
- - Powers
- - Exponentials
- - Multiplicatives
- - Logarithmics
- - Rationals
- - Polynomial Terms
- - Polynomials
- - Trigonometrics
+#  - Numbers
+#  - Variables
+#  - Non-Atomics
+#  - Additives
+#  - Subtractives
+#  - Powers
+#  - Exponentials
+#  - Multiplicatives
+#  - Logarithmics
+#  - Rationals
+#  - Polynomial Terms
+#  - Polynomials
+#  - Trigonometrics
 
 #+Caption: Possible Classifications
 #+Name: et-possible-classifications
@@ -372,7 +372,7 @@ I must define several different classifications, ranging from simple numeric exp
 :ID:       42081153-7cc5-42ff-a17f-53e171c6d1a7
 :END:
 
-Check to see if a given expression is a number using ~numberp~.
+# Check to see if a given expression is a number using ~numberp~.
 
 #+Caption: Classify Numbers
 #+Name: et-classify-numbers
@@ -387,7 +387,7 @@ Check to see if a given expression is a number using ~numberp~.
 :ID:       4c676754-ef9a-485f-91a2-8f1bd83c7659
 :END:
 
-Check to see if a given expression is a variable, that is to say a symbol, using ~symbolp~.
+# Check to see if a given expression is a variable, that is to say a symbol, using ~symbolp~.
 
 #+Caption: Classify Variables
 #+Name: et-classify-variables
@@ -402,7 +402,7 @@ Check to see if a given expression is a variable, that is to say a symbol, using
 :ID:       414df063-0be1-4849-8b9f-d71aa828be2a
 :END:
 
-Check to see if a given expression is a non-atomic (any expression other than a number or a variable) using ~listp~.
+# Check to see if a given expression is a non-atomic (any expression other than a number or a variable) using ~listp~.
 
 #+Caption: Classify Non-Atomics
 #+Name: et-classify-non-atomics
@@ -417,7 +417,7 @@ Check to see if a given expression is a non-atomic (any expression other than a 
 :ID:       736d79dc-f34c-4247-b592-690d7f2fddd9
 :END:
 
-Check to see whether or not an expression is an additive by ensuring that it is non-atomic and the first element is the symbol ~+~.
+# Check to see whether or not an expression is an additive by ensuring that it is non-atomic and the first element is the symbol ~+~.
 
 #+Caption: Classify Additives
 #+Name: et-classify-additives
@@ -433,7 +433,7 @@ Check to see whether or not an expression is an additive by ensuring that it is 
 :ID:       c59d086f-2f49-485a-8f96-57d85e774f60
 :END:
 
-Check to see whether a given expression is a subtractive by ensuring it is non-atomic and the first element is the symbol ~-~.
+# Check to see whether a given expression is a subtractive by ensuring it is non-atomic and the first element is the symbol ~-~.
 
 #+Caption: Classify Subtractives
 #+Name: et-classify-subtractives
@@ -449,7 +449,7 @@ Check to see whether a given expression is a subtractive by ensuring it is non-a
 :ID:       cc15dd10-7cc0-4370-9e69-daf903b30ad5
 :END:
 
-This is used to classify "powers", that is to say, equations of the form $x^n$, where $n$ is any numeric.  It does so by first ensuring that the expression is non-atomic, following that, it checks to see if the first element in the expression is the symbol ~expt~, the second is a variable and the third a numeric.
+# This is used to classify "powers", that is to say, equations of the form $x^n$, where $n$ is any numeric.  It does so by first ensuring that the expression is non-atomic, following that, it checks to see if the first element in the expression is the symbol ~expt~, the second is a variable and the third a numeric.
 
 #+Caption: Classify Powers
 #+Name: et-classify-powers
@@ -467,7 +467,7 @@ This is used to classify "powers", that is to say, equations of the form $x^n$, 
 :ID:       a11fdd94-d56c-4749-bb22-dca75159dbcb
 :END:
 
-This classifies both natural and non-natural exponentials.  It does so by ensuring that natural exponentials ($e^x$) are of the form ~(exp x)~, and non-natural exponentials ($a^x$) are of the form ~(expt base power)~.
+# This classifies both natural and non-natural exponentials.  It does so by ensuring that natural exponentials ($e^x$) are of the form ~(exp x)~, and non-natural exponentials ($a^x$) are of the form ~(expt base power)~.
 
 #+Caption: Classify Exponentials
 #+Name: et-classify-exponentials
@@ -489,7 +489,7 @@ This classifies both natural and non-natural exponentials.  It does so by ensuri
 :ID:       feb85a20-93e3-45a1-be01-9893ecc07c53
 :END:
 
-To classify multiplicative expressions, it is first ensured that they are non-atomic, and then, the first element is tested to see if it is equal to the symbol ~*~.
+# To classify multiplicative expressions, it is first ensured that they are non-atomic, and then, the first element is tested to see if it is equal to the symbol ~*~.
 
 #+Caption: Classify Multiplicatives
 #+Name: et-classify-multiplicatives
@@ -505,7 +505,7 @@ To classify multiplicative expressions, it is first ensured that they are non-at
 :ID:       0b733d75-e1ab-413f-8f8a-6a8a47db409c
 :END:
 
-This defines the classifications for logarithmic expressions, for both natural and non-natural bases.  For natural bases ($\ln x$), it ensures that expressions are of the form ~(log x)~, and for non-natural bases ($\log_{b}x$) are of the form ~(log expression base-expression)~.
+# This defines the classifications for logarithmic expressions, for both natural and non-natural bases.  For natural bases ($\ln x$), it ensures that expressions are of the form ~(log x)~, and for non-natural bases ($\log_{b}x$) are of the form ~(log expression base-expression)~.
 
 #+Caption: Classify Lograthmics
 #+Name: et-classify-logarithmics
@@ -527,7 +527,7 @@ This defines the classifications for logarithmic expressions, for both natural a
 :ID:       a4505a66-c249-4438-a6df-81e21718e23e
 :END:
 
-Rationals are classified similarly to multiplicatives, checking to see whether or not they are non-atomic and checking whether or not the first element is ~/~, but rationals are also defined as only having three elements, the operation and two following operands, and thus, the length is also checked.
+# Rationals are classified similarly to multiplicatives, checking to see whether or not they are non-atomic and checking whether or not the first element is ~/~, but rationals are also defined as only having three elements, the operation and two following operands, and thus, the length is also checked.
 
 #+Caption: Classify Rationals
 #+Name: et-classify-rationals
@@ -544,11 +544,11 @@ Rationals are classified similarly to multiplicatives, checking to see whether o
 :ID:       37da52b7-98a0-4a16-8a17-a62fcff2ba59
 :END:
 
-To classify a polynomial term, The expression is checked to see if it satisfies one of the following:
- - Numeric
- - Variable
- - Power
- - Multiplicative that composed of a numeric and a power or variable.
+# To classify a polynomial term, The expression is checked to see if it satisfies one of the following:
+#  - Numeric
+#  - Variable
+#  - Power
+#  - Multiplicative that composed of a numeric and a power or variable.
 
 #+Caption: Classify Polynomial Term
 #+Name: et-classify-polynomial-term
@@ -573,7 +573,7 @@ To classify a polynomial term, The expression is checked to see if it satisfies 
 :ID:       8cd9045b-81dd-4571-930a-a852f81969c9
 :END:
 
-This determines whether or not a given expression is a polynomial, that is to say it is either ~additive~ or ~subtractive~, and each and every term is classified as ~polynomial-term~, that is to say, a ~numeric~, ~power~, or a ~multiplicative~ consisting of a ~numeric~ followed by a ~power~.
+# This determines whether or not a given expression is a polynomial, that is to say it is either ~additive~ or ~subtractive~, and each and every term is classified as ~polynomial-term~, that is to say, a ~numeric~, ~power~, or a ~multiplicative~ consisting of a ~numeric~ followed by a ~power~.
 
 #+Caption: Classify Polynomials
 #+Name: et-classify-polynomials
@@ -596,13 +596,13 @@ This determines whether or not a given expression is a polynomial, that is to sa
 :ID:       6f433cad-4b81-4a6f-ab65-981f4a924812
 :END:
 
-Trigonometrics are classified as many others are, they are first checked to see if they are non-atomic, and then the first element is checked, with the following being valid symbols:
- - ~sin~
- - ~cos~
- - ~tan~
- - ~csc~
- - ~sec~
- - ~cot~
+# Trigonometrics are classified as many others are, they are first checked to see if they are non-atomic, and then the first element is checked, with the following being valid symbols:
+#  - ~sin~
+#  - ~cos~
+#  - ~tan~
+#  - ~csc~
+#  - ~sec~
+#  - ~cot~
 
 #+Caption: Classify Trigonometrics
 #+Name: et-classify-trigonometrics
@@ -642,7 +642,7 @@ Trigonometrics are classified as many others are, they are first checked to see 
 :ID:       ff35cd33-3c10-4a45-a2c5-32bc3fdc1acc
 :END:
 
-The storage of classifications is simple, they are stored as an alist in the form of ~(name . classifier)~, in the list ~*classifications*~.
+# The storage of classifications is simple, they are stored as an alist in the form of ~(name . classifier)~, in the list ~*classifications*~.
 
 #+Caption: Classification Storage
 #+Name: et-classification-storage
