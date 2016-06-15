@@ -327,7 +327,7 @@ Another utility macro is ~when-classified-as~, which takes a ~classification~, a
        ,@body))
 #+END_SRC
 
-** WORKING Classifications [4/13]
+** WORKING Classifications [5/13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
@@ -431,13 +431,14 @@ When an expression is non-atomic, and the first element is the symbol ~+~, it is
       (eq '+ (first expression))))
 #+END_SRC
 
-*** TODO Subtractive
+*** DONE Subtractive
+CLOSED: [2016-06-15 Wed 00:06]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:26>
 :ID:       c59d086f-2f49-485a-8f96-57d85e774f60
 :END:
 
-# Check to see whether a given expression is a subtractive by ensuring it is non-atomic and the first element is the symbol ~-~.
+A non-atomic expression for which the first element is the symbol ~-~ is a subtractive expression.
 
 #+Caption: Classify Subtractives
 #+Name: et-classify-subtractives
