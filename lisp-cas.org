@@ -211,7 +211,7 @@ To be able to apply an expansion, you need to determine eligibility.  To do this
   <<constants-and-greeks>>
 #+END_SRC
 
-* WORKING Expression Typing [6/8]
+* WORKING Expression Typing [7/8]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:15>
 :ID:       c6921b1e-d269-4243-acff-5a77685c331e
@@ -327,7 +327,7 @@ Another utility macro is ~when-classified-as~, which takes a ~classification~, a
        ,@body))
 #+END_SRC
 
-** WORKING Classifications [12/13]
+** DONE Classifications [13/13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
@@ -603,19 +603,14 @@ Polynomials are compound classifications that are defined as expressions which a
                    (rest expression))))))
 #+END_SRC
 
-*** TODO Trigonometrics
+*** DONE Trigonometrics
+CLOSED: [2016-06-15 Wed 00:22]
 :PROPERTIES:
 :CREATED:  <2016-05-04 Wed 13:38>
 :ID:       6f433cad-4b81-4a6f-ab65-981f4a924812
 :END:
 
-# Trigonometrics are classified as many others are, they are first checked to see if they are non-atomic, and then the first element is checked, with the following being valid symbols:
-#  - ~sin~
-#  - ~cos~
-#  - ~tan~
-#  - ~csc~
-#  - ~sec~
-#  - ~cot~
+Trigonometrics are defined as non atomic expressions that are two elements long, for which the first element of the expression is either ~sin~, ~cos~, ~tan~, ~csc~, ~sec~, or ~cot~.  For each of these there is a classification seperate from the generic ~trigonometric~ classification.
 
 #+Caption: Classify Trigonometrics
 #+Name: et-classify-trigonometrics
