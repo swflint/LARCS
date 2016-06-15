@@ -327,7 +327,7 @@ Another utility macro is ~when-classified-as~, which takes a ~classification~, a
        ,@body))
 #+END_SRC
 
-** WORKING Classifications [7/13]
+** WORKING Classifications [8/13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
@@ -490,13 +490,14 @@ There are two types of exponentials, natural and non-natural.  Natural exponenti
          (eq 'expt (first expression)))))
 #+END_SRC
 
-*** TODO Multiplicatives
+*** DONE Multiplicatives
+CLOSED: [2016-06-15 Wed 00:12]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:27>
 :ID:       feb85a20-93e3-45a1-be01-9893ecc07c53
 :END:
 
-# To classify multiplicative expressions, it is first ensured that they are non-atomic, and then, the first element is tested to see if it is equal to the symbol ~*~.
+A multiplicative expression is non-atomic, of any length, and the first element is the symbol ~*~.
 
 #+Caption: Classify Multiplicatives
 #+Name: et-classify-multiplicatives
