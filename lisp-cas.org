@@ -211,7 +211,7 @@ To be able to apply an expansion, you need to determine eligibility.  To do this
   <<constants-and-greeks>>
 #+END_SRC
 
-* WORKING Expression Typing [2/8]
+* WORKING Expression Typing [3/8]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:15>
 :ID:       c6921b1e-d269-4243-acff-5a77685c331e
@@ -262,13 +262,14 @@ To classify an expression, the expression and name of the possible classificatio
                  expression)))
 #+END_SRC
 
-** TODO Classify Expression
+** DONE Classify Expression
+CLOSED: [2016-06-14 Tue 23:23]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:09>
 :ID:       82d75d54-1d33-400b-86a3-7d16af938ac8
 :END:
 
-To completely classify an expression, the ~*classifications*~ alist is mapped over, checking to see if each classification is applicable to the expression, if so, the name being returned, otherwise ~nil~.  All nils are removed, leaving the complete classification, which is returned for use.
+While being able to check if an expression is given a specific classification is vital, for some things, being able to see what all possible classifications for an expression are can be quite useful.  To do this, an expression is passed in, and for each possible classification in the classification storage, it is checked to see whether or not the classification is possible.  If it is, the classification is pushed on to a list of valid classifications.  When the possible classifications are exhausted, the list of valid classifications is reversed and returned.
 
 #+Caption: Classify Expression
 #+Name: et-classify-expression
