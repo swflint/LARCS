@@ -672,7 +672,7 @@ The storage of classifications is simple, they are stored as an alist in the for
   <<et-possible-classifications>>
 #+END_SRC
 
-* WORKING Algebraic Manipulation [2/6]
+* WORKING Algebraic Manipulation [1/5]
 :PROPERTIES:
 :CREATED:  <2016-06-09 Thu 09:20>
 :ID:       b2c1fd45-b631-48f9-a093-66e1a0faa77f
