@@ -327,7 +327,7 @@ Another utility macro is ~when-classified-as~, which takes a ~classification~, a
        ,@body))
 #+END_SRC
 
-** WORKING Classifications [2/13]
+** WORKING Classifications [3/13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
@@ -398,13 +398,14 @@ Variables are defined as anything that satisfies the Common Lisp predicate, ~sym
     (symbolp expression))
 #+END_SRC
 
-*** TODO Non Atomics
+*** DONE Non Atomics
+CLOSED: [2016-06-15 Wed 00:02]
 :PROPERTIES:
 :CREATED:  <2016-05-04 Wed 19:52>
 :ID:       414df063-0be1-4849-8b9f-d71aa828be2a
 :END:
 
-# Check to see if a given expression is a non-atomic (any expression other than a number or a variable) using ~listp~.
+Non-atomic is a classification for anything other than numerics and variables.  It is defined as anything that satisfies the predicate ~listp~.
 
 #+Caption: Classify Non-Atomics
 #+Name: et-classify-non-atomics
