@@ -333,21 +333,20 @@ Another utility macro is ~when-classified-as~, which takes a ~classification~, a
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
 :END:
 
-# I must define several different classifications, ranging from simple numeric expressions (numbers) to trigonometric expressions ($\sin$, $\cos$ and the lot).  They are as follows:
+I define the following classifications:
 
-#  - Numbers
-#  - Variables
-#  - Non-Atomics
-#  - Additives
-#  - Subtractives
-#  - Powers
-#  - Exponentials
-#  - Multiplicatives
-#  - Logarithmics
-#  - Rationals
-#  - Polynomial Terms
-#  - Polynomials
-#  - Trigonometrics
+ - Numerics :: All numbers
+ - Variables :: Any symbols
+ - Non-atomics :: Anything that isn't simply a number or a variable
+ - Additives :: Expressions that are adding multiple terms
+ - Subtractives :: Expressions subtracting multiple terms
+ - Powers :: Expressions of the form $x^n$, where $x$ is a variable, and $n$ is a numeric.
+ - Exponentials :: Expressions of the form $x^y$ or $e^y$, where $x$ and $y$ are generic expressions, and $e$ is Euler's constant.
+ - Logarithmics :: Expressions of the form of $\ln x$ or $\log_b x$, where $x$ and $b$ are generic expressions.
+ - Rationals :: Expressions of the form $\frac{f(x)}{g(x)}$.
+ - Polynomial Terms :: Any integers, multiplicatives of the form $nx^m$ or powers of the form $x^m$, where $x$ is a variable and $n$ and $m$ are numerics.
+ - Polynomials :: Additives or Subtractives consisting solely of Polynomial Terms.
+ - Trigonometrics :: The trig functions: $\sin$, $\cos$, $\tan$, $\csc$, $\sec$ and $\cot$.
 
 #+Caption: Possible Classifications
 #+Name: et-possible-classifications
