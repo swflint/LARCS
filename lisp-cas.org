@@ -211,7 +211,7 @@ To be able to apply an expansion, you need to determine eligibility.  To do this
   <<constants-and-greeks>>
 #+END_SRC
 
-* WORKING Expression Typing [7/8]
+* DONE Expression Typing [8/8]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:15>
 :ID:       c6921b1e-d269-4243-acff-5a77685c331e
@@ -659,11 +659,14 @@ Classifications are stored in an alist, with the key being the name of the class
   (defvar *classifications* '())
 #+END_SRC
 
-** TODO Assembly
+** DONE Assembly
+CLOSED: [2016-06-15 Wed 00:26]
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 16:59>
 :ID:       bb1d3eb5-b9bf-4378-9716-87ab57dcc8a3
 :END:
+
+This assembles the classification library, which in the ~#:larcs.classify~ package.  It correctly resolves the order of the code, taking it from simple blocks to a complete file.
 
 #+Caption: Expression Typing Assembly
 #+Name: et-assembly
