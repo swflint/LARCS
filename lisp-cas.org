@@ -211,7 +211,7 @@ To be able to apply an expansion, you need to determine eligibility.  To do this
   <<constants-and-greeks>>
 #+END_SRC
 
-* WORKING Expression Typing [0/8]
+* WORKING Expression Typing [1/8]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:15>
 :ID:       c6921b1e-d269-4243-acff-5a77685c331e
@@ -219,18 +219,14 @@ To be able to apply an expansion, you need to determine eligibility.  To do this
 
 To be able to provide various forms of matching and manipulation, the type of an expression must be determined.  This is done by analyzing the contents of the expression.  To accomplish this, there must be a way to define a classifier, store all possible classifiers, check a classifier and produce a classification.  To provide more flexibility in programming, there is also a special version of case, called ~classification-case~ and a when-pattern macro called ~when-classified-as~.
 
-** TODO Define Classification
+** DONE Define Classification
+CLOSED: [2016-06-14 Tue 23:00]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       d8826a51-50b8-467a-9e52-158502bd4138
 :END:
 
-This is the classification definition macro, ~define-classification~.  It takes one symbol argument, ~name~ (the name of the classification), and a body, which is encapsulated within a defun, and binds the following variables:
-
- - ~expression~ :: the expression which is to be classified
- - ~length~ :: the length of the expression if the expression is a list, or 0 if it is not.
-
-Aside from defining the classification, it also pushes the classification name and the classifier onto the stack, which can be used for direct classification checking or to completely classify an expression.
+Classifications are defined as ~define-classification~.  This macro takes a ~name~, which is the name of the classification, and a body, which is classified within a function.  Inside the function, the following are bound: ~expression~, the expression to be classified; and, ~length~, which is the length of the expression if it's a list, otherwise, 0 if it's atomic.  A cons cell containing the name of the classification and the name of the classifier is pushed onto classification storage, and the classifier name is exported.
 
 #+Caption: Define Classification
 #+Name: et-define-classification
