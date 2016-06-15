@@ -327,7 +327,7 @@ Another utility macro is ~when-classified-as~, which takes a ~classification~, a
        ,@body))
 #+END_SRC
 
-** WORKING Classifications [6/13]
+** WORKING Classifications [7/13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
@@ -467,13 +467,14 @@ A power is any expression that is non-atomic, the first element is the symbol ~e
          (classified-as-p (third expression) 'numeric))))
 #+END_SRC
 
-*** TODO Exponentials
+*** DONE Exponentials
+CLOSED: [2016-06-15 Wed 00:11]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 15:04>
 :ID:       a11fdd94-d56c-4749-bb22-dca75159dbcb
 :END:
 
-# This classifies both natural and non-natural exponentials.  It does so by ensuring that natural exponentials ($e^x$) are of the form ~(exp x)~, and non-natural exponentials ($a^x$) are of the form ~(expt base power)~.
+There are two types of exponentials, natural and non-natural.  Natural exponentials are defined as being non-atomic, two elements long, and the first element being ~exp~.  Non-natural exponentials are defined similarly, but are three elements long, and the first of which is the symbol ~expt~.
 
 #+Caption: Classify Exponentials
 #+Name: et-classify-exponentials
