@@ -211,7 +211,7 @@ To be able to apply an expansion, you need to determine eligibility.  To do this
   <<constants-and-greeks>>
 #+END_SRC
 
-* WORKING Expression Typing [4/8]
+* WORKING Expression Typing [5/8]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:15>
 :ID:       c6921b1e-d269-4243-acff-5a77685c331e
@@ -310,13 +310,14 @@ Because case is such a useful tool, and because it provides a way to ensure that
            ,@conditions))))
 #+END_SRC
 
-** TODO When Classified
+** DONE When Classified
+CLOSED: [2016-06-14 Tue 23:44]
 :PROPERTIES:
 :CREATED:  <2016-05-30 Mon 18:31>
 :ID:       5c7c3e0b-9170-48e9-a414-6ac4528f9ac3
 :END:
 
-# The ~when-classified-as~ macro takes a classification, variable and a body.  It expands to a ~when~ form, with the classification and variable put into a ~classified-as-p~ call becoming the predicate, determining whether or not the body is run.
+Another utility macro is ~when-classified-as~, which takes a ~classification~, an expressiond named ~variable~ and a body.  It expands fairly simply to a ~when~ form, with the predicate taking the following form ~(classified-as-p variable 'classification)~, wrapping around the passed in body.
 
 #+Caption: When Classified
 #+Name: et-when-classified
