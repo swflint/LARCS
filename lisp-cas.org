@@ -52,9 +52,17 @@ It's a bold move to do what this does, building a Computer Algebra System from s
 
 This is my Computer Algebra System, and it contains the following components:
 
+ - [[id:f153a0fe-ec04-47b1-bdc5-290cc62bc985][Common Functionality]]
+ - [[id:c6921b1e-d269-4243-acff-5a77685c331e][Expression Typing]]
  - [[id:b2c1fd45-b631-48f9-a093-66e1a0faa77f][Algebraic Manipulation]]
- - [[id:360bc5f4-39ac-4161-9326-00c3daaf368c][Derivation]]
- - [[id:ed9f4311-bf9f-42df-8f46-254658b93c10][Lisp Equation Conversion to LaTeX]]
+ - [[id:ffa664b6-e147-471c-9e97-f49c4619fc99][Symbolic Solver]]
+ - [[id:b0259b8c-e285-48ca-bda0-4f04e3bc6ef2][Symbolic Trigonometry]]
+ - [[id:552f402a-a25d-4f28-94af-17934c38a529][Symbolic Differentiation]]
+ - [[id:61add971-a129-40d0-be13-24f8a4afc522][Symbolic Integration]]
+ - [[id:75f65e8a-0cc9-477f-b5e9-3c563fe7ef5c][Symbolic To Typeset Form]]
+ - [[id:89370949-8f58-41cf-8c4f-92f81d48ac23][Library Assembly]]
+ - [[id:65c8092c-1f7a-44e1-93d5-8d39e179f447][Text User Interface]]
+ - [[id:b70027f8-a665-4282-ab4b-3d0ce6bd8d17][Graphical User Interface]]
 
 * DONE What's in a name?                                              :nonum:
 CLOSED: [2016-06-09 Thu 12:48]
@@ -81,6 +89,7 @@ The CAS contained in this is called LARCS, or the Lisp Automated Rewrite and Cal
 * WORKING Common Functionality [0/4]
 :PROPERTIES:
 :CREATED:  <2016-06-11 Sat 22:23>
+:ID:       f153a0fe-ec04-47b1-bdc5-290cc62bc985
 :END:
 
 ** TODO Match Expression Generation
@@ -1369,6 +1378,7 @@ This assembles and packages the algebraic manipulation system into a single file
 * WORKING Symbolic Solver [0/3]
 :PROPERTIES:
 :CREATED:  <2016-06-11 Sat 17:55>
+:ID:       ffa664b6-e147-471c-9e97-f49c4619fc99
 :END:
 
 ** TODO Techniques
@@ -1389,6 +1399,7 @@ This assembles and packages the algebraic manipulation system into a single file
 * WORKING Symbolic Trigonometry [0/2]
 :PROPERTIES:
 :CREATED:  <2016-06-11 Sat 17:58>
+:ID:       b0259b8c-e285-48ca-bda0-4f04e3bc6ef2
 :END:
 
 ** TODO Rules
@@ -1404,6 +1415,7 @@ This assembles and packages the algebraic manipulation system into a single file
 * WORKING Symbolic Differentiation [0/4]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 22:45>
+:ID:       552f402a-a25d-4f28-94af-17934c38a529
 :END:
 
 ** WORKING Rule Definition [0/3]
@@ -1690,6 +1702,7 @@ This assembles and packages the algebraic manipulation system into a single file
 * WORKING Symbolic Integration [0/3]
 :PROPERTIES:
 :CREATED:  <2016-06-11 Sat 18:02>
+:ID:       61add971-a129-40d0-be13-24f8a4afc522
 :END:
 
 ** TODO Rules
@@ -1710,6 +1723,7 @@ This assembles and packages the algebraic manipulation system into a single file
 * WORKING Symbolic To Typeset Form [0/5]
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:13>
+:ID:       75f65e8a-0cc9-477f-b5e9-3c563fe7ef5c
 :END:
 
 ** WORKING Rule Management [0/3]
@@ -2186,6 +2200,7 @@ This assembles and packages the algebraic manipulation system into a single file
 * WORKING Library Assembly [0/2]
 :PROPERTIES:
 :CREATED:  <2016-06-11 Sat 22:30>
+:ID:       89370949-8f58-41cf-8c4f-92f81d48ac23
 :END:
 
 ** TODO Package Definitions
@@ -2283,6 +2298,7 @@ This assembles and packages the algebraic manipulation system into a single file
 * WORKING Text User Interface [0/2]
 :PROPERTIES:
 :CREATED:  <2016-06-11 Sat 22:31>
+:ID:       65c8092c-1f7a-44e1-93d5-8d39e179f447
 :END:
 
 ** TODO System Definition
@@ -2306,6 +2322,7 @@ This assembles and packages the algebraic manipulation system into a single file
 * WORKING Graphical User Interface [0/3]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 14:51>
+:ID:       b70027f8-a665-4282-ab4b-3d0ce6bd8d17
 :END:
 
 ** TODO System Definition
