@@ -217,9 +217,7 @@ To be able to apply an expansion, you need to determine eligibility.  To do this
 :ID:       c6921b1e-d269-4243-acff-5a77685c331e
 :END:
 
-To accomplish the goal of providing a complete system to manipulate algebraic expressions, a way to determine the type of expression is important.  This will allow for a form of "generic programming" to be used in the development of the manipulator functions, as a way to ensure that the correct manipulator is chosen.
-
-This includes a form of storage, the classification definition macro, a way to check a classification, an expression classifier, and all possible classifications.
+To be able to provide various forms of matching and manipulation, the type of an expression must be determined.  This is done by analyzing the contents of the expression.  To accomplish this, there must be a way to define a classifier, store all possible classifiers, check a classifier and produce a classification.  To provide more flexibility in programming, there is also a special version of case, called ~classification-case~ and a when-pattern macro called ~when-classified-as~.
 
 ** TODO Define Classification
 :PROPERTIES:
