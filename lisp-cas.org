@@ -327,7 +327,7 @@ Another utility macro is ~when-classified-as~, which takes a ~classification~, a
        ,@body))
 #+END_SRC
 
-** WORKING Classifications [5/13]
+** WORKING Classifications [6/13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
@@ -448,13 +448,14 @@ A non-atomic expression for which the first element is the symbol ~-~ is a subtr
       (eq '- (first expression))))
 #+END_SRC
 
-*** TODO Powers
+*** DONE Powers
+CLOSED: [2016-06-15 Wed 00:07]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:27>
 :ID:       cc15dd10-7cc0-4370-9e69-daf903b30ad5
 :END:
 
-# This is used to classify "powers", that is to say, equations of the form $x^n$, where $n$ is any numeric.  It does so by first ensuring that the expression is non-atomic, following that, it checks to see if the first element in the expression is the symbol ~expt~, the second is a variable and the third a numeric.
+A power is any expression that is non-atomic, the first element is the symbol ~expt~, the second is a variable and the third is a numeric.
 
 #+Caption: Classify Powers
 #+Name: et-classify-powers
