@@ -211,7 +211,7 @@ To be able to apply an expansion, you need to determine eligibility.  To do this
   <<constants-and-greeks>>
 #+END_SRC
 
-* WORKING Expression Typing [3/8]
+* WORKING Expression Typing [4/8]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:15>
 :ID:       c6921b1e-d269-4243-acff-5a77685c331e
@@ -285,13 +285,14 @@ While being able to check if an expression is given a specific classification is
             (push name classifications))))))
 #+END_SRC
 
-** TODO Classification Case
+** DONE Classification Case
+CLOSED: [2016-06-14 Tue 23:34]
 :PROPERTIES:
 :CREATED:  <2016-05-20 Fri 14:15>
 :ID:       19a4e467-baa0-47eb-9267-93ff3801b1fd
 :END:
 
-Following the case pattern, and to allow for cleaner code, I've defined the classification case macro.  It does this by taking a variable name and a list of cases.  These are then mapped over, producing clauses suitable for a ~cond~ expression, to which this macro finally expands, binding the complete classification of the given expression to ~the-classification~.
+Because case is such a useful tool, and because it provides a way to ensure that an expression doesn't fall through when acting on it, I've written the ~classification-case~ macro.  It takes an expression, named ~var~ and a list of cases, in the form of ~(classification body-form-1 body-form-2 body-form-n)~.  It transforms the cases, converting them to the form ~((classified-as-p expression 'type) body-form-1 body-form-2 body-form-n)~.  It finally expands to a ~cond~ in which ~the-classification~ is bound to the full and complete classification of the passed expression.
 
 #+Caption: Classification Case
 #+Name: et-classification-case
