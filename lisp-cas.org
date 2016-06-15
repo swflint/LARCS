@@ -1359,15 +1359,10 @@ This assembles and packages the algebraic manipulation system into a single file
 #+Name: am-packaging
 #+BEGIN_SRC lisp :tangle "larcs-manipulation.lisp"
   (in-package #:larcs.manipulate)
-
   <<am-determine-expression-type>>
-
   <<am-collect-variables>>
-
   <<am-collect-terms>>
-
   <<am-polynomial-related-functions>>
-
   <<am-expression-manipulation>>
 #+END_SRC
 
