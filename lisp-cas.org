@@ -1707,299 +1707,451 @@ This assembles and packages the algebraic manipulation system into a single file
 :CREATED:  <2016-06-11 Sat 18:02>
 :END:
 
-* WORKING Symbolic Form to Typeset [0/5]
+* WORKING Symbolic To Typeset Form [0/5]
 :PROPERTIES:
-:CREATED:  <2016-06-09 Thu 09:23>
-:ID:       ed9f4311-bf9f-42df-8f46-254658b93c10
+:CREATED:  <2016-06-14 Tue 17:13>
 :END:
 
-The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be inserted into a document for whatever reason, and it does so using rewrite rules, this time, rewriting s-expressions (~(+ (* 3 (expt x 3)) (expt x 2) (* 4 x) 22)~) to the \LaTeX{} equivalent, ~${{{{3} \cdot {{x ^ {3}}}}} + {{x ^ {2}}} + {{{4} \cdot {x}}} + {22}}$~ (${{{{3} \cdot {{x ^ {3}}}}} + {{x ^ {2}}} + {{{4} \cdot {x}}} + {22}}$).
-
-** WORKING Matching And Generating [0/3]
+** WORKING Rule Management [0/3]
 :PROPERTIES:
-:CREATED:  <2016-04-30 Sat 16:19>
+:CREATED:  <2016-06-14 Tue 17:17>
 :END:
 
-*** TODO Define Rule
+*** TODO Define Rules
 :PROPERTIES:
-:ID:       d4f77ac3-a059-4fb6-b936-1b9e972646ee
-:CREATED:  <2016-04-30 Sat 16:19>
+:CREATED:  <2016-06-14 Tue 17:18>
+:ID:       ec6fdb0d-546e-41fc-a7b7-5fbbfe4b7931
 :END:
 
-#+Caption: Define Matching Rule
-#+Name: tex-def-match-rule
+#+Caption: Rule Definition
+#+Name: stf-define-rule
 #+BEGIN_SRC lisp
-  (defmacro defrule (name (on arity &optional type) (&rest arguments) &body rule)
-    (let ((match-expression (generate-match-expression on arity type 'function 'arg-count))
-          (test-name (symbolicate name '-test))
-          (expansion-name (symbolicate name '-expansion)))
+  (defmacro define-converter (expression-type (&rest arguments-list) &body body)
+    (let ((expansion-name (symbolicate expression-type '-conversion)))
       `(progn
-         (defun ,test-name (function &rest arguments &aux (arg-count (length arguments)))
-           ,match-expression)
-         (defun ,expansion-name (,@arguments)
-           ,@rule)
-         (setf (aget *rules* ',name)
-               (make-rule :name ',name
-                          :test-function #',test-name
-                          :expansion-function #',expansion-name))
-         ',name)))
+         (when (not (member ',expression-type (mapcar #'car *rules*)))
+           (setq *rules* (append *rules* '((,expression-type . ,expansion-name)))))
+         (defun ,expansion-name (,@arguments-list)
+           ,@body))))
 #+END_SRC
 
-*** TODO Store Rules
+*** TODO Rule Retrieval
 :PROPERTIES:
-:ID:       002ea704-4286-429f-9149-0f29fb73c503
-:CREATED:  <2016-04-30 Sat 16:19>
+:CREATED:  <2016-06-14 Tue 17:18>
+:ID:       0c34c744-7847-46c2-bdef-228feee7c84e
+:END:
+
+#+Caption: Rule Retrieval
+#+Name: stf-rule-retrieval
+#+BEGIN_SRC lisp
+  (defun get-rule (expression)
+    (cdr (first (remove-if #'(lambda (pair)
+                               (let ((type (first pair)))
+                                 (not (classified-as-p expression type))))
+                           ,*rules*))))
+#+END_SRC
+
+*** TODO Rule Storage
+:PROPERTIES:
+:CREATED:  <2016-06-14 Tue 17:18>
+:ID:       2a75f850-7f42-47b1-91fa-7b6b467c3ea4
 :END:
 
 #+Caption: Rule Storage
-#+Name: tex-rule-storage
+#+Name: stf-rule-storage
 #+BEGIN_SRC lisp
-  (defstruct (rule (:type list))
-    name test-function expansion-function)
-
   (defvar *rules* '())
 #+END_SRC
 
-*** TODO Retrieve Rule
+** WORKING Rules [0/9]
 :PROPERTIES:
-:CREATED:  <2016-04-30 Sat 15:25>
-:ID:       e3f34100-d0a5-4039-8b9d-115cfcb0804e
+:CREATED:  <2016-06-14 Tue 17:18>
 :END:
 
-#+Caption: Retrieve Rule
-#+Name: tex-retrieve-rule
+#+Caption: Rules
+#+Name: stf-rules
 #+BEGIN_SRC lisp
-  (defun get-expansion (expression)
-    (rule-expansion-function (rest
-                              (first
-                               (remove-if-not #'(lambda (nte)
-                                                  (let ((test (rule-test-function (rest nte))))
-                                                    (apply test expression)))
-                                              ,*rules*)))))
+  <<stf-numerics>>
+  <<stf-variables>>
+  <<stf-polynomial-terms>>
+  <<stf-multiplicatives>>
+  <<stf-rationals>>
+  <<stf-additives>>
+  <<stf-subtractives>>
+  <<stf-trigonometrics>>
+  <<stf-exponentials-logarithmics>>
 #+END_SRC
 
-** WORKING Rules [0/10]
+*** TODO Numbers
 :PROPERTIES:
-:CREATED:  <2016-04-30 Sat 16:19>
+:CREATED:  <2016-06-14 Tue 17:22>
 :END:
 
-*** TODO Multiplication
-:PROPERTIES:
-:CREATED:  <2016-04-30 Sat 16:19>
-:ID:       5417a6bf-f265-418a-984b-6bfd14b79a80
-:END:
-
-#+Caption: Multiplication Rule
-#+Name: tex-multiplication-rule
+#+Caption: Numerics
+#+Name: stf-numerics
 #+BEGIN_SRC lisp
-  (defrule multiplication (* 2 >=) (&rest elements)
-    (format nil "{~{{~a}~^ \\cdot ~}}"
-            (map 'list #'convert-to-tex
-                 (map 'list #'ensure-list
+  (define-converter numeric (number)
+    (with-tex-output
+      (format nil "{~A}" number)))
+#+END_SRC
+
+*** TODO Variables
+:PROPERTIES:
+:CREATED:  <2016-06-14 Tue 17:22>
+:END:
+
+#+Caption: Variables
+#+Name: stf-variables
+#+BEGIN_SRC lisp
+  (define-converter variable (var)
+    (if (member var *constant-names*)
+        (with-tex-output
+          (format nil "{~A}" (cdr (assoc var *special-symbols-to-sequences*))))
+        (with-tex-output
+          (format nil "{~A}" (string-downcase var)))))
+#+END_SRC
+
+*** TODO Polynomial Terms
+:PROPERTIES:
+:CREATED:  <2016-06-14 Tue 17:23>
+:END:
+
+#+Caption: Polynomial Terms
+#+Name: stf-polynomial-terms
+#+BEGIN_SRC lisp
+  (define-converter polynomial-term (&rest term)
+    (let ((variable (term-variable term))
+          (coefficient (coefficient term))
+          (power (get-power term)))
+      (cond
+        ((= 1 power)
+         (with-tex-output
+           (format nil "{~A}{~A}"
+                   (convert-for-display coefficient)
+                   (convert-for-display power))))
+        ((= 0 coefficient)
+         (with-tex-output
+           (format nil "{~A}^{~A}"
+                   (convert-for-display variable)
+                   (convert-for-display power))))
+        (t
+         (with-tex-output
+           (format nil "{~A}{~A}^{~A}"
+                   (convert-for-display coefficient)
+                   (convert-for-display variable)
+                   (convert-for-display power)))))))
+#+END_SRC
+
+*** TODO Multiplicatives
+:PROPERTIES:
+:CREATED:  <2016-06-14 Tue 17:23>
+:END:
+
+#+Caption: Multiplicatives
+#+Name: stf-multiplicatives
+#+BEGIN_SRC lisp
+  (define-converter multiplicative (op &rest elements)
+    (declare (ignore op))
+    (with-tex-output
+      (format nil "{~{~A~^ \\cdot ~}}"
+              (mapcar #'convert-for-display
                       elements))))
 #+END_SRC
 
-*** TODO Division
+*** TODO Rationals
 :PROPERTIES:
-:CREATED:  <2016-04-30 Sat 16:19>
-:ID:       056aa99c-f2b9-4ab6-99ba-bfb87e3baed5
+:CREATED:  <2016-06-14 Tue 17:23>
 :END:
 
-#+Caption: Division Rule
-#+Name: tex-division-rule
+#+Caption: Rationals
+#+Name: stf-rationals
 #+BEGIN_SRC lisp
-  (defrule division (/ 2 =) (a b)
-    (format nil "{\\frac{~a}{~a}}"
-            (convert-to-tex (ensure-list a))
-            (convert-to-tex (ensure-list b))))
+  (define-converter rational (op numerator denominator)
+    (declare (ignore op))
+    (with-tex-output
+      (format nil "{\\frac{~A}{~A}}"
+              (convert-for-display numerator)
+              (convert-for-display denominator))))
 #+END_SRC
 
-*** TODO Addition
+*** TODO Additives
 :PROPERTIES:
-:ID:       68f3dac3-9f0a-4fee-8da6-a39f4491f3ce
-:CREATED:  <2016-04-30 Sat 16:19>
+:CREATED:  <2016-06-14 Tue 17:23>
 :END:
 
-#+Caption: Rule for addition
-#+Name: tex-addition-rule
+#+Caption: Additives
+#+Name: stf-additives
 #+BEGIN_SRC lisp
-  (defrule addition (+ 2 >=) (&rest elements)
-           (format nil "{~{{~a}~^ + ~}}"
-                   (map 'list #'convert-to-tex
-                        (map 'list #'ensure-list
-                             elements))))
+  (define-converter additive (op &rest terms)
+    (declare (ignore op))
+    (with-tex-output
+      (format nil "{~{~A~^ + ~}}"
+              (mapcar #'convert-for-display terms))))
 #+END_SRC
 
-*** TODO Subtraction
+*** TODO Subtractives
 :PROPERTIES:
-:ID:       9a908130-af5e-4c87-bb07-13bd66c35fcf
-:CREATED:  <2016-04-30 Sat 16:19>
+:CREATED:  <2016-06-14 Tue 17:23>
 :END:
 
-#+Caption: Subtraction Rule
-#+Name: tex-subtraction-rule
+#+Caption: Subtractives
+#+Name: stf-subtractives
 #+BEGIN_SRC lisp
-  (defrule subtraction (- 2 >=) (&rest elements)
-    (format nil "{~{{~a}~^ - ~}}"
-            (map 'list #'convert-to-tex
-                 (map 'list #'ensure-list
-                      elements))))
-#+END_SRC
-
-*** TODO Exponentials and Logarithmics
-:PROPERTIES:
-:CREATED:  <2016-04-30 Sat 16:19>
-:ID:       269dc47f-5062-4081-a08e-d50188af6a57
-:END:
-
-#+Caption: Exponentials and Logarithms
-#+Name: tex-exponentials-and-logarithms
-#+BEGIN_SRC lisp
-  (defrule exp (exp 1 =) (expression)
-    (format nil "{e^{~a}}"
-            (convert-to-tex (ensure-list expression))))
-
-  (defrule expt (expt 2 =) (base exponent)
-    (format nil "{~a ^ {~a}}"
-            (convert-to-tex (ensure-list base))
-            (convert-to-tex (ensure-list exponent))))
-
-  (defrule natlog (log 1 =) (expression)
-    (format nil "{\\ln {~a}}"
-            (convert-to-tex (ensure-list expression))))
-
-  (defrule logarithm (log 2 =) (expression base)
-    (format nil "{\\log_{~a}~a}"
-            (convert-to-tex (ensure-list base))
-            (convert-to-tex (ensure-list expression))))
+  (define-converter subtractive (op &rest terms)
+    (declare (ignore op))
+    (with-tex-output
+      (format nil "{~{~A~^ - ~}}"
+              (mapcar #'convert-for-display terms))))
 #+END_SRC
 
 *** TODO Trigonometrics
 :PROPERTIES:
-:CREATED:  <2016-04-30 Sat 16:19>
-:ID:       837806c9-7174-43a3-80b2-355b645d46ed
+:CREATED:  <2016-06-14 Tue 18:38>
 :END:
 
-#+Caption: Trigonometric Functions
-#+Name: tex-trigonometrics
+#+Caption: Trigonometrics
+#+Name: stf-trigonometrics
 #+BEGIN_SRC lisp
-  (defrule sin (sin 1 =) (arg)
-    (format nil "{\\sin {~a}}"
-            (convert-to-tex (ensure-list arg))))
+  (define-converter sin (op term)
+    (declare (ignore op))
+    (with-tex-output
+      (format nil "{\\sin {~A}}" (convert-for-display term))))
 
-  (defrule cos (cos 1 =) (arg)
-    (format nil "{\\cos {~a}}"
-            (convert-to-tex (ensure-list arg))))
+  (define-converter cos (op term)
+    (declare (ignore op))
+    (with-tex-output
+      (format nil "{\\cos {~A}}" (convert-for-display term))))
 
-  (defrule tan (tan 1 =) (arg)
-    (format nil "{\\tan {~a}}"
-            (convert-to-tex (ensure-list arg))))
+  (define-converter tan (op term)
+    (declare (ignore op))
+    (with-tex-output
+      (format nil "{\\tan {~A}}" (convert-for-display term))))
 
-  (defrule csc (csc 1 =) (arg)
-    (format nil "{\\csc {~a}}"
-            (convert-to-tex (ensure-list arg))))
+  (define-converter csc (op term)
+    (declare (ignore op))
+    (with-tex-output
+      (format nil "{\\csc {~A}}" (convert-for-display term))))
 
-  (defrule sec (sec 1 =) (arg)
-    (format nil "{\\sec {~a}}"
-            (convert-to-tex (ensure-list arg))))
+  (define-converter sec (op term)
+    (declare (ignore op))
+    (with-tex-output
+      (format nil "{\\sec {~A}}" (convert-for-display term))))
 
-  (defrule cot (cot 1 =) (arg)
-    (format nil "{\\cot {~a}}"
-            (convert-to-tex (ensure-list arg))))
+  (define-converter cot (op term)
+    (declare (ignore op))
+    (with-tex-output
+      (format nil "{\\cot {~A}}" (convert-for-display term))))
 #+END_SRC
 
-*** TODO Logic
+*** TODO Exponentials and Logarithmics
 :PROPERTIES:
-:CREATED:  <2016-04-30 Sat 18:29>
-:ID:       74d12931-343f-4982-945d-738a3e38a1db
+:CREATED:  <2016-06-14 Tue 17:24>
 :END:
 
-#+Caption: Logic Rules
-#+Name: tex-logic-rules
+#+Caption: Exponentials and Logarithmics
+#+Name: stf-exponentials-logarithmics
 #+BEGIN_SRC lisp
-  (defrule and (and 2 >=) (&rest elements)
-    (format nil "{~{{~a}~^ \\wedge ~}}"
-            (map 'list #'convert-to-tex
-                 (map 'list #'ensure-list elements))))
+  (define-converter natural-exponential (op term)
+    (declare (ignore op))
+    (with-tex-output
+      (format nil "{e^~A}" (convert-for-display term))))
 
-  (defrule or (or 2 >=) (&rest elements)
-    (format nil "{~{{~a}~^ \\vee ~}}"
-            (map 'list #'convert-to-tex
-                 (map 'list #'ensure-list elements))))
+  (define-converter exponential (op base power)
+    (declare (ignore op))
+    (with-tex-output
+      (format nil "{~A^~A}"
+              (convert-for-display base)
+              (convert-for-display power))))
 
-  (defrule not (not 1 =) (&rest elements)
-    (format nil "{\\not {~a}}"
-            (map 'list #'convert-to-tex
-                 (map 'list #'ensure-list elements))))
+  (define-converter natural-logarithmic (op term)
+    (declare (ignore op))
+    (with-tex-output
+      (format nil "{\\ln ~A}"
+              (convert-for-display term))))
+
+  (define-converter logarithmic (op term base)
+    (declare (ignore op))
+    (with-tex-output
+      (format nil "{\\log_~a ~a}"
+              (convert-for-display base)
+              (convert-for-display term))))
 #+END_SRC
 
-*** TODO Equality
+** WORKING Converter [0/4]
 :PROPERTIES:
-:CREATED:  <2016-04-30 Sat 18:29>
-:ID:       f75273d2-d523-4404-925b-af6fd01c7520
+:CREATED:  <2016-06-14 Tue 17:18>
+:ID:       88d433ad-e381-4747-8a29-2d78bc759fbf
 :END:
 
-#+Caption: Equality Rules
-#+Name: tex-equality-rules
+#+Caption: Conversion Driver
+#+Name: stf-conversion-driver
 #+BEGIN_SRC lisp
-  (defrule = (= 2 =) (lhs rhs)
-    (format nil "{{~a} = {~a}}"
-            (convert-to-tex (ensure-list lhs))
-            (convert-to-tex (ensure-list rhs))))
+  (defun convert-for-display (function)
+    (if (and (listp function)
+           (member (first function) '(and or not = sum integrate parens)))
+        (let ((operator (first function)))
+          (cond
+            ((eq operator 'and)
+             <<stf-and-operator>>
+             )
+            ((eq operator 'or)
+             <<stf-or-operator>>
+             )
+            ((eq operator 'not)
+             <<stf-not-operator>>
+             )
+            ((eq operator '=)
+             <<stf-equality-operator>>
+             )
+            ((eq operator 'sum)
+             <<stf-summation>>
+             )
+            ((eq operator 'integrate)
+             <<stf-integration>>
+             )
+            ((eq operator 'parens)
+             <<stf-parenthesis>>
+             )))
+        (let ((rule (get-rule function)))
+          (when rule
+            (apply rule (ensure-list function))))))
 #+END_SRC
 
-*** TODO Summation and Integration
+*** WORKING Logical Operators [0/4]
 :PROPERTIES:
-:CREATED:  <2016-04-30 Sat 18:30>
-:ID:       dda2827a-cee5-4efc-bd9a-4dd953829b5c
+:CREATED:  <2016-06-14 Tue 17:24>
 :END:
 
-#+Caption: Summation and Integration
-#+Name: tex-summation-and-integration
-#+BEGIN_SRC lisp
-  (defrule sum (sum 3 =) (start stop expression)
-    (format nil "{\\sum_{~a}^{~a} {~a}}"
-            (convert-to-tex (ensure-list start))
-            (convert-to-tex (ensure-list stop))
-            (convert-to-tex (ensure-list expression))))
+**** TODO And
+:PROPERTIES:
+:CREATED:  <2016-06-14 Tue 17:38>
+:ID:       733b98a1-90f1-4d13-abe8-cb86a5608aee
+:END:
 
-  (defrule integrate (integrate 4 =) (from to expression wrt)
-    (format nil "{\\int_{~a}^{~a} ~a\\,\mathrm{d}~a}"
-            (convert-to-tex (ensure-list from))
-            (convert-to-tex (ensure-list to))
-            (convert-to-tex (ensure-list expression))
-            (convert-to-tex (ensure-list wrt))))
+#+Caption: And Operator
+#+Name: stf-and-operator
+#+BEGIN_SRC lisp
+  (destructuring-bind (op &rest terms) function
+    (declare (ignore op))
+    (with-tex-output
+      (format nil "{~{~A~^ \\wedge ~}}"
+              (mapcar #'convert-for-display terms))))
 #+END_SRC
 
-*** TODO Specialty
+**** TODO Or
 :PROPERTIES:
-:CREATED:  <2016-04-30 Sat 18:30>
-:ID:       f4e6b309-289d-4b32-bc55-4740ec86a113
+:CREATED:  <2016-06-14 Tue 17:38>
+:ID:       276de305-32c4-4f79-96e7-d0a99ff24f78
 :END:
 
-#+Caption: Specialty
-#+Name: tex-specialty
+#+Caption: Or Operator
+#+Name: stf-or-operator
 #+BEGIN_SRC lisp
-  (defrule parens (parens 2 =) (type inside)
+  (destructuring-bind (op &rest terms) function
+    (declare (ignore op))
+    (with-tex-output
+      (format nil "{~{~A~^ \\vee ~}}"
+              (mapcar #'convert-for-display terms))))
+#+END_SRC
+
+**** TODO Not
+:PROPERTIES:
+:CREATED:  <2016-06-14 Tue 17:38>
+:ID:       1b0a28a4-744d-44d1-a328-7b2bb10bd0c7
+:END:
+
+#+Caption: Not Operator
+#+Name: stf-not-operator
+#+BEGIN_SRC lisp
+  (destructuring-bind (op term) function
+    (with-tex-output
+      (format nil "{\\not ~A}"
+              (convert-for-display term))))
+#+END_SRC
+
+**** TODO Equality
+:PROPERTIES:
+:CREATED:  <2016-06-14 Tue 17:41>
+:ID:       4ce4835c-e196-4494-ab4b-591690e4164c
+:END:
+
+#+Caption: Equality Operator
+#+Name: stf-equality-operator
+#+BEGIN_SRC lisp
+  (destructuring-bind (op lhs rhs) function
+    (declare (ignore op))
+    (format nil "{~A = ~A}"
+            (convert-for-display lhs)
+            (convert-for-display rhs)))
+#+END_SRC
+
+*** TODO Summation
+:PROPERTIES:
+:CREATED:  <2016-06-14 Tue 17:24>
+:ID:       98404213-b8b8-410f-b660-23b701518cea
+:END:
+
+#+Caption: Summation
+#+Name: stf-summation
+#+BEGIN_SRC lisp
+  (destructuring-bind (op start stop expression) function
+    (declare (ignore op))
+    (format nil "{\sum_~A^~A ~A}"
+            (convert-for-display start)
+            (convert-for-display stop)
+            (convert-for-display expression)))
+#+END_SRC
+
+*** TODO Integration
+:PROPERTIES:
+:CREATED:  <2016-06-14 Tue 17:39>
+:ID:       60c16d30-2bb3-497c-aaa0-4529ecfc523c
+:END:
+
+#+Caption: Integration
+#+Name: stf-integration
+#+BEGIN_SRC lisp
+  (destructuring-bind (op from to expression wrt) function
+    (declare (ignore op))
+    (with-tex-output
+      (format nil "{\\int_~A^~A ~A\\,\\mathrm{d}~A}"
+              (convert-for-display from)
+              (convert-for-display to)
+              (convert-for-display expression)
+              (convert-for-display wrt))))
+#+END_SRC
+
+*** TODO Parenthesis
+:PROPERTIES:
+:CREATED:  <2016-06-14 Tue 17:24>
+:ID:       93d643d6-2219-4c49-bba5-190520a6ff29
+:END:
+
+#+Caption: Parenthesis
+#+Name: stf-parenthesis
+#+BEGIN_SRC lisp
+  (destructuring-bind (op type expression) function
+    (declare (ignore op))
     (let* ((types '((square . ("[" . "]"))
                     (curly . ("{" . "}"))
                     (smooth . ("(" . ")"))))
            (left (cadr (assoc type types)))
            (right (cddr (assoc type types))))
-      (format nil "{\\left~a {~a} \\right~a}"
-              left
-              (convert-to-tex (ensure-list inside))
-              right)))
+      (with-tex-output
+        (format nil "{\\left~a {~a} \\right~a}"
+                left
+                (convert-for-display expression)
+                right))))
 #+END_SRC
 
-** TODO Conversion Driver
+** TODO Special Macros
 :PROPERTIES:
-:ID:       b395bdb7-7b98-49a1-b6d6-4256fb40d4fa
-:CREATED:  <2016-04-30 Sat 16:19>
+:CREATED:  <2016-06-14 Tue 17:20>
+:ID:       56ca6afe-912a-4530-91e4-a63123dc6d9d
 :END:
 
-#+Caption: Conversion Driver
-#+Name: tex-conversion-driver
+#+Caption: Special Macros
+#+Name: stf-special-macros
 #+BEGIN_SRC lisp
   (defvar *tex-outputp* nil)
   (declaim (special *tex-outputp*))
@@ -2012,121 +2164,23 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
            (format nil "$~a$"
                    (progn
                      ,@body)))))
-
-  (defun convert-to-tex (function)
-    (check-type function cons)
-    (let ((op (first function)))
-      (with-tex-output
-        (cond
-          ((numberp op)
-           (format nil "~a" op))
-          ((and (symbolp op)
-              (= 1 (length function)))
-           (let ((symbol-pair (assoc op *special-symbols-to-sequences*)))
-             (if (null symbol-pair)
-                 (string-downcase op)
-                 (cdr symbol-pair))))
-          (t
-           (let ((expansion-function (get-expansion function)))
-             (if (functionp expansion-function)
-                 (apply expansion-function (rest function))
-                 (error "Undefined expansion for operation: ~a." op))))))))
-#+END_SRC
-
-** TODO Miscellaneous Functions
-:PROPERTIES:
-:CREATED:  <2016-04-30 Sat 16:09>
-:ID:       a4ab8a72-0b09-453c-b936-2470d5429c05
-:END:
-
-#+Caption: Misc Functions
-#+Name: tex-misc-functions
-#+BEGIN_SRC lisp
-  ;; (defvar *special-symbols-to-sequences*
-  ;;   '((alpha . "\\alpha")
-  ;;     (beta . "\\beta")
-  ;;     (gamma . "\\gamma")
-  ;;     (delta . "\\delta")
-  ;;     (epsilon . "\\epsilon")
-  ;;     (varepsilon . "\\varepsilon")
-  ;;     (zeta . "\\zeta")
-  ;;     (eta . "\\eta")
-  ;;     (theta . "\\theta")
-  ;;     (vartheta . "\\vartheta")
-  ;;     (gamma . "\\gamma") (kappa . "\\kappa")
-  ;;     (lambda . "\\lambda")
-  ;;     (mu . "\\mu")
-  ;;     (nu . "\\nu")
-  ;;     (xi . "\\xi")
-  ;;     (omicron . "\\o")
-  ;;     (pi . "\\pi")
-  ;;     (varpi . "\\varpi")
-  ;;     (rho . "\\rho")
-  ;;     (varrho . "\\varrho")
-  ;;     (sigma . "\\sigma")
-  ;;     (varsigm . "\\varsigm")
-  ;;     (tau . "\\tau")
-  ;;     (upsilon . "\\upsilon")
-  ;;     (phi . "\\phi")
-  ;;     (varphi . "\\varphi")
-  ;;     (chi . "\\chi")
-  ;;     (psi . "\\psi")
-  ;;     (omega . "\\omega")
-  ;;     (big-gamma . "\\Gamma")
-  ;;     (big-delta . "\\Delta")
-  ;;     (big-theta . "\\Theta")
-  ;;     (big-lambda . "\\Lambda")
-  ;;     (big-xi . "\\Xi")
-  ;;     (big-pi . "\\Pi")
-  ;;     (big-sigma . "\\Sigma")
-  ;;     (big-upsilon . "\\Upsilon")
-  ;;     (big-phi . "\\Phi")
-  ;;     (big-psi . "\\Psi")
-  ;;     (big-omega . "\\Omega")))
 #+END_SRC
 
 ** TODO Assembly
 :PROPERTIES:
-:ID:       fdef3016-cb12-43ad-ba5f-14dd6ccd973c
-:CREATED:  <2016-04-30 Sat 16:25>
+:CREATED:  <2016-06-14 Tue 17:15>
+:ID:       bbd15b88-8256-4b5b-abcc-4783fc096c29
 :END:
 
-#+Caption: Packaging
-#+Name: tex-packaging
-#+BEGIN_SRC lisp :tangle "larcs-tex.lisp"
-  (in-package #:larcs.to-tex)
-
-  <<tex-misc-functions>>
-
-  <<tex-rule-storage>>
-
-  <<tex-gen-match-test>>
-
-  <<tex-def-match-rule>>
-
-  <<tex-retrieve-rule>>
-
-  <<tex-conversion-driver>>
-
-  <<tex-addition-rule>>
-
-  <<tex-subtraction-rule>>
-
-  <<tex-multiplication-rule>>
-
-  <<tex-division-rule>>
-
-  <<tex-exponentials-and-logarithms>>
-
-  <<tex-trigonometrics>>
-
-  <<tex-logic-rules>>
-
-  <<tex-equality-rules>>
-
-  <<tex-summation-and-integration>>
-
-  <<tex-specialty>>
+#+Caption: Assemble Symbolic to Typeset Form
+#+Name: stf-assemble
+#+BEGIN_SRC lisp :tangle "larcs-typeset.lisp"
+  (in-package #:larcs.typeset)
+  <<stf-special-macros>>
+  <<stf-rule-storage>>
+  <<stf-rule-retrieval>>
+  <<stf-define-rule>>
+  <<stf-conversion-driver>>
 #+END_SRC
 
 * WORKING Library Assembly [0/2]
@@ -2189,16 +2243,17 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
                   #:ensure-list)
     (:export :differentiate))
 
-  (defpackage #:larcs.to-tex
+  (defpackage #:larcs.typeset
     (:use #:cl
           #:larcs.common
-          #:larcs.classify)
+          #:larcs.classify
+          #:larcs.manipulate)
     (:import-from #:alexandria
                   #:symbolicate)
     (:import-from #:com.informatimago.common-lisp.cesarum.list
                   #:aget
                   #:ensure-list)
-    (:export #:convert-to-tex))
+    (:export #:convert-for-display))
 #+END_SRC
 
 ** TODO System Definition
@@ -2221,9 +2276,8 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
                  (:file "larcs-common")
                  (:file "larcs-classify")
                  (:file "larcs-manipulation")
-                 (:file "larcs-derive")
                  (:file "larcs-differentiate")
-                 (:file "larcs-tex")))
+                 (:file "larcs-typeset")))
 #+END_SRC
 
 * WORKING Text User Interface [0/2]

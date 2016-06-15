@@ -460,3 +460,429 @@ Now that the functions, macros and rules are defined, it's time to put them toge
 
   <<derive-misc-functions>>
 #+END_SRC
+
+* WORKING Symbolic Form to Typeset [0/5]
+:PROPERTIES:
+:CREATED:  <2016-06-09 Thu 09:23>
+:ID:       ed9f4311-bf9f-42df-8f46-254658b93c10
+:ARCHIVE_TIME: 2016-06-14 Tue 19:10
+:ARCHIVE_FILE: ~/Projects/lisp-cas/lisp-cas.org
+:ARCHIVE_CATEGORY: lisp-cas
+:ARCHIVE_TODO: WORKING
+:END:
+
+The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be inserted into a document for whatever reason, and it does so using rewrite rules, this time, rewriting s-expressions (~(+ (* 3 (expt x 3)) (expt x 2) (* 4 x) 22)~) to the \LaTeX{} equivalent, ~${{{{3} \cdot {{x ^ {3}}}}} + {{x ^ {2}}} + {{{4} \cdot {x}}} + {22}}$~ (${{{{3} \cdot {{x ^ {3}}}}} + {{x ^ {2}}} + {{{4} \cdot {x}}} + {22}}$).
+
+** WORKING Matching And Generating [0/3]
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 16:19>
+:END:
+
+*** TODO Define Rule
+:PROPERTIES:
+:ID:       d4f77ac3-a059-4fb6-b936-1b9e972646ee
+:CREATED:  <2016-04-30 Sat 16:19>
+:END:
+
+#+Caption: Define Matching Rule
+#+Name: tex-def-match-rule
+#+BEGIN_SRC lisp
+  (defmacro defrule (name (on arity &optional type) (&rest arguments) &body rule)
+    (let ((match-expression (generate-match-expression on arity type 'function 'arg-count))
+          (test-name (symbolicate name '-test))
+          (expansion-name (symbolicate name '-expansion)))
+      `(progn
+         (defun ,test-name (function &rest arguments &aux (arg-count (length arguments)))
+           ,match-expression)
+         (defun ,expansion-name (,@arguments)
+           ,@rule)
+         (setf (aget *rules* ',name)
+               (make-rule :name ',name
+                          :test-function #',test-name
+                          :expansion-function #',expansion-name))
+         ',name)))
+#+END_SRC
+
+*** TODO Store Rules
+:PROPERTIES:
+:ID:       002ea704-4286-429f-9149-0f29fb73c503
+:CREATED:  <2016-04-30 Sat 16:19>
+:END:
+
+#+Caption: Rule Storage
+#+Name: tex-rule-storage
+#+BEGIN_SRC lisp
+  (defstruct (rule (:type list))
+    name test-function expansion-function)
+
+  (defvar *rules* '())
+#+END_SRC
+
+*** TODO Retrieve Rule
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 15:25>
+:ID:       e3f34100-d0a5-4039-8b9d-115cfcb0804e
+:END:
+
+#+Caption: Retrieve Rule
+#+Name: tex-retrieve-rule
+#+BEGIN_SRC lisp
+  (defun get-expansion (expression)
+    (rule-expansion-function (rest
+                              (first
+                               (remove-if-not #'(lambda (nte)
+                                                  (let ((test (rule-test-function (rest nte))))
+                                                    (apply test expression)))
+                                              ,*rules*)))))
+#+END_SRC
+
+** WORKING Rules [0/10]
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 16:19>
+:END:
+
+*** TODO Multiplication
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 16:19>
+:ID:       5417a6bf-f265-418a-984b-6bfd14b79a80
+:END:
+
+#+Caption: Multiplication Rule
+#+Name: tex-multiplication-rule
+#+BEGIN_SRC lisp
+  (defrule multiplication (* 2 >=) (&rest elements)
+    (format nil "{~{{~a}~^ \\cdot ~}}"
+            (map 'list #'convert-to-tex
+                 (map 'list #'ensure-list
+                      elements))))
+#+END_SRC
+
+*** TODO Division
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 16:19>
+:ID:       056aa99c-f2b9-4ab6-99ba-bfb87e3baed5
+:END:
+
+#+Caption: Division Rule
+#+Name: tex-division-rule
+#+BEGIN_SRC lisp
+  (defrule division (/ 2 =) (a b)
+    (format nil "{\\frac{~a}{~a}}"
+            (convert-to-tex (ensure-list a))
+            (convert-to-tex (ensure-list b))))
+#+END_SRC
+
+*** TODO Addition
+:PROPERTIES:
+:ID:       68f3dac3-9f0a-4fee-8da6-a39f4491f3ce
+:CREATED:  <2016-04-30 Sat 16:19>
+:END:
+
+#+Caption: Rule for addition
+#+Name: tex-addition-rule
+#+BEGIN_SRC lisp
+  (defrule addition (+ 2 >=) (&rest elements)
+           (format nil "{~{{~a}~^ + ~}}"
+                   (map 'list #'convert-to-tex
+                        (map 'list #'ensure-list
+                             elements))))
+#+END_SRC
+
+*** TODO Subtraction
+:PROPERTIES:
+:ID:       9a908130-af5e-4c87-bb07-13bd66c35fcf
+:CREATED:  <2016-04-30 Sat 16:19>
+:END:
+
+#+Caption: Subtraction Rule
+#+Name: tex-subtraction-rule
+#+BEGIN_SRC lisp
+  (defrule subtraction (- 2 >=) (&rest elements)
+    (format nil "{~{{~a}~^ - ~}}"
+            (map 'list #'convert-to-tex
+                 (map 'list #'ensure-list
+                      elements))))
+#+END_SRC
+
+*** TODO Exponentials and Logarithmics
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 16:19>
+:ID:       269dc47f-5062-4081-a08e-d50188af6a57
+:END:
+
+#+Caption: Exponentials and Logarithms
+#+Name: tex-exponentials-and-logarithms
+#+BEGIN_SRC lisp
+  (defrule exp (exp 1 =) (expression)
+    (format nil "{e^{~a}}"
+            (convert-to-tex (ensure-list expression))))
+
+  (defrule expt (expt 2 =) (base exponent)
+    (format nil "{~a ^ {~a}}"
+            (convert-to-tex (ensure-list base))
+            (convert-to-tex (ensure-list exponent))))
+
+  (defrule natlog (log 1 =) (expression)
+    (format nil "{\\ln {~a}}"
+            (convert-to-tex (ensure-list expression))))
+
+  (defrule logarithm (log 2 =) (expression base)
+    (format nil "{\\log_{~a}~a}"
+            (convert-to-tex (ensure-list base))
+            (convert-to-tex (ensure-list expression))))
+#+END_SRC
+
+*** TODO Trigonometrics
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 16:19>
+:ID:       837806c9-7174-43a3-80b2-355b645d46ed
+:END:
+
+#+Caption: Trigonometric Functions
+#+Name: tex-trigonometrics
+#+BEGIN_SRC lisp
+  (defrule sin (sin 1 =) (arg)
+    (format nil "{\\sin {~a}}"
+            (convert-to-tex (ensure-list arg))))
+
+  (defrule cos (cos 1 =) (arg)
+    (format nil "{\\cos {~a}}"
+            (convert-to-tex (ensure-list arg))))
+
+  (defrule tan (tan 1 =) (arg)
+    (format nil "{\\tan {~a}}"
+            (convert-to-tex (ensure-list arg))))
+
+  (defrule csc (csc 1 =) (arg)
+    (format nil "{\\csc {~a}}"
+            (convert-to-tex (ensure-list arg))))
+
+  (defrule sec (sec 1 =) (arg)
+    (format nil "{\\sec {~a}}"
+            (convert-to-tex (ensure-list arg))))
+
+  (defrule cot (cot 1 =) (arg)
+    (format nil "{\\cot {~a}}"
+            (convert-to-tex (ensure-list arg))))
+#+END_SRC
+
+*** TODO Logic
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 18:29>
+:ID:       74d12931-343f-4982-945d-738a3e38a1db
+:END:
+
+#+Caption: Logic Rules
+#+Name: tex-logic-rules
+#+BEGIN_SRC lisp
+  (defrule and (and 2 >=) (&rest elements)
+    (format nil "{~{{~a}~^ \\wedge ~}}"
+            (map 'list #'convert-to-tex
+                 (map 'list #'ensure-list elements))))
+
+  (defrule or (or 2 >=) (&rest elements)
+    (format nil "{~{{~a}~^ \\vee ~}}"
+            (map 'list #'convert-to-tex
+                 (map 'list #'ensure-list elements))))
+
+  (defrule not (not 1 =) (&rest elements)
+    (format nil "{\\not {~a}}"
+            (map 'list #'convert-to-tex
+                 (map 'list #'ensure-list elements))))
+#+END_SRC
+
+*** TODO Equality
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 18:29>
+:ID:       f75273d2-d523-4404-925b-af6fd01c7520
+:END:
+
+#+Caption: Equality Rules
+#+Name: tex-equality-rules
+#+BEGIN_SRC lisp
+  (defrule = (= 2 =) (lhs rhs)
+    (format nil "{{~a} = {~a}}"
+            (convert-to-tex (ensure-list lhs))
+            (convert-to-tex (ensure-list rhs))))
+#+END_SRC
+
+*** TODO Summation and Integration
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 18:30>
+:ID:       dda2827a-cee5-4efc-bd9a-4dd953829b5c
+:END:
+
+#+Caption: Summation and Integration
+#+Name: tex-summation-and-integration
+#+BEGIN_SRC lisp
+  (defrule sum (sum 3 =) (start stop expression)
+    (format nil "{\\sum_{~a}^{~a} {~a}}"
+            (convert-to-tex (ensure-list start))
+            (convert-to-tex (ensure-list stop))
+            (convert-to-tex (ensure-list expression))))
+
+  (defrule integrate (integrate 4 =) (from to expression wrt)
+    (format nil "{\\int_{~a}^{~a} ~a\\,\mathrm{d}~a}"
+            (convert-to-tex (ensure-list from))
+            (convert-to-tex (ensure-list to))
+            (convert-to-tex (ensure-list expression))
+            (convert-to-tex (ensure-list wrt))))
+#+END_SRC
+
+*** TODO Specialty
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 18:30>
+:ID:       f4e6b309-289d-4b32-bc55-4740ec86a113
+:END:
+
+#+Caption: Specialty
+#+Name: tex-specialty
+#+BEGIN_SRC lisp
+  (defrule parens (parens 2 =) (type inside)
+    (let* ((types '((square . ("[" . "]"))
+                    (curly . ("{" . "}"))
+                    (smooth . ("(" . ")"))))
+           (left (cadr (assoc type types)))
+           (right (cddr (assoc type types))))
+      (format nil "{\\left~a {~a} \\right~a}"
+              left
+              (convert-to-tex (ensure-list inside))
+              right)))
+#+END_SRC
+
+** TODO Conversion Driver
+:PROPERTIES:
+:ID:       b395bdb7-7b98-49a1-b6d6-4256fb40d4fa
+:CREATED:  <2016-04-30 Sat 16:19>
+:END:
+
+#+Caption: Conversion Driver
+#+Name: tex-conversion-driver
+#+BEGIN_SRC lisp
+  (defvar *tex-outputp* nil)
+  (declaim (special *tex-outputp*))
+
+  (defmacro with-tex-output (&body body)
+    `(if *tex-outputp*
+         (progn
+           ,@body)
+         (let ((*tex-outputp* t))
+           (format nil "$~a$"
+                   (progn
+                     ,@body)))))
+
+  (defun convert-to-tex (function)
+    (check-type function cons)
+    (let ((op (first function)))
+      (with-tex-output
+        (cond
+          ((numberp op)
+           (format nil "~a" op))
+          ((and (symbolp op)
+              (= 1 (length function)))
+           (let ((symbol-pair (assoc op *special-symbols-to-sequences*)))
+             (if (null symbol-pair)
+                 (string-downcase op)
+                 (cdr symbol-pair))))
+          (t
+           (let ((expansion-function (get-expansion function)))
+             (if (functionp expansion-function)
+                 (apply expansion-function (rest function))
+                 (error "Undefined expansion for operation: ~a." op))))))))
+#+END_SRC
+
+** TODO Miscellaneous Functions
+:PROPERTIES:
+:CREATED:  <2016-04-30 Sat 16:09>
+:ID:       a4ab8a72-0b09-453c-b936-2470d5429c05
+:END:
+
+#+Caption: Misc Functions
+#+Name: tex-misc-functions
+#+BEGIN_SRC lisp
+  ;; (defvar *special-symbols-to-sequences*
+  ;;   '((alpha . "\\alpha")
+  ;;     (beta . "\\beta")
+  ;;     (gamma . "\\gamma")
+  ;;     (delta . "\\delta")
+  ;;     (epsilon . "\\epsilon")
+  ;;     (varepsilon . "\\varepsilon")
+  ;;     (zeta . "\\zeta")
+  ;;     (eta . "\\eta")
+  ;;     (theta . "\\theta")
+  ;;     (vartheta . "\\vartheta")
+  ;;     (gamma . "\\gamma") (kappa . "\\kappa")
+  ;;     (lambda . "\\lambda")
+  ;;     (mu . "\\mu")
+  ;;     (nu . "\\nu")
+  ;;     (xi . "\\xi")
+  ;;     (omicron . "\\o")
+  ;;     (pi . "\\pi")
+  ;;     (varpi . "\\varpi")
+  ;;     (rho . "\\rho")
+  ;;     (varrho . "\\varrho")
+  ;;     (sigma . "\\sigma")
+  ;;     (varsigm . "\\varsigm")
+  ;;     (tau . "\\tau")
+  ;;     (upsilon . "\\upsilon")
+  ;;     (phi . "\\phi")
+  ;;     (varphi . "\\varphi")
+  ;;     (chi . "\\chi")
+  ;;     (psi . "\\psi")
+  ;;     (omega . "\\omega")
+  ;;     (big-gamma . "\\Gamma")
+  ;;     (big-delta . "\\Delta")
+  ;;     (big-theta . "\\Theta")
+  ;;     (big-lambda . "\\Lambda")
+  ;;     (big-xi . "\\Xi")
+  ;;     (big-pi . "\\Pi")
+  ;;     (big-sigma . "\\Sigma")
+  ;;     (big-upsilon . "\\Upsilon")
+  ;;     (big-phi . "\\Phi")
+  ;;     (big-psi . "\\Psi")
+  ;;     (big-omega . "\\Omega")))
+#+END_SRC
+
+** TODO Assembly
+:PROPERTIES:
+:ID:       fdef3016-cb12-43ad-ba5f-14dd6ccd973c
+:CREATED:  <2016-04-30 Sat 16:25>
+:END:
+
+#+Caption: Packaging
+#+Name: tex-packaging
+#+BEGIN_SRC lisp :tangle "larcs-tex.lisp"
+  (in-package #:larcs.to-tex)
+
+  <<tex-misc-functions>>
+
+  <<tex-rule-storage>>
+
+  <<tex-gen-match-test>>
+
+  <<tex-def-match-rule>>
+
+  <<tex-retrieve-rule>>
+
+  <<tex-conversion-driver>>
+
+  <<tex-addition-rule>>
+
+  <<tex-subtraction-rule>>
+
+  <<tex-multiplication-rule>>
+
+  <<tex-division-rule>>
+
+  <<tex-exponentials-and-logarithms>>
+
+  <<tex-trigonometrics>>
+
+  <<tex-logic-rules>>
+
+  <<tex-equality-rules>>
+
+  <<tex-summation-and-integration>>
+
+  <<tex-specialty>>
+#+END_SRC
