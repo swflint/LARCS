@@ -1982,7 +1982,7 @@ This assembles and packages the algebraic manipulation system into a single file
               (convert-for-display term))))
 #+END_SRC
 
-** WORKING Converter [0/4]
+** WORKING Converter [0/7]
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:18>
 :ID:       88d433ad-e381-4747-8a29-2d78bc759fbf
@@ -2022,12 +2022,7 @@ This assembles and packages the algebraic manipulation system into a single file
             (apply rule (ensure-list function))))))
 #+END_SRC
 
-*** WORKING Logical Operators [0/4]
-:PROPERTIES:
-:CREATED:  <2016-06-14 Tue 17:24>
-:END:
-
-**** TODO And
+*** TODO And
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:38>
 :ID:       733b98a1-90f1-4d13-abe8-cb86a5608aee
@@ -2045,7 +2040,7 @@ Foo
               (mapcar #'convert-for-display terms))))
 #+END_SRC
 
-**** TODO Or
+*** TODO Or
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:38>
 :ID:       276de305-32c4-4f79-96e7-d0a99ff24f78
@@ -2063,7 +2058,7 @@ Foo
               (mapcar #'convert-for-display terms))))
 #+END_SRC
 
-**** TODO Not
+*** TODO Not
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:38>
 :ID:       1b0a28a4-744d-44d1-a328-7b2bb10bd0c7
@@ -2080,7 +2075,7 @@ Foo
               (convert-for-display term))))
 #+END_SRC
 
-**** TODO Equality
+*** TODO Equality
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:41>
 :ID:       4ce4835c-e196-4494-ab4b-591690e4164c
