@@ -327,7 +327,7 @@ Another utility macro is ~when-classified-as~, which takes a ~classification~, a
        ,@body))
 #+END_SRC
 
-** WORKING Classifications [9/13]
+** WORKING Classifications [10/13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
@@ -530,13 +530,14 @@ There are two types of logarithmic classifications, natural and non-natural.  Na
          (eq 'log (first expression)))))
 #+END_SRC
 
-*** TODO Rationals
+*** DONE Rationals
+CLOSED: [2016-06-15 Wed 00:15]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:28>
 :ID:       a4505a66-c249-4438-a6df-81e21718e23e
 :END:
 
-# Rationals are classified similarly to multiplicatives, checking to see whether or not they are non-atomic and checking whether or not the first element is ~/~, but rationals are also defined as only having three elements, the operation and two following operands, and thus, the length is also checked.
+Rationals are non-atomic, three elements long, and the first element is the symbol ~/~.
 
 #+Caption: Classify Rationals
 #+Name: et-classify-rationals
