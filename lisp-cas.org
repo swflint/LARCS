@@ -327,7 +327,7 @@ Another utility macro is ~when-classified-as~, which takes a ~classification~, a
        ,@body))
 #+END_SRC
 
-** WORKING Classifications [11/13]
+** WORKING Classifications [12/13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
@@ -579,13 +579,14 @@ Polynomials are a compound classification:
                    (classified-as-p (second expression) 'variable)))))))
 #+END_SRC
 
-*** TODO Polynomials
+*** DONE Polynomials
+CLOSED: [2016-06-15 Wed 00:19]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:28>
 :ID:       8cd9045b-81dd-4571-930a-a852f81969c9
 :END:
 
-# This determines whether or not a given expression is a polynomial, that is to say it is either ~additive~ or ~subtractive~, and each and every term is classified as ~polynomial-term~, that is to say, a ~numeric~, ~power~, or a ~multiplicative~ consisting of a ~numeric~ followed by a ~power~.
+Polynomials are compound classifications that are defined as expressions which are either additive or subtrative, for which each term is a polynomial term.
 
 #+Caption: Classify Polynomials
 #+Name: et-classify-polynomials
