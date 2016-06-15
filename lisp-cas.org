@@ -211,7 +211,7 @@ To be able to apply an expansion, you need to determine eligibility.  To do this
   <<constants-and-greeks>>
 #+END_SRC
 
-* WORKING Expression Typing [1/8]
+* WORKING Expression Typing [2/8]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:15>
 :ID:       c6921b1e-d269-4243-acff-5a77685c331e
@@ -243,13 +243,14 @@ Classifications are defined as ~define-classification~.  This macro takes a ~nam
          ',name)))
 #+END_SRC
 
-** TODO Check Classification
+** DONE Check Classification
+CLOSED: [2016-06-14 Tue 23:10]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       6505b0b1-ffd8-4dd6-b81a-3e49483d8437
 :END:
 
-To check a classification, the classifier is obtained, unless the specified classifier is ~*~, in which case, ~t~ is always returned.  If the classification is not, the classifier function is called on the expression, the result of which is returned.
+To classify an expression, the expression and name of the possible classification is passed in.  If the given name of the classification is ~*~, then ~t~ is returned, as this is a catch all; otherwise the classification is retrieved by name, and the expression is passed to the classifier, which will return either ~t~ or ~nil~.
 
 #+Caption: Check Classification
 #+Name: et-check-classification
