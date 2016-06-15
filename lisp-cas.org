@@ -327,7 +327,7 @@ Another utility macro is ~when-classified-as~, which takes a ~classification~, a
        ,@body))
 #+END_SRC
 
-** WORKING Classifications [3/13]
+** WORKING Classifications [4/13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
@@ -414,13 +414,14 @@ Non-atomic is a classification for anything other than numerics and variables.  
     (listp expression))
 #+END_SRC
 
-*** TODO Additives
+*** DONE Additives
+CLOSED: [2016-06-15 Wed 00:03]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:26>
 :ID:       736d79dc-f34c-4247-b592-690d7f2fddd9
 :END:
 
-# Check to see whether or not an expression is an additive by ensuring that it is non-atomic and the first element is the symbol ~+~.
+When an expression is non-atomic, and the first element is the symbol ~+~, it is classified as an additive expression.
 
 #+Caption: Classify Additives
 #+Name: et-classify-additives
