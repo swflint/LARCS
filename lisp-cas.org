@@ -211,7 +211,7 @@ To be able to apply an expansion, you need to determine eligibility.  To do this
   <<constants-and-greeks>>
 #+END_SRC
 
-* WORKING Expression Typing [5/8]
+* WORKING Expression Typing [6/8]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:15>
 :ID:       c6921b1e-d269-4243-acff-5a77685c331e
@@ -637,13 +637,14 @@ Another utility macro is ~when-classified-as~, which takes a ~classification~, a
       (eq 'cot (first expression))))
 #+END_SRC
 
-** TODO Classification Storage
+** DONE Classification Storage
+CLOSED: [2016-06-14 Tue 23:48]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:55>
 :ID:       ff35cd33-3c10-4a45-a2c5-32bc3fdc1acc
 :END:
 
-# The storage of classifications is simple, they are stored as an alist in the form of ~(name . classifier)~, in the list ~*classifications*~.
+Classifications are stored in an alist, with the key being the name of the classification, and the value being the classifier itself.  These cons cells are stored in the ~*classifications*~ variable.
 
 #+Caption: Classification Storage
 #+Name: et-classification-storage
