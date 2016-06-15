@@ -327,7 +327,7 @@ Another utility macro is ~when-classified-as~, which takes a ~classification~, a
        ,@body))
 #+END_SRC
 
-** WORKING Classifications [1/13]
+** WORKING Classifications [2/13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
@@ -382,13 +382,14 @@ A number is defined as anything that satisfies the built-in ~numberp~.  This inc
     (numberp expression))
 #+END_SRC
 
-*** TODO Variables
+*** DONE Variables
+CLOSED: [2016-06-15 Wed 00:00]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:26>
 :ID:       4c676754-ef9a-485f-91a2-8f1bd83c7659
 :END:
 
-# Check to see if a given expression is a variable, that is to say a symbol, using ~symbolp~.
+Variables are defined as anything that satisfies the Common Lisp predicate, ~symbolp~.
 
 #+Caption: Classify Variables
 #+Name: et-classify-variables
