@@ -327,7 +327,7 @@ Another utility macro is ~when-classified-as~, which takes a ~classification~, a
        ,@body))
 #+END_SRC
 
-** WORKING Classifications [8/13]
+** WORKING Classifications [9/13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
@@ -507,13 +507,14 @@ A multiplicative expression is non-atomic, of any length, and the first element 
       (eq '* (first expression))))
 #+END_SRC
 
-*** TODO Logarithmics
+*** DONE Logarithmics
+CLOSED: [2016-06-15 Wed 00:14]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:27>
 :ID:       0b733d75-e1ab-413f-8f8a-6a8a47db409c
 :END:
 
-# This defines the classifications for logarithmic expressions, for both natural and non-natural bases.  For natural bases ($\ln x$), it ensures that expressions are of the form ~(log x)~, and for non-natural bases ($\log_{b}x$) are of the form ~(log expression base-expression)~.
+There are two types of logarithmic classifications, natural and non-natural.  Natural logarithmics are non-atomic, two elements long, and the first element is the symbol ~log~.  Natural logarithmics are also non-atomic, but they are three elements long, starting with the symbol ~log~.
 
 #+Caption: Classify Lograthmics
 #+Name: et-classify-logarithmics
