@@ -327,7 +327,7 @@ Another utility macro is ~when-classified-as~, which takes a ~classification~, a
        ,@body))
 #+END_SRC
 
-** WORKING Classifications [0/13]
+** WORKING Classifications [1/13]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 13:56>
 :ID:       dcce4a6b-1b2d-4638-a82b-0c4917b0698a
@@ -366,13 +366,14 @@ I define the following classifications:
   <<et-classify-trigonometrics>>
 #+END_SRC
 
-*** TODO Numbers
+*** DONE Numbers
+CLOSED: [2016-06-14 Tue 23:58]
 :PROPERTIES:
 :CREATED:  <2016-05-02 Mon 14:26>
 :ID:       42081153-7cc5-42ff-a17f-53e171c6d1a7
 :END:
 
-# Check to see if a given expression is a number using ~numberp~.
+A number is defined as anything that satisfies the built-in ~numberp~.  This includes integers, rationals, floats and complex numbers.
 
 #+Caption: Classify Numbers
 #+Name: et-classify-numbers
