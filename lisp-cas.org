@@ -687,7 +687,7 @@ This assembles the classification library, which in the ~#:larcs.classify~ packa
 :ID:       b2c1fd45-b631-48f9-a093-66e1a0faa77f
 :END:
 
-At the core of LARCS is the algebraic manipulation library.  This provides a way for other libraries to add, subtract, multiply and divide symbolically, essentially giving a programmer the ability to create or manipulate equations.  While it is neither a solver nor a simplifier, it provides the base for both of them by providing manipulators and automatic expression rewriters.
+One of the most important parts of this system is the "algebraic manipulator", a sub-system that provides utilities for symbolic arithmetic, that is to say addition, subtraction, multiplication and division, along with trigonometric functions and exponential/logarithmic functions.  These function, as many other portions of this system, using rewrite rules, implementing a form of specialized generic programming.
 
 ** TODO Collect Variables
 :PROPERTIES:
