@@ -681,7 +681,7 @@ This assembles the classification library, which in the ~#:larcs.classify~ packa
   <<et-possible-classifications>>
 #+END_SRC
 
-* WORKING Algebraic Manipulation [0/5]
+* WORKING Algebraic Manipulation [1/5]
 :PROPERTIES:
 :CREATED:  <2016-06-09 Thu 09:20>
 :ID:       b2c1fd45-b631-48f9-a093-66e1a0faa77f
@@ -1359,13 +1359,14 @@ Foo
   (define-operation cotangent 1 cot)
 #+END_SRC
 
-** TODO Assembly
+** DONE Assembly
+CLOSED: [2016-06-18 Sat 13:38]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 23:07>
 :ID:       d487ed31-295b-4274-aef2-b45e4fa7bec2
 :END:
 
-This assembles and packages the algebraic manipulation system into a single file and library.  To do so, it must first define a package, import specific symbols from other packages, and export symbols from itself.  It then includes the remainder of the functionality, placing it in the file ~manipulation.lisp~.
+This is the assembly of the ~#:larcs.manipulate~ package.  It includes, in correct order, all bits of functionality.  It places all of this in the ~larcs-manipulation.lisp~ file.
 
 #+Caption: Packaging
 #+Name: am-packaging
