@@ -911,7 +911,7 @@ As there are various forms of expressions, and to provide for simplification, th
        (same-variable-p term-a term-b)))
 #+END_SRC
 
-** WORKING Expression Manipulators [2/8]
+** WORKING Expression Manipulators [0/8]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 22:58>
 :ID:       4fe60cc1-be66-4d5e-8922-590554d99004
@@ -932,8 +932,7 @@ Foo
   <<am-trigonometric-manipulators>>
 #+END_SRC
 
-*** DONE Manipulator Miscellaneous Functions
-CLOSED: [2016-05-08 Sun 10:34]
+*** TODO Manipulator Miscellaneous Functions
 :PROPERTIES:
 :CREATED:  <2016-05-03 Tue 15:38>
 :ID:       20450528-d763-4c14-a085-5ac54d4d4b85
@@ -1054,8 +1053,7 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
        (DEFUN ,MANIPULATOR-NAME ,'(EXPRESSION-A EXPRESSION-B) ,@BODY)))))
 #+END_SRC
 
-*** DONE External Manipulator
-CLOSED: [2016-05-31 Tue 19:48]
+*** TODO External Manipulator
 :PROPERTIES:
 :CREATED:  <2016-05-01 Sun 14:33>
 :ID:       6419490c-3cb0-47e4-840a-c20af4bfb3d7
