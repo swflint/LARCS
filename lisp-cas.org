@@ -681,7 +681,7 @@ This assembles the classification library, which in the ~#:larcs.classify~ packa
   <<et-possible-classifications>>
 #+END_SRC
 
-* WORKING Algebraic Manipulation [1/5]
+* WORKING Algebraic Manipulation [2/5]
 :PROPERTIES:
 :CREATED:  <2016-06-09 Thu 09:20>
 :ID:       b2c1fd45-b631-48f9-a093-66e1a0faa77f
@@ -689,13 +689,16 @@ This assembles the classification library, which in the ~#:larcs.classify~ packa
 
 One of the most important parts of this system is the "algebraic manipulator", a sub-system that provides utilities for symbolic arithmetic, that is to say addition, subtraction, multiplication and division, along with trigonometric functions and exponential/logarithmic functions.  These function, as many other portions of this system, using rewrite rules, implementing a form of specialized generic programming.
 
-** TODO Collect Variables
+** DONE Collect Variables
+CLOSED: [2016-06-21 Tue 22:10]
 :PROPERTIES:
 :CREATED:  <2016-05-20 Fri 15:15>
 :ID:       6333322c-e12f-4ef6-8394-2fe219a72836
 :END:
 
-Variable collection is somewhat important, and to accomplish this, I use a recursive algorithm.  An expression is passed to the function, and if the expression is a variable, then the variable is collected and spit out; otherwise, if the expression is non-atomic, it is passed to the function recursively, and the returned variables are then merged into the variables list.  Upon termination (no further sub-expressions), all variables are returned.  (See Figure [[fig:variable-collection]].)
+The task of collecting all variables in a given expression is fairly important to the task of algebraic manipulation.  This is accomplished using a fairly simple recursive algorithm, collecting the elements that are classified as variables.
+
+An expression is passed in, and if a variable, it is collected, if non-atomic, all but the first element are passed again to ~collect-variables~, and it happens all over again, this time, with those variables being added to the list, and when all is said and done, a list of all variables in a given expression is returned.  See figure [[fig:variable-collection]] for a graphical representation.
 
 #+Caption: Variable Collection
 #+Name: variable-collection
