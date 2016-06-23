@@ -842,13 +842,7 @@ As there are various forms of expressions, and to provide for simplification, th
 #+BEGIN_SRC lisp
   (defun term-variable (term)
     (when (classified-as-p term 'polynomial-term)
-      (classification-case term
-                           (power (second term))
-                           (multiplicative
-                            (if (listp (third term))
-                                (second (third term))
-                                (third term)))
-                           (numeric nil))))
+      (first (collect-variables term))))
 #+END_SRC
 
 *** TODO Get Power
