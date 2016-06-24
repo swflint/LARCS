@@ -825,10 +825,9 @@ As there are various forms of expressions, and to provide for simplification, th
   (defun coefficient (term)
     (when (classified-as-p term 'polynomial-term)
       (classification-case term
-                           (variable 1)
-                           (power 1)
+                           (numeric term)
                            (multiplicative (second term))
-                           (numeric term))))
+                           (* 1))))
 #+END_SRC
 
 *** TODO Get Term Variables
