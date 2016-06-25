@@ -1766,6 +1766,8 @@ One of the less important parts of this system is the format converter, which co
 :CREATED:  <2016-06-14 Tue 17:17>
 :END:
 
+To accomplish the task of conversion from symbolic form to typeset form, rules are necessary.  It is done using three main things, rule definition, rule retrieval and rule storage.
+
 *** TODO Define Rules
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:18>
