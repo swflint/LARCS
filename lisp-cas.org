@@ -1759,6 +1759,8 @@ This is the assembly of the ~#:larcs.manipulate~ package.  It includes, in corre
 :ID:       75f65e8a-0cc9-477f-b5e9-3c563fe7ef5c
 :END:
 
+One of the less important parts of this system is the format converter, which converts between the internal symbolic form and a format that is capable of being typeset using TeX.  This is done using a variant of the common rewrite system, but instead of going between variants of the symbolic format, it converts from a symbolic format to string-based format.
+
 ** WORKING Rule Management [0/3]
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:17>
