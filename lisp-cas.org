@@ -1761,7 +1761,7 @@ This is the assembly of the ~#:larcs.manipulate~ package.  It includes, in corre
 
 One of the less important parts of this system is the format converter, which converts between the internal symbolic form and a format that is capable of being typeset using TeX.  This is done using a variant of the common rewrite system, but instead of going between variants of the symbolic format, it converts from a symbolic format to string-based format.
 
-** WORKING Rule Management [1/3]
+** WORKING Rule Management [2/3]
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:17>
 :END:
@@ -1789,11 +1789,14 @@ Rule definitions are built using the ~define-converter~ macro, which takes an ex
            ,@body))))
 #+END_SRC
 
-*** TODO Rule Retrieval
+*** DONE Rule Retrieval
+CLOSED: [2016-06-24 Fri 22:36]
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:18>
 :ID:       0c34c744-7847-46c2-bdef-228feee7c84e
 :END:
+
+Rule retrieval is done by taking an expression, comparing it against given classifications, and from the first classification, returning the second element of the ~(classification . converter)~ pair.
 
 #+Caption: Rule Retrieval
 #+Name: stf-rule-retrieval
