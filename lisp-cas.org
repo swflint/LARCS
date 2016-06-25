@@ -1753,7 +1753,7 @@ This is the assembly of the ~#:larcs.manipulate~ package.  It includes, in corre
 :CREATED:  <2016-06-11 Sat 18:02>
 :END:
 
-* WORKING Symbolic To Typeset Form [1/5]
+* WORKING Symbolic To Typeset Form [2/5]
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:13>
 :ID:       75f65e8a-0cc9-477f-b5e9-3c563fe7ef5c
@@ -1761,7 +1761,7 @@ This is the assembly of the ~#:larcs.manipulate~ package.  It includes, in corre
 
 One of the less important parts of this system is the format converter, which converts between the internal symbolic form and a format that is capable of being typeset using TeX.  This is done using a variant of the common rewrite system, but instead of going between variants of the symbolic format, it converts from a symbolic format to string-based format.
 
-** WORKING Rule Management [2/3]
+** DONE Rule Management [2/2]
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:17>
 :END:
@@ -1780,6 +1780,8 @@ Rule definitions are built using the ~define-converter~ macro, which takes an ex
 #+Caption: Rule Definition
 #+Name: stf-define-rule
 #+BEGIN_SRC lisp
+  (defvar *rules* '())
+
   (defmacro define-converter (expression-type (&rest arguments-list) &body body)
     (let ((expansion-name (symbolicate expression-type '-conversion)))
       `(progn
@@ -1808,21 +1810,10 @@ Rule retrieval is done by taking an expression, comparing it against given class
                            ,*rules*))))
 #+END_SRC
 
-*** TODO Rule Storage
-:PROPERTIES:
-:CREATED:  <2016-06-14 Tue 17:18>
-:ID:       2a75f850-7f42-47b1-91fa-7b6b467c3ea4
-:END:
-
-#+Caption: Rule Storage
-#+Name: stf-rule-storage
-#+BEGIN_SRC lisp
-  (defvar *rules* '())
-#+END_SRC
-
 ** WORKING Rules [0/9]
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:18>
+:ID:       90accad9-81d0-4aaf-9c7f-2418e36e1f3c
 :END:
 
 #+Caption: Rules
@@ -1842,6 +1833,7 @@ Rule retrieval is done by taking an expression, comparing it against given class
 *** TODO Numbers
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:22>
+:ID:       fbc3e5ac-3276-4f54-b53e-9d4cc0263405
 :END:
 
 #+Caption: Numerics
@@ -1855,6 +1847,7 @@ Rule retrieval is done by taking an expression, comparing it against given class
 *** TODO Variables
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:22>
+:ID:       8ec363f7-da0f-4023-90bb-e08a85623f55
 :END:
 
 #+Caption: Variables
@@ -1871,6 +1864,7 @@ Rule retrieval is done by taking an expression, comparing it against given class
 *** TODO Polynomial Terms
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:23>
+:ID:       ac2283d0-da70-4672-90cb-08511bd9105e
 :END:
 
 #+Caption: Polynomial Terms
@@ -1902,6 +1896,7 @@ Rule retrieval is done by taking an expression, comparing it against given class
 *** TODO Multiplicatives
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:23>
+:ID:       87a7e236-072e-4c19-9f09-c458e5b50397
 :END:
 
 #+Caption: Multiplicatives
@@ -1918,6 +1913,7 @@ Rule retrieval is done by taking an expression, comparing it against given class
 *** TODO Rationals
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:23>
+:ID:       4f8f984f-e567-4efb-ba15-8a98e15915fe
 :END:
 
 #+Caption: Rationals
@@ -1934,6 +1930,7 @@ Rule retrieval is done by taking an expression, comparing it against given class
 *** TODO Additives
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:23>
+:ID:       10ec8596-094a-4900-aba0-22b958ffdc9a
 :END:
 
 #+Caption: Additives
@@ -1949,6 +1946,7 @@ Rule retrieval is done by taking an expression, comparing it against given class
 *** TODO Subtractives
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:23>
+:ID:       1037cb8e-f127-4c87-9312-2817bc2cfc25
 :END:
 
 #+Caption: Subtractives
@@ -1964,6 +1962,7 @@ Rule retrieval is done by taking an expression, comparing it against given class
 *** TODO Trigonometrics
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 18:38>
+:ID:       742d303a-dcea-4bb2-9553-19b968a70272
 :END:
 
 #+Caption: Trigonometrics
@@ -2003,6 +2002,7 @@ Rule retrieval is done by taking an expression, comparing it against given class
 *** TODO Exponentials and Logarithmics
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:24>
+:ID:       24dc527f-0b9d-44b0-ae0f-4515f0c1d119
 :END:
 
 #+Caption: Exponentials and Logarithmics
@@ -2240,10 +2240,10 @@ The final assembly of this portion of the system is as simple as the rest, resol
 #+BEGIN_SRC lisp :tangle "larcs-typeset.lisp"
   (in-package #:larcs.typeset)
   <<stf-special-macros>>
-  <<stf-rule-storage>>
   <<stf-rule-retrieval>>
   <<stf-define-rule>>
   <<stf-conversion-driver>>
+  <<stf-rules>>
 #+END_SRC
 
 * WORKING Library Assembly [0/2]
