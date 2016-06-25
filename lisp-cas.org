@@ -895,7 +895,7 @@ To aid in the design and implementation of various sub-systems, from simplificat
 #+Caption: Same Order
 #+Name: am-same-order
 #+BEGIN_SRC lisp
-  (defun same-order-p (term-a term-b)
+  (defun term-order-= (term-a term-b)
     (= (get-power term-a)
        (get-power term-b)))
 #+END_SRC
@@ -938,7 +938,7 @@ To aid in the design and implementation of various sub-systems, from simplificat
 #+Name: am-is-combinable
 #+BEGIN_SRC lisp
   (defun single-term-combinable-p (term-a term-b)
-    (and (same-order-p term-a term-b)
+    (and (term-order-= term-a term-b)
        (same-variable-p term-a term-b)))
 #+END_SRC
 
@@ -2279,7 +2279,7 @@ Foo
              #:term-variable
              #:get-power
              #:term-order-<
-             #:same-order-p
+             #:term-order-=
              #:term-order->
              #:save-variable-p
              #:single-term-combinable-p))
