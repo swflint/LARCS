@@ -1753,7 +1753,7 @@ This is the assembly of the ~#:larcs.manipulate~ package.  It includes, in corre
 :CREATED:  <2016-06-11 Sat 18:02>
 :END:
 
-* WORKING Symbolic To Typeset Form [2/5]
+* WORKING Symbolic To Typeset Form [3/5]
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:13>
 :ID:       75f65e8a-0cc9-477f-b5e9-3c563fe7ef5c
@@ -2204,11 +2204,14 @@ Foo
                 right))))
 #+END_SRC
 
-** TODO Special Macros
+** DONE Special Macros
+CLOSED: [2016-06-25 Sat 16:27]
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:20>
 :ID:       56ca6afe-912a-4530-91e4-a63123dc6d9d
 :END:
+
+There is one specialty macro, ~with-tex-output~, which is used to ensure that an expression is wrapped to be a part of correct (La)TeX output.  It works by checking to see whether or not the variable ~*tex-outputp*~ is true, if so, it simply pass through the given body, and if not, it binds the variable to ~t~, and makes sure that the given body is wrapped in ~$~, allowing the expression to be typeset correctly.
 
 #+Caption: Special Macros
 #+Name: stf-special-macros
