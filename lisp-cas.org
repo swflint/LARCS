@@ -681,7 +681,7 @@ This assembles the classification library, which in the ~#:larcs.classify~ packa
   <<et-possible-classifications>>
 #+END_SRC
 
-* WORKING Algebraic Manipulation [2/5]
+* WORKING Algebraic Manipulation [3/5]
 :PROPERTIES:
 :CREATED:  <2016-06-09 Thu 09:20>
 :ID:       b2c1fd45-b631-48f9-a093-66e1a0faa77f
@@ -741,13 +741,18 @@ An expression is passed in, and if a variable, it is collected, if non-atomic, a
       (reverse variables)))
 #+END_SRC
 
-** WORKING Term Collection
+** DONE Term Collection
+CLOSED: [2016-06-24 Fri 20:57]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 22:59>
 :ID:       c1856735-914b-4f73-8825-3e5a062113d2
 :END:
 
-As there are various forms of expressions, and to provide for simplification, there must be a way to collect terms and return them in a way that allows a programmer to select all sub-expressions of a type within a large expression.
+To aid in the design and implementation of various sub-systems, from simplification to the basics of algebraic manipulators, the ability to collect terms is extremely important. It is accomplished as follows:
+
+ 1. Lists for each of the types are initialized as empty.
+ 2. For each term in the given expression, put it into the given list.
+ 3. Return an alist containing the names of the types and the given lists, with the conses removed if the CDR is null.
 
 #+Caption: Collect Terms
 #+Name: am-collect-terms
