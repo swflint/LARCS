@@ -1753,7 +1753,7 @@ This is the assembly of the ~#:larcs.manipulate~ package.  It includes, in corre
 :CREATED:  <2016-06-11 Sat 18:02>
 :END:
 
-* WORKING Symbolic To Typeset Form [0/5]
+* WORKING Symbolic To Typeset Form [1/5]
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:13>
 :ID:       75f65e8a-0cc9-477f-b5e9-3c563fe7ef5c
@@ -2218,11 +2218,14 @@ Foo
                      ,@body)))))
 #+END_SRC
 
-** TODO Assembly
+** DONE Assembly
+CLOSED: [2016-06-24 Fri 21:34]
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:15>
 :ID:       bbd15b88-8256-4b5b-abcc-4783fc096c29
 :END:
+
+The final assembly of this portion of the system is as simple as the rest, resolving dependencies and placing everything in a single file.  As normal, this is done using NoWeb syntax, with everything tangled to the file ~larcs-typeset.lisp~.
 
 #+Caption: Assemble Symbolic to Typeset Form
 #+Name: stf-assemble
