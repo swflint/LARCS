@@ -801,7 +801,7 @@ To aid in the design and implementation of various sub-systems, from simplificat
                        (cons :trigonometrics trigonometrics)))))
 #+END_SRC
 
-** WORKING Polynomial Related Functions [1/8]
+** WORKING Polynomial Related Functions [2/8]
 :PROPERTIES:
 :CREATED:  <2016-05-01 Sun 12:29>
 :ID:       984d0f52-4c52-4bfa-a150-f3289d25bdf1
@@ -844,11 +844,14 @@ To get the coefficient of a polynomial term there are three possibilities
                            (* 1))))
 #+END_SRC
 
-*** TODO Get Term Variables
+*** DONE Get Term Variables
+CLOSED: [2016-06-27 Mon 18:40]
 :PROPERTIES:
 :CREATED:  <2016-05-31 Tue 19:08>
 :ID:       55729698-bd51-48af-ab42-197871c54dbb
 :END:
+
+The ability to retrieve tha variable in a polynomial term is important.  This is accomplished by collecting the variables in the term and returning the first.  If this is simply a numeric expression, ~nil~ is returned as there are no variables.
 
 #+Caption: Get Term Variable
 #+Name: am-get-term-variable
