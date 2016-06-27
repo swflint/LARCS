@@ -801,7 +801,7 @@ To aid in the design and implementation of various sub-systems, from simplificat
                        (cons :trigonometrics trigonometrics)))))
 #+END_SRC
 
-** WORKING Polynomial Related Functions [0/8]
+** WORKING Polynomial Related Functions [1/8]
 :PROPERTIES:
 :CREATED:  <2016-05-01 Sun 12:29>
 :ID:       984d0f52-4c52-4bfa-a150-f3289d25bdf1
@@ -820,11 +820,18 @@ To aid in the design and implementation of various sub-systems, from simplificat
   <<am-is-combinable>>
 #+END_SRC
 
-*** TODO Get Coefficient
+*** DONE Get Coefficient
+CLOSED: [2016-06-26 Sun 19:50]
 :PROPERTIES:
 :CREATED:  <2016-05-31 Tue 19:08>
 :ID:       cbc927fc-ae5e-46bf-a028-2872b5c31831
 :END:
+
+To get the coefficient of a polynomial term there are three possibilities
+
+ - Numerics :: The term itself
+ - Multiplicatives :: The second element in the term
+ - All else :: 1
 
 #+Caption: Get Coefficient
 #+Name: am-get-coefficient
