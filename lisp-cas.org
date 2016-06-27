@@ -952,7 +952,7 @@ The ability to retrieve tha variable in a polynomial term is important.  This is
        (same-variable-p term-a term-b)))
 #+END_SRC
 
-** WORKING Expression Manipulators [0/8]
+** WORKING Expression Manipulators [0/7]
 :PROPERTIES:
 :CREATED:  <2016-04-30 Sat 22:58>
 :ID:       4fe60cc1-be66-4d5e-8922-590554d99004
@@ -963,7 +963,6 @@ Foo
 #+Caption: Expression Manipulation
 #+Name: am-expression-manipulation
 #+BEGIN_SRC lisp
-  <<am-misc-manipulator-functions>>
   <<am-define-expression-manipulator>>
   <<am-external-manipulator>>
   <<am-addition-manipulator>>
@@ -971,20 +970,6 @@ Foo
   <<am-multiplication-manipulators>>
   <<am-division-manipulators>>
   <<am-trigonometric-manipulators>>
-#+END_SRC
-
-*** TODO Manipulator Miscellaneous Functions
-:PROPERTIES:
-:CREATED:  <2016-05-03 Tue 15:38>
-:ID:       20450528-d763-4c14-a085-5ac54d4d4b85
-:END:
-
-This defines the ~*manipulator-map*~, where the manipulators for various functions are stored, and defines a function to generate an arguments list given a count of arguments.
-
-#+Caption: Misc Manipulator Functions
-#+Name: am-misc-manipulator-functions
-#+BEGIN_SRC lisp
-  (defvar *manipulator-map* '())
 #+END_SRC
 
 *** WORKING Define Expression Manipulator
@@ -996,6 +981,8 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
 #+Caption: Define Expression Manipulator
 #+Name: am-define-expression-manipulator
 #+BEGIN_SRC lisp
+  (defvar *manipulator-map* '())
+
   (defmacro define-operation (name arity short)
     (check-type name symbol)
     (check-type arity (integer 1 26))

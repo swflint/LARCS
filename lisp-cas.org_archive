@@ -886,3 +886,23 @@ The goal of this portion of the CAS is to produce \LaTeX{} formulae that can be 
 
   <<tex-specialty>>
 #+END_SRC
+
+* TODO Manipulator Miscellaneous Functions
+:PROPERTIES:
+:CREATED:  <2016-05-03 Tue 15:38>
+:ID:       20450528-d763-4c14-a085-5ac54d4d4b85
+:ARCHIVE_TIME: 2016-06-27 Mon 18:44
+:ARCHIVE_FILE: ~/Projects/lisp-cas/lisp-cas.org
+:ARCHIVE_OLPATH: Algebraic Manipulation/Expression Manipulators
+:ARCHIVE_CATEGORY: lisp-cas
+:ARCHIVE_TODO: TODO
+:END:
+
+This defines the ~*manipulator-map*~, where the manipulators for various functions are stored, and defines a function to generate an arguments list given a count of arguments.
+
+#+Caption: Misc Manipulator Functions
+#+Name: am-misc-manipulator-functions
+#+BEGIN_SRC lisp
+  (defvar *manipulator-map* '())
+#+END_SRC
+
