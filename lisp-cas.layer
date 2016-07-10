@@ -5,4 +5,4 @@
           "~/Projects/lisp-cas/lisp-cas.org"
           "~/Projects/lisp-cas/rules-application.org"
           "~/Projects/lisp-cas/")
-  :buffer-to-select "lisp-cas.org")
+  :select "lisp-cas.org")
