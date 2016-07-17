@@ -1026,26 +1026,15 @@ Foo
 #+Caption: Manipulation Example
 #+Name: am-ex-manip-example
 #+BEGIN_SRC lisp :results output raw :exports results :cache yes
-  (defpackage #:manipulator
-    (:use #:cl)
-    (:import-from #:alexandria
-                  #:symbolicate)
-    (:export #:manipulate
-             #:classify
-             #:classified-as-p
-             #:classification-case
-             #:collect-variables
-             #:collect-terms))
+  (ql:quickload :larcs-lib :silent t)
 
-  (load "larcs-manipulation")
-
-  (in-package #:manipulator)
+  (in-package #:larcs.manipulate)
 
   (format t "#+Caption: Expression Manipulator Expansion~%#+Name: am-ex-manip-expansion~%#+BEGIN_SRC lisp :exports code~%~a~%#+END_SRC"
           (macroexpand-1 '(define-operation frobnicate 2 frob)))
 #+END_SRC
 
-#+RESULTS[130aac3873c71d5e7f3a237792267b51206600c5]: am-ex-manip-example
+#+RESULTS[468c43c82d25c9776f1e482487e63f458252edcb]: am-ex-manip-example
 #+Caption: Expression Manipulator Expansion
 #+Name: am-ex-manip-expansion
 #+BEGIN_SRC lisp :exports code
