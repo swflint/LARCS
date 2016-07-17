@@ -42,9 +42,10 @@
     (org-babel-tangle))
 #+END_SRC
 
-* WORKING Introduction                                                :nonum:
+* WORKING Introduction
 :PROPERTIES:
 :CREATED:  <2016-06-09 Thu 09:19>
+:UNNUMBERED: t
 :END:
 
 It's a bold move to do what this does, building a Computer Algebra System from scratch, but I'm doing it anyway.  I've chosen to do this because I wanted to understand how most CASs work, and that can be accomplished by either reading thhe source code for one, or by building one.  While there are several very good CASs, the majority of them are non-free, and thus I'm not able to learn how exactly they work.  Those that are free software are either not complete, or are too complex to be able to learn from easily.
@@ -63,10 +64,11 @@ This is my Computer Algebra System, and it contains the following components:
 # - [[id:65c8092c-1f7a-44e1-93d5-8d39e179f447][Text User Interface]]
 # - [[id:b70027f8-a665-4282-ab4b-3d0ce6bd8d17][Graphical User Interface]]
 
-* DONE What's in a name?                                              :nonum:
+* DONE What's in a name?
 CLOSED: [2016-06-09 Thu 12:48]
 :PROPERTIES:
 :CREATED:  <2016-06-09 Thu 12:37>
+:UNNUMBERED: t
 :END:
 
 The CAS contained in this is called LARCS, or the Lisp Automated Rewrite and Calculation System.  This describes the system as follows:
