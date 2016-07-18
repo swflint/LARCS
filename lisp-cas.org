@@ -1453,6 +1453,8 @@ This is the assembly of the ~#:larcs.manipulate~ package.  It includes, in corre
 :ID:       552f402a-a25d-4f28-94af-17934c38a529
 :END:
 
+While this isn't exactly /algebra/, differentiation is important mathematically.  This is done rather simply using rules to rewrite an initial expression forming the derivative.
+
 ** WORKING Rule Definition [0/3]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 22:51>
