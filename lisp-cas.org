@@ -1447,7 +1447,7 @@ This is the assembly of the ~#:larcs.manipulate~ package.  It includes, in corre
 :CREATED:  <2016-07-18 Mon 18:20>
 :END:
 
-* WORKING Symbolic Differentiation [0/4]
+* WORKING Symbolic Differentiation [1/4]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 22:45>
 :ID:       552f402a-a25d-4f28-94af-17934c38a529
@@ -1704,11 +1704,14 @@ While this isn't exactly /algebra/, differentiation is important mathematically.
     `(* ,(differentiate expression) (- (expt (csc ,expression) 2))))
 #+END_SRC
 
-** TODO Driver
+** DONE Driver
+CLOSED: [2016-07-18 Mon 18:31]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 22:59>
 :ID:       b40ed5ad-2eb7-43b1-bab7-39592894e5be
 :END:
+
+This is the derivative driver, ~differentiate~, which in the end is called recursively.  It takes an expression (called function), finds a rule using the ~get-rule~ function, and applies the rule to the function, ensuring that the function is passed as a list.
 
 #+Caption: Derivative Driver
 #+Name: sd-derivative-driver
