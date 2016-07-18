@@ -1432,6 +1432,21 @@ This is the assembly of the ~#:larcs.manipulate~ package.  It includes, in corre
 :CREATED:  <2016-06-11 Sat 17:58>
 :END:
 
+* WORKING Symbolic Evaluation of Limits [0/2]                      :noexport:
+:PROPERTIES:
+:CREATED:  <2016-07-18 Mon 18:15>
+:END:
+
+** TODO Rules
+:PROPERTIES:
+:CREATED:  <2016-07-18 Mon 18:19>
+:END:
+
+** TODO Assembly
+:PROPERTIES:
+:CREATED:  <2016-07-18 Mon 18:20>
+:END:
+
 * WORKING Symbolic Differentiation [0/4]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 22:45>
