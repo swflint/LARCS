@@ -1447,7 +1447,7 @@ This is the assembly of the ~#:larcs.manipulate~ package.  It includes, in corre
 :CREATED:  <2016-07-18 Mon 18:20>
 :END:
 
-* WORKING Symbolic Differentiation [1/4]
+* WORKING Symbolic Differentiation [2/4]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 22:45>
 :ID:       552f402a-a25d-4f28-94af-17934c38a529
@@ -1722,11 +1722,14 @@ This is the derivative driver, ~differentiate~, which in the end is called recur
         (apply rule (ensure-list function)))))
 #+END_SRC
 
-** TODO Assembly
+** DONE Assembly
+CLOSED: [2016-07-19 Tue 20:36]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 22:46>
 :ID:       d87d49e3-8245-4ff0-aaf0-57b9e19edeba
 :END:
+
+This assembles the package, placing the contents in the correct order and puts them in the file ~larcs-differentiate.lisp~.
 
 #+Caption: Symbolic Differentiation
 #+Name: sd-symbolic-differentiation
