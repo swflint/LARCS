@@ -1455,16 +1455,19 @@ This is the assembly of the ~#:larcs.manipulate~ package.  It includes, in corre
 
 While this isn't exactly /algebra/, differentiation is important mathematically.  This is done rather simply using rules to rewrite an initial expression forming the derivative.
 
-** WORKING Rule Definition [0/3]
+** WORKING Rule Definition [1/3]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 22:51>
 :END:
 
-*** TODO Definition
+*** DONE Definition
+CLOSED: [2016-07-19 Tue 20:48]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 22:51>
 :ID:       de915ee7-47bd-4f7f-ad06-39f0201a4651
 :END:
+
+Rules are defined using the ~define-derivative~ macro, which takes an expression type, an arguments list, and a body.  If the expression type is not already in the expansions map, it pushes the expression type and expansion name onto the the mapping.  Following that, it defines a function for the expansion, using the given arguments list as the lambda-list and the given body for the body for the function.
 
 #+Caption: Rule Definition
 #+Name: sd-rule-definition
