@@ -1829,7 +1829,7 @@ Rule retrieval is done by taking an expression, comparing it against given class
                            ,*rules*))))
 #+END_SRC
 
-** WORKING Rules [0/9]
+** WORKING Rules [1/9]
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:18>
 :ID:       90accad9-81d0-4aaf-9c7f-2418e36e1f3c
@@ -1861,11 +1861,14 @@ The following contains all of the defined rules, which are as follows:
   <<stf-exponentials-logarithmics>>
 #+END_SRC
 
-*** TODO Numbers
+*** DONE Numbers
+CLOSED: [2016-08-02 Tue 22:09]
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:22>
 :ID:       fbc3e5ac-3276-4f54-b53e-9d4cc0263405
 :END:
+
+Numbers are formatted fairly simply, as they are simply surrounded by curly braces, and formatted as to be normal read syntax, which is generally correct.
 
 #+Caption: Numerics
 #+Name: stf-numerics
