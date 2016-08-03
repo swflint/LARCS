@@ -1835,6 +1835,18 @@ Rule retrieval is done by taking an expression, comparing it against given class
 :ID:       90accad9-81d0-4aaf-9c7f-2418e36e1f3c
 :END:
 
+The following contains all of the defined rules, which are as follows:
+
+ - Numerics
+ - Variables
+ - Polynomial Terms
+ - Multiplicatives
+ - Rationals
+ - Additives
+ - Subtractives
+ - Trigonometrics
+ - Exponentials & Logarithmics
+
 #+Caption: Rules
 #+Name: stf-rules
 #+BEGIN_SRC lisp
