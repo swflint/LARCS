@@ -1829,7 +1829,7 @@ Rule retrieval is done by taking an expression, comparing it against given class
                            ,*rules*))))
 #+END_SRC
 
-** WORKING Rules [1/9]
+** WORKING Rules [2/9]
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:18>
 :ID:       90accad9-81d0-4aaf-9c7f-2418e36e1f3c
@@ -1878,11 +1878,14 @@ Numbers are formatted fairly simply, as they are simply surrounded by curly brac
       (format nil "{~A}" number)))
 #+END_SRC
 
-*** TODO Variables
+*** DONE Variables
+CLOSED: [2016-08-02 Tue 22:20]
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 17:22>
 :ID:       8ec363f7-da0f-4023-90bb-e08a85623f55
 :END:
+
+As with numbers, variables are a relatively simple thing to format.  If the variable passed is in the ~*constant-names*~ list, then it must be a formattable constant for which there is a known TeX command.  If there is, it is looked up in the ~*special-symbols-to-sequences*~ alist, otherwise, the given variable is downcased and output as a string.  Either way, they are surrounded by, as usual, curly braces.
 
 #+Caption: Variables
 #+Name: stf-variables
