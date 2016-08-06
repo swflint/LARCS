@@ -87,7 +87,7 @@ The CAS contained in this is called LARCS, or the Lisp Automated Rewrite and Cal
 #+TOC: headlines 3
 #+TOC: listings
 
-* WORKING Common Functionality [2/4]
+* WORKING Common Functionality [3/4]
 :PROPERTIES:
 :CREATED:  <2016-06-11 Sat 22:23>
 :ID:       f153a0fe-ec04-47b1-bdc5-290cc62bc985
@@ -140,11 +140,14 @@ For some macros, an arguments list must be generated.  This is done by generatin
         (reverse variables-list))))
 #+END_SRC
 
-** TODO Constants and Greeks
+** DONE Constants and Greeks
+CLOSED: [2016-08-05 Fri 21:32]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 20:57>
 :ID:       907fcf64-51eb-4a2c-a8bc-29e4f75f1dd3
 :END:
+
+This is a mapping between the names of constants and the way that they are correctly displayed in TeX.  Besides defining the mapping, which is in the form of an alist, it also collects the names of all of the constants, and exports the names themselves.
 
 #+Caption: Constants and Greeks
 #+Name: constants-and-greeks
