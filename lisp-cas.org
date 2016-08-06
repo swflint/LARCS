@@ -2268,7 +2268,7 @@ The final assembly of this portion of the system is as simple as the rest, resol
 :ID:       89370949-8f58-41cf-8c4f-92f81d48ac23
 :END:
 
-** TODO Package Definitions
+** WORKING Package Definitions [0/5]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 15:00>
 :ID:       573a8352-8cbe-408c-8c27-3cf0b66da885
@@ -2277,6 +2277,22 @@ The final assembly of this portion of the system is as simple as the rest, resol
 #+Caption: LARCS Packages
 #+Name: larcs-packages
 #+BEGIN_SRC lisp :tangle "larcs-packages.lisp"
+  <<common-package-def>>
+  <<classification-package-def>>
+  <<manipulation-package-def>>
+  <<differentiation-package-def>>
+  <<typesetting-package-def>>
+#+END_SRC
+
+*** TODO Common
+:PROPERTIES:
+:CREATED:  <2016-08-05 Fri 22:07>
+:ID:       84845974-c272-4007-a490-6bc328a8d22d
+:END:
+
+#+Caption: Common Package Definition
+#+Name: common-package-def
+#+BEGIN_SRC lisp
   (defpackage #:larcs.common
     (:use #:cl)
     (:import-from #:alexandria
@@ -2285,7 +2301,17 @@ The final assembly of this portion of the system is as simple as the rest, resol
              #:*special-symbols-to-sequences*
              #:*constant-names*)
     (:nicknames #:common))
+#+END_SRC
 
+*** TODO Classification
+:PROPERTIES:
+:CREATED:  <2016-08-05 Fri 22:07>
+:ID:       f68d9d69-3cca-4767-8204-8077ae8ac2b2
+:END:
+
+#+Caption: Classification Package Definition
+#+Name: classification-package-def
+#+BEGIN_SRC lisp
   (defpackage #:larcs.classify
     (:use #:cl
           #:larcs.common)
@@ -2295,7 +2321,17 @@ The final assembly of this portion of the system is as simple as the rest, resol
              #:classified-as-p
              #:classification-case)
     (:nicknames #:classify))
+#+END_SRC
 
+*** TODO Manipulation
+:PROPERTIES:
+:CREATED:  <2016-08-05 Fri 22:07>
+:ID:       07a9d8fc-5bdc-4c03-9df3-3e3d46d1b704
+:END:
+
+#+Caption: Manipulation Package Definition
+#+Name: manipulation-package-def
+#+BEGIN_SRC lisp
   (defpackage #:larcs.manipulate
     (:use #:cl
           #:larcs.common
@@ -2314,7 +2350,17 @@ The final assembly of this portion of the system is as simple as the rest, resol
              #:save-variable-p
              #:single-term-combinable-p)
     (:nicknames #:manipulate))
+#+END_SRC
 
+*** TODO Differentiation
+:PROPERTIES:
+:CREATED:  <2016-08-05 Fri 22:07>
+:ID:       53a94c2e-3fb1-4cc1-9b3a-0e53657c3b91
+:END:
+
+#+Caption: Differentiation Package Definition
+#+Name: differentiation-package-def
+#+BEGIN_SRC lisp
   (defpackage #:larcs.differentiate
     (:use #:cl
           #:larcs.common
@@ -2327,7 +2373,17 @@ The final assembly of this portion of the system is as simple as the rest, resol
                   #:ensure-list)
     (:export :differentiate)
     (:nicknames :diff))
+#+END_SRC
 
+*** TODO Typesetting
+:PROPERTIES:
+:CREATED:  <2016-08-05 Fri 22:07>
+:ID:       f3ae4f48-7fc9-4f4c-a128-642cd3babaf1
+:END:
+
+#+Caption: Typesetting Package Definition
+#+Name: typesetting-package-def
+#+BEGIN_SRC lisp
   (defpackage #:larcs.typeset
     (:use #:cl
           #:larcs.common
