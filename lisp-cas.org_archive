@@ -906,3 +906,36 @@ This defines the ~*manipulator-map*~, where the manipulators for various functio
   (defvar *manipulator-map* '())
 #+END_SRC
 
+
+* TODO Match Expression Generation
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 17:18>
+:ID:       f7876b1d-3b67-48c1-863a-85e1b3026ed6
+:ARCHIVE_TIME: 2016-08-05 Fri 21:47
+:ARCHIVE_FILE: ~/Projects/lisp-cas/lisp-cas.org
+:ARCHIVE_OLPATH: Common Functionality
+:ARCHIVE_CATEGORY: lisp-cas
+:ARCHIVE_TODO: TODO
+:END:
+
+To be able to apply an expansion, you need to determine eligibility.  To do this, you need an expression that matches on two things, function name and arity.  To generate this, it takes an operation name and the arity.  Based on the arity type ($=$, $>$, $\leq$), it will construct a simple boolean statement in the format of $(function = operator) \land (argument-count == arity)$, where $==$ is one of the above arity types.
+
+#+Caption: Match Expression Generation
+#+Name: common-match-expression-generation
+#+BEGIN_SRC lisp
+  (defun generate-match-expression (on arity &optional (type '=) (function-var 'function) (arg-count-var 'arg-count))
+    (check-type on symbol)
+    (check-type type (member = > >=))
+    (check-type arity (integer 0))
+    (case type
+      (=
+       `(and (eq ,function-var ',on)
+           (= ,arg-count-var ,arity)))
+      (>
+       `(and (eq ,function-var ',on)
+           (> ,arg-count-var ,arity)))
+      (>=
+       `(and (eq ,function-var ',on)
+           (>= ,arg-count-var ,arity)))))
+#+END_SRC
+

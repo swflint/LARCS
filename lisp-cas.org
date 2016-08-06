@@ -87,38 +87,13 @@ The CAS contained in this is called LARCS, or the Lisp Automated Rewrite and Cal
 #+TOC: headlines 3
 #+TOC: listings
 
-* WORKING Common Functionality [3/4]
+* DONE Common Functionality [3/3]
 :PROPERTIES:
 :CREATED:  <2016-06-11 Sat 22:23>
 :ID:       f153a0fe-ec04-47b1-bdc5-290cc62bc985
 :END:
 
-** TODO Match Expression Generation
-:PROPERTIES:
-:CREATED:  <2016-06-13 Mon 17:18>
-:ID:       f7876b1d-3b67-48c1-863a-85e1b3026ed6
-:END:
-
-To be able to apply an expansion, you need to determine eligibility.  To do this, you need an expression that matches on two things, function name and arity.  To generate this, it takes an operation name and the arity.  Based on the arity type ($=$, $>$, $\leq$), it will construct a simple boolean statement in the format of $(function = operator) \land (argument-count == arity)$, where $==$ is one of the above arity types.
-
-#+Caption: Match Expression Generation
-#+Name: common-match-expression-generation
-#+BEGIN_SRC lisp
-  (defun generate-match-expression (on arity &optional (type '=) (function-var 'function) (arg-count-var 'arg-count))
-    (check-type on symbol)
-    (check-type type (member = > >=))
-    (check-type arity (integer 0))
-    (case type
-      (=
-       `(and (eq ,function-var ',on)
-           (= ,arg-count-var ,arity)))
-      (>
-       `(and (eq ,function-var ',on)
-           (> ,arg-count-var ,arity)))
-      (>=
-       `(and (eq ,function-var ',on)
-           (>= ,arg-count-var ,arity)))))
-#+END_SRC
+There are several bits of common functions or variables that are required for use.  This primarily includes functions that some of the macros rely on, or things that are required for use in other parts of the system, but don't present as specific functionality.
 
 ** DONE Generate an Args List
 CLOSED: [2016-07-30 Sat 16:08]
@@ -213,8 +188,6 @@ This is where the common functions and constants are assembled into their own pa
 #+Name: assemble-common-functions
 #+BEGIN_SRC lisp :tangle "larcs-common.lisp"
   (in-package #:larcs.common)
-
-  <<common-match-expression-generation>>
 
   <<common-generate-an-args-list>>
 
@@ -2308,8 +2281,7 @@ The final assembly of this portion of the system is as simple as the rest, resol
     (:use #:cl)
     (:import-from #:alexandria
                   #:symbolicate)
-    (:export #:generate-match-expression
-             #:gen-args-list
+    (:export #:gen-args-list
              #:*special-symbols-to-sequences*
              #:*constant-names*))
 
