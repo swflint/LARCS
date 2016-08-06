@@ -2283,7 +2283,8 @@ The final assembly of this portion of the system is as simple as the rest, resol
                   #:symbolicate)
     (:export #:gen-args-list
              #:*special-symbols-to-sequences*
-             #:*constant-names*))
+             #:*constant-names*)
+    (:nicknames #:common))
 
   (defpackage #:larcs.classify
     (:use #:cl
@@ -2292,7 +2293,8 @@ The final assembly of this portion of the system is as simple as the rest, resol
                   #:symbolicate)
     (:export #:classify
              #:classified-as-p
-             #:classification-case))
+             #:classification-case)
+    (:nicknames #:classify))
 
   (defpackage #:larcs.manipulate
     (:use #:cl
@@ -2310,7 +2312,8 @@ The final assembly of this portion of the system is as simple as the rest, resol
              #:term-order-=
              #:term-order->
              #:save-variable-p
-             #:single-term-combinable-p))
+             #:single-term-combinable-p)
+    (:nicknames #:manipulate))
 
   (defpackage #:larcs.differentiate
     (:use #:cl
@@ -2322,7 +2325,8 @@ The final assembly of this portion of the system is as simple as the rest, resol
     (:import-from #:com.informatimago.common-lisp.cesarum.list
                   #:aget
                   #:ensure-list)
-    (:export :differentiate))
+    (:export :differentiate)
+    (:nicknames :diff))
 
   (defpackage #:larcs.typeset
     (:use #:cl
@@ -2334,7 +2338,8 @@ The final assembly of this portion of the system is as simple as the rest, resol
     (:import-from #:com.informatimago.common-lisp.cesarum.list
                   #:aget
                   #:ensure-list)
-    (:export #:convert-for-display))
+    (:export #:convert-for-display)
+    (:nicknames #:typeset))
 #+END_SRC
 
 ** TODO System Definition
