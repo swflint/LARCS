@@ -1437,7 +1437,7 @@ This is the assembly of the ~#:larcs.manipulate~ package.  It includes, in corre
 
 While this isn't exactly /algebra/, differentiation is important mathematically.  This is done rather simply using rules to rewrite an initial expression forming the derivative.
 
-** WORKING Rule Definition [1/3]
+** WORKING Rule Definition [2/3]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 22:51>
 :END:
@@ -1463,11 +1463,14 @@ Rules are defined using the ~define-derivative~ macro, which takes an expression
            ,@body))))
 #+END_SRC
 
-*** TODO Retrieval
+*** DONE Retrieval
+CLOSED: [2016-08-16 Tue 22:00]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 23:08>
 :ID:       97d8b24e-dd75-4919-a953-cba8035cb691
 :END:
+
+Rule retrieval works by matching a rewrite rule to an expression by classification.  This is done by iterating through the possible classification-rewrite rule pairs, and if the expression matches the classification, returing the rewrite rule to be used.
 
 #+Caption: Rule Retrieval
 #+Name: sd-rule-retrieval
