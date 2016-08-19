@@ -1500,7 +1500,7 @@ Rules are stored rather simply, in a list of cons cells, with the ~CAR~ being th
   (defvar *rules* '())
 #+END_SRC
 
-** WORKING Rules [1/9]
+** WORKING Rules [2/9]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 22:52>
 :ID:       fdcebadd-b53d-4f59-99a4-4a3782e017a2
@@ -1538,11 +1538,14 @@ Numbers are perhaps one of the simplest rules to define, ignore everything and s
     0)
 #+END_SRC
 
-*** TODO Variables
+*** DONE Variables
+CLOSED: [2016-08-19 Fri 17:19]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 23:19>
 :ID:       ecc17ca3-2989-4908-aded-4b6e20b1855c
 :END:
+
+As with Numbers, Variables are just as simple, if something is simply a bare variable, the derivative of such is 1.
 
 #+Caption: Variables
 #+Name: sd-variables
