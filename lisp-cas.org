@@ -1500,7 +1500,7 @@ Rules are stored rather simply, in a list of cons cells, with the ~CAR~ being th
   (defvar *rules* '())
 #+END_SRC
 
-** WORKING Rules [2/9]
+** WORKING Rules [3/9]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 22:52>
 :ID:       fdcebadd-b53d-4f59-99a4-4a3782e017a2
@@ -1555,11 +1555,18 @@ As with Numbers, Variables are just as simple, if something is simply a bare var
     1)
 #+END_SRC
 
-*** TODO Polynomial Terms
+*** DONE Polynomial Terms
+CLOSED: [2016-08-19 Fri 17:31]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 23:33>
 :ID:       6ca719d7-b584-4ae6-ae44-23bed186c6e9
 :END:
+
+A Polynomial Term is a bit more complex than the previous two, the rewrite rule has to be able to get the variable, coefficient and current power of the polynomial term.  Given this information, there are three possible cases:
+
+ - The power is equal to 1. :: The coefficient is returned.
+ - The power is equal to 2. :: The coefficient times the variable (in symbolic form) is returned.
+ - The power is greater than 2. :: This comes in the form of $(nm)x^{^}{(n-1)}$.
 
 #+Caption: Polynomial Terms
 #+Name: sd-polynomial-terms
