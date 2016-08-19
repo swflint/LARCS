@@ -1500,7 +1500,7 @@ Rules are stored rather simply, in a list of cons cells, with the ~CAR~ being th
   (defvar *rules* '())
 #+END_SRC
 
-** WORKING Rules [0/9]
+** WORKING Rules [1/9]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 22:52>
 :ID:       fdcebadd-b53d-4f59-99a4-4a3782e017a2
@@ -1521,11 +1521,14 @@ The process of symbolic derivation is carried out through rules.  These are defi
   <<sd-exponentials-and-logarithmics>>
 #+END_SRC
 
-*** TODO Numbers
+*** DONE Numbers
+CLOSED: [2016-08-19 Fri 17:07]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 23:18>
 :ID:       bb1f9175-2e86-43a3-94b3-9467d233539c
 :END:
+
+Numbers are perhaps one of the simplest rules to define, ignore everything and simply return 0, which is, by definition, the derivative of any bare number.
 
 #+Caption: Numbers
 #+Name: sd-numbers
