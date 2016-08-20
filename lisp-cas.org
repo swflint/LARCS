@@ -1500,7 +1500,7 @@ Rules are stored rather simply, in a list of cons cells, with the ~CAR~ being th
   (defvar *rules* '())
 #+END_SRC
 
-** WORKING Rules [5/9]
+** WORKING Rules [6/9]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 22:52>
 :ID:       fdcebadd-b53d-4f59-99a4-4a3782e017a2
@@ -1630,11 +1630,14 @@ Differentiation of Multiplicative equations are performed by the product rule.  
         (expt ,denominator 2)))
 #+END_SRC
 
-*** TODO Additives
+*** DONE Additives
+CLOSED: [2016-08-20 Sat 11:20]
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 10:30>
 :ID:       d3a07d51-977c-4b1e-9a63-0eb415977f46
 :END:
+
+This is quite simple, differentiate each term and add them together.  This is accomplished using ~map~.
 
 #+Caption: Additives
 #+Name: sd-additives
