@@ -2,7 +2,7 @@
 #+Subtitle: Interacting with LARCS through Text
 #+AUTHOR: Samuel W. Flint
 #+EMAIL: swflint@flintfam.org
-#+DATE: <2016-08-20 Sat 13:47>
+#+DATE: \today
 #+INFOJS_OPT: view:info toc:nil path:http://flintfam.org/org-info.js
 #+OPTIONS: toc:nil H:5 ':t *:t todo:nil stat:nil d:nil
 #+PROPERTY: header-args :noweb tangle :comments noweb
@@ -21,12 +21,12 @@
 #+Caption: Export Document
 #+Name: export-document
 #+BEGIN_SRC emacs-lisp :exports none :results none
-(save-buffer)
-(let ((org-confirm-babel-evaluate
-(lambda (lang body)
-(declare (ignorable lang body))
-nil)))
-(org-latex-export-to-pdf))
+  (save-buffer)
+  (let ((org-confirm-babel-evaluate
+         (lambda (lang body)
+           (declare (ignorable lang body))
+           nil)))
+    (org-latex-export-to-pdf))
 #+END_SRC
 
 * Tangle                                                           :noexport:
@@ -37,16 +37,18 @@ nil)))
 #+Caption: Tangle Document
 #+Name: tangle-document
 #+BEGIN_SRC emacs-lisp :exports none :results none
-(save-buffer)
-(let ((python-indent-offset 4))
-(org-babel-tangle))
+  (save-buffer)
+  (let ((python-indent-offset 4))
+    (org-babel-tangle))
 #+END_SRC
 
-* TODO Introduction
+* WORKING Introduction
 :PROPERTIES:
 :CREATED:  <2016-08-20 Sat 13:47>
 :UNNUMBERED: t
 :END:
+
+LARCS is, in and of itself, only a library.  While this allows it to be used in other programs, it makes it difficult to use alone.  Therefore, LARCS needs at least one User Interface, in this document a text-based user interface is defined, allowing the program to be used over an SSH connection.  The only problem in this case is that graphics cannot be displayed, but in this case, they can be saved to graphics files for later use.
 
 * TOC                                                                :ignore:
 
