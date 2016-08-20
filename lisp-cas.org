@@ -2475,35 +2475,6 @@ The final assembly of this portion of the system is as simple as the rest, resol
                  (:file "larcs-typeset")))
 #+END_SRC
 
-* WORKING Graphical User Interface [0/3]                           :noexport:
-:PROPERTIES:
-:CREATED:  <2016-06-13 Mon 14:51>
-:ID:       b70027f8-a665-4282-ab4b-3d0ce6bd8d17
-:END:
-
-** TODO System Definition
-:PROPERTIES:
-:CREATED:  <2016-06-13 Mon 14:51>
-:END:
-
-#+Caption: GUI System Definition
-#+Name: gui-system-definition
-#+BEGIN_SRC lisp
-  '(#:alexandria
-    #:command-line-arguments
-    #:commonqt)
-#+END_SRC
-
-** TODO Interface Elements
-:PROPERTIES:
-:CREATED:  <2016-06-13 Mon 14:52>
-:END:
-
-** TODO Interface Functionality
-:PROPERTIES:
-:CREATED:  <2016-06-13 Mon 14:52>
-:END:
-
 * Push to bottom                                                     :ignore:
 :PROPERTIES:
 :CREATED:  <2016-07-17 Sun 13:58>
