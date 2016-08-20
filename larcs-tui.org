@@ -1,0 +1,73 @@
+#+Title: LARCS Text User Interface
+#+Subtitle: Interacting with LARCS through Text
+#+AUTHOR: Samuel W. Flint
+#+EMAIL: swflint@flintfam.org
+#+DATE: <2016-08-20 Sat 13:47>
+#+INFOJS_OPT: view:info toc:nil path:http://flintfam.org/org-info.js
+#+OPTIONS: toc:nil H:5 ':t *:t todo:nil stat:nil d:nil
+#+PROPERTY: header-args :noweb tangle :comments noweb
+#+LATEX_HEADER: \usepackage[margins=0.75in]{geometry}
+#+LATEX_HEADER: \parskip=5pt
+#+LATEX_HEADER: \parindent=0pt
+#+LATEX_HEADER: \lstset{texcl=true,breaklines=true,columns=fullflexible,basicstyle=\ttfamily,frame=lines,literate={<=}{$\leq$}1 {>=}{$\geq$}1}
+#+LATEX_CLASS_OPTIONS: [10pt,twoside]
+#+LATEX_HEADER: \pagestyle{headings}
+
+* Export                                                           :noexport:
+:PROPERTIES:
+:CREATED:  <2016-08-20 Sat 13:50>
+:END:
+
+#+Caption: Export Document
+#+Name: export-document
+#+BEGIN_SRC emacs-lisp :exports none :results none
+(save-buffer)
+(let ((org-confirm-babel-evaluate
+(lambda (lang body)
+(declare (ignorable lang body))
+nil)))
+(org-latex-export-to-pdf))
+#+END_SRC
+
+* Tangle                                                           :noexport:
+:PROPERTIES:
+:CREATED:  <2016-08-20 Sat 13:50>
+:END:
+
+#+Caption: Tangle Document
+#+Name: tangle-document
+#+BEGIN_SRC emacs-lisp :exports none :results none
+(save-buffer)
+(let ((python-indent-offset 4))
+(org-babel-tangle))
+#+END_SRC
+
+* TODO Introduction
+:PROPERTIES:
+:CREATED:  <2016-08-20 Sat 13:47>
+:UNNUMBERED: t
+:END:
+
+* TOC                                                                :ignore:
+
+#+TOC: headlines 3
+#+TOC: listings
+
+* TODO System Definition
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 14:51>
+:END:
+
+#+Caption: Text User System Definition
+#+Name: text-ui-system-definition
+#+BEGIN_SRC lisp
+  '(#:alexandria
+    #:command-line-arguments
+    #:cl-readline)
+#+END_SRC
+
+* TODO Functionality
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 14:51>
+:END:
+

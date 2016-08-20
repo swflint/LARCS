@@ -2475,30 +2475,6 @@ The final assembly of this portion of the system is as simple as the rest, resol
                  (:file "larcs-typeset")))
 #+END_SRC
 
-* WORKING Text User Interface [0/2]                                :noexport:
-:PROPERTIES:
-:CREATED:  <2016-06-11 Sat 22:31>
-:ID:       65c8092c-1f7a-44e1-93d5-8d39e179f447
-:END:
-
-** TODO System Definition
-:PROPERTIES:
-:CREATED:  <2016-06-13 Mon 14:51>
-:END:
-
-#+Caption: Text User System Definition
-#+Name: text-ui-system-definition
-#+BEGIN_SRC lisp
-  '(#:alexandria
-    #:command-line-arguments
-    #:cl-readline)
-#+END_SRC
-
-** TODO Functionality
-:PROPERTIES:
-:CREATED:  <2016-06-13 Mon 14:51>
-:END:
-
 * WORKING Graphical User Interface [0/3]                           :noexport:
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 14:51>
