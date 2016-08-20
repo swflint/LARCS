@@ -55,23 +55,45 @@ LARCS is, in and of itself, only a library.  While this allows it to be used in 
 #+TOC: headlines 3
 #+TOC: listings
 
-* TODO System Definition
-:PROPERTIES:
-:CREATED:  <2016-06-13 Mon 14:51>
-:END:
-
-#+Caption: Text User System Definition
-#+Name: text-ui-system-definition
-#+BEGIN_SRC lisp
-  '(#:alexandria
-    #:command-line-arguments
-    #:cl-readline)
-#+END_SRC
-
 * TODO Functionality
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 14:51>
 :END:
+
+* WORKING Packaging [0/2]
+:PROPERTIES:
+:CREATED:  <2016-06-13 Mon 14:51>
+:END:
+
+** TODO Packaging
+:PROPERTIES:
+:CREATED:  <2016-08-20 Sat 16:03>
+:END:
+
+#+Caption: LARCS TUI Packaging
+#+Name: packaging
+#+BEGIN_SRC lisp :tangle "larcs-tui-packages.lisp"
+
+#+END_SRC
+
+** TODO System Definition
+:PROPERTIES:
+:CREATED:  <2016-08-20 Sat 16:02>
+:END:
+
+#+Caption: Text User System Definition
+#+Name: text-ui-system-definition
+#+BEGIN_SRC lisp :tangle "larcs-tui.asd"
+  (asdf:defsystem #:larcs-tui
+      :description "A Text-based User Interface for LARCS"
+      :author "Samuel Flint <swflint@flintfam.org>"
+      :license "GNU GPLv3 or Later"
+      :depends-on (#:alexandria
+                   #:command-line-arguments
+                   #:cl-readline)
+      :serial t
+      :components ((:file "larcs-tui-packages")))
+#+END_SRC
 
 * Push to bottom                                                     :ignore:
 :PROPERTIES:
