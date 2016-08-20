@@ -61,8 +61,6 @@ This is my Computer Algebra System, and it contains the following components:
 # - [[id:61add971-a129-40d0-be13-24f8a4afc522][Symbolic Integration]]
  - [[id:75f65e8a-0cc9-477f-b5e9-3c563fe7ef5c][Symbolic To Typeset Form]]
  - [[id:89370949-8f58-41cf-8c4f-92f81d48ac23][Library Assembly]]
-# - [[id:65c8092c-1f7a-44e1-93d5-8d39e179f447][Text User Interface]]
-# - [[id:b70027f8-a665-4282-ab4b-3d0ce6bd8d17][Graphical User Interface]]
 
 * DONE What's in a name?
 CLOSED: [2016-06-09 Thu 12:48]
