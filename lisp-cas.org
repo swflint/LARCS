@@ -1500,7 +1500,7 @@ Rules are stored rather simply, in a list of cons cells, with the ~CAR~ being th
   (defvar *rules* '())
 #+END_SRC
 
-** WORKING Rules [3/9]
+** WORKING Rules [4/9]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 22:52>
 :ID:       fdcebadd-b53d-4f59-99a4-4a3782e017a2
@@ -1584,11 +1584,14 @@ A Polynomial Term is a bit more complex than the previous two, the rewrite rule 
          `(* ,(* coefficient power) (expt ,variable ,(1- power)))))))
 #+END_SRC
 
-*** TODO Multiplicatives
+*** DONE Multiplicatives
+CLOSED: [2016-08-19 Fri 20:21]
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 09:57>
 :ID:       161906a4-5c14-4a84-bf1d-7fae9e20b14f
 :END:
+
+Differentiation of Multiplicative equations are performed by the product rule.  This is defined as $\frac{\mathrm{d}}{\mathrm{d}x} f(x) \cdot g(x) = f(x) \cdot g^{\prime}(x) + f^{\prime}(x) \cdot g(x)$.  There are some minor exceptions, if $f(x)$ and $g(x)$ are numeric, then the result is the product of the two; if either $f(x)$ or $g(x)$ is numeric and the other is not, then the numeric is placed in front of the other derivative of the remainder.
 
 #+Caption: Multiplicatives
 #+Name: sd-multiplicatives
