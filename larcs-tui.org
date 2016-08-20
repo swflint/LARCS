@@ -71,3 +71,18 @@ nil)))
 :CREATED:  <2016-06-13 Mon 14:51>
 :END:
 
+* Push to bottom                                                     :ignore:
+:PROPERTIES:
+:CREATED:  <2016-07-17 Sun 13:58>
+:END:
+
+#+LATEX: \newpage
+
+* Version Information
+:PROPERTIES:
+:CREATED:  <2016-07-17 Sun 13:58>
+:UNNUMBERED: t
+:END:
+
+This document is version src_sh{git describe --always --long --dirty --abbrev=10 --tags}.
+
