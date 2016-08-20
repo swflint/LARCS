@@ -1500,7 +1500,7 @@ Rules are stored rather simply, in a list of cons cells, with the ~CAR~ being th
   (defvar *rules* '())
 #+END_SRC
 
-** WORKING Rules [4/9]
+** WORKING Rules [5/9]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 22:52>
 :ID:       fdcebadd-b53d-4f59-99a4-4a3782e017a2
@@ -1687,10 +1687,19 @@ Differentiation of Multiplicative equations are performed by the product rule.  
     `(/ ,(differentiate (cons 'log number)) (* (log ,base) ,number)))
 #+END_SRC
 
-*** TODO Trigonometric Functions
+*** DONE Trigonometric Functions
+CLOSED: [2016-08-19 Fri 20:36]
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 10:45>
 :END:
+
+The following trig functions are supported:
+
+ - Sine :: $f^{\prime}(x) \cdot \cos(f(x))$
+ - Cosine :: $^{}f^{\prime}(x) \cdot -\sin(f(x))$
+ - Tangent :: $f^{\prime}(x) \cdot {\sec(f(x))}^2$
+ - Cosecant :: $f^{\prime}(x) \cdot \left( \csc(f(x)) - \cot(f(x)) \right)$
+ - Cotangent :: $f^{\prime}(x) \cdot -{\csc(f(x))}^2$
 
 #+Caption: Trigonometric Functions
 #+Name: sd-trigonometric-functions
