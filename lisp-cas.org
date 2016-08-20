@@ -1429,7 +1429,7 @@ This is the assembly of the ~#:larcs.manipulate~ package.  It includes, in corre
 :CREATED:  <2016-07-18 Mon 18:20>
 :END:
 
-* WORKING Symbolic Differentiation [3/4]
+* DONE Symbolic Differentiation [4/4]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 22:45>
 :ID:       552f402a-a25d-4f28-94af-17934c38a529
@@ -1500,7 +1500,7 @@ Rules are stored rather simply, in a list of cons cells, with the ~CAR~ being th
   (defvar *rules* '())
 #+END_SRC
 
-** WORKING Rules [8/9]
+** DONE Rules [9/9]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 22:52>
 :ID:       fdcebadd-b53d-4f59-99a4-4a3782e017a2
@@ -1667,10 +1667,18 @@ Following the same pattern as for additives, subtractives map over, deriving eac
     `(- ,@(map 'list #'(lambda (term) (differentiate term)) terms)))
 #+END_SRC
 
-*** TODO Exponentials and Logarithmics
+*** DONE Exponentials and Logarithmics
+CLOSED: [2016-08-20 Sat 13:39]
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 10:37>
 :END:
+
+There are four types of functions that are supported:
+
+ - Natural Exponentials :: Effectively this returns itself.
+ - Exponentials :: The original function multiplied by the log of the base.
+ - Natural Logarithmics :: The derivative of the function being passed to $\ln$ over the same function.
+ - Logarithmics :: The derivative of the natural log of the expression over the log of the base times the expression.
 
 #+Caption: Exponentials and Logarithms
 #+Name: sd-exponentials-and-logarithms
