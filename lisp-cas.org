@@ -1500,7 +1500,7 @@ Rules are stored rather simply, in a list of cons cells, with the ~CAR~ being th
   (defvar *rules* '())
 #+END_SRC
 
-** WORKING Rules [7/9]
+** WORKING Rules [8/9]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 22:52>
 :ID:       fdcebadd-b53d-4f59-99a4-4a3782e017a2
@@ -1614,11 +1614,14 @@ Differentiation of Multiplicative equations are performed by the product rule.  
         (differentiate `(* ,first (* ,@rest)))))
 #+END_SRC
 
-*** TODO Rationals
+*** DONE Rationals
+CLOSED: [2016-08-20 Sat 13:28]
 :PROPERTIES:
 :CREATED:  <2016-06-14 Tue 10:21>
 :ID:       cd681a61-a143-4e02-a6a9-e7b8f9b9c77d
 :END:
+
+This follows the quotient rule, which is defined as $\frac{\mathrm{d}}{\mathrm{d}x} \frac{f(x)}{g(x)} = \frac{f^{\prime}(x)g(x) - f(x)g^{\prime}(x)}{g(x)^2}$.
 
 #+Caption: Rational Derivatives
 #+Name: sd-rationals
