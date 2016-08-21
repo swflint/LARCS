@@ -2328,7 +2328,7 @@ The final assembly of this portion of the system is as simple as the rest, resol
 
 LARCS is primarily a library, and as such, the formal interface for the library, and a way to load it must be provided.  This is done here by defining packages centrally and defining an ASDF system to load the library quickly and easily.
 
-** WORKING Package Definitions [2/6]
+** WORKING Package Definitions [3/6]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 15:00>
 :ID:       573a8352-8cbe-408c-8c27-3cf0b66da885
@@ -2392,11 +2392,14 @@ Classification is another system that is used by just as many packages as the co
     (:nicknames #:classify))
 #+END_SRC
 
-*** TODO Polynomial Functions
+*** DONE Polynomial Functions
+CLOSED: [2016-08-21 Sun 12:09]
 :PROPERTIES:
 :CREATED:  <2016-08-21 Sun 10:58>
 :ID:       c97b187c-22c8-4332-902e-3be2247b277e
 :END:
+
+Polynomial Functions are used in several of the other packages, and provide a way of comparing and retrieving information about specific terms, or providing a way to collect information about variables.
 
 #+Caption: Polynomial Package Definition
 #+Name: polynomial-package-def
