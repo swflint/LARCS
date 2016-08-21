@@ -2320,7 +2320,7 @@ The final assembly of this portion of the system is as simple as the rest, resol
   <<stf-rules>>
 #+END_SRC
 
-* WORKING Library Assembly [0/2]
+* WORKING Library Assembly [1/2]
 :PROPERTIES:
 :CREATED:  <2016-06-11 Sat 22:30>
 :ID:       89370949-8f58-41cf-8c4f-92f81d48ac23
@@ -2476,11 +2476,14 @@ The final assembly of this portion of the system is as simple as the rest, resol
     (:nicknames #:typeset))
 #+END_SRC
 
-** TODO System Definition
+** DONE System Definition
+CLOSED: [2016-08-21 Sun 11:23]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 15:00>
 :ID:       35b2ec01-a933-4b5b-af73-b6b7f1c45cb6
 :END:
+
+This defines the LARCS Library system, allowing the functionality to be loaded by other systems or to provide a way to make development quickly and easily.
 
 #+Caption: Library System Definition
 #+Name: library-system-definition
