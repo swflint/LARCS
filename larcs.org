@@ -1382,58 +1382,6 @@ This is the assembly of the ~#:larcs.manipulate~ package.  It includes, in corre
   <<am-expression-manipulation>>
 #+END_SRC
 
-* WORKING Symbolic Solver [0/3]                                    :noexport:
-:PROPERTIES:
-:CREATED:  <2016-06-11 Sat 17:55>
-:ID:       ffa664b6-e147-471c-9e97-f49c4619fc99
-:END:
-
-** TODO Techniques
-:PROPERTIES:
-:CREATED:  <2016-06-11 Sat 17:55>
-:END:
-
-** TODO Rules
-:PROPERTIES:
-:CREATED:  <2016-06-11 Sat 17:56>
-:END:
-
-** TODO Assembly
-:PROPERTIES:
-:CREATED:  <2016-06-11 Sat 17:56>
-:END:
-
-* WORKING Symbolic Trigonometry [0/2]                              :noexport:
-:PROPERTIES:
-:CREATED:  <2016-06-11 Sat 17:58>
-:ID:       b0259b8c-e285-48ca-bda0-4f04e3bc6ef2
-:END:
-
-** TODO Rules
-:PROPERTIES:
-:CREATED:  <2016-06-11 Sat 17:58>
-:END:
-
-** TODO Assembly
-:PROPERTIES:
-:CREATED:  <2016-06-11 Sat 17:58>
-:END:
-
-* WORKING Symbolic Evaluation of Limits [0/2]                      :noexport:
-:PROPERTIES:
-:CREATED:  <2016-07-18 Mon 18:15>
-:END:
-
-** TODO Rules
-:PROPERTIES:
-:CREATED:  <2016-07-18 Mon 18:19>
-:END:
-
-** TODO Assembly
-:PROPERTIES:
-:CREATED:  <2016-07-18 Mon 18:20>
-:END:
-
 * DONE Symbolic Differentiation [4/4]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 22:45>
@@ -1784,27 +1732,6 @@ This assembles the package, placing the contents in the correct order and puts t
   <<sd-rules>>
   <<sd-derivative-driver>>
 #+END_SRC
-
-* WORKING Symbolic Integration [0/3]                               :noexport:
-:PROPERTIES:
-:CREATED:  <2016-06-11 Sat 18:02>
-:ID:       61add971-a129-40d0-be13-24f8a4afc522
-:END:
-
-** TODO Rules
-:PROPERTIES:
-:CREATED:  <2016-06-11 Sat 18:02>
-:END:
-
-** TODO Techniques
-:PROPERTIES:
-:CREATED:  <2016-06-11 Sat 18:02>
-:END:
-
-** TODO Assembly
-:PROPERTIES:
-:CREATED:  <2016-06-11 Sat 18:02>
-:END:
 
 * WORKING Symbolic To Typeset Form [3/5]
 :PROPERTIES:
@@ -2319,6 +2246,79 @@ The final assembly of this portion of the system is as simple as the rest, resol
   <<stf-conversion-driver>>
   <<stf-rules>>
 #+END_SRC
+
+* WORKING Symbolic Solver [0/3]                                    :noexport:
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 17:55>
+:ID:       ffa664b6-e147-471c-9e97-f49c4619fc99
+:END:
+
+** TODO Techniques
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 17:55>
+:END:
+
+** TODO Rules
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 17:56>
+:END:
+
+** TODO Assembly
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 17:56>
+:END:
+
+* WORKING Symbolic Trigonometry [0/2]                              :noexport:
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 17:58>
+:ID:       b0259b8c-e285-48ca-bda0-4f04e3bc6ef2
+:END:
+
+** TODO Rules
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 17:58>
+:END:
+
+** TODO Assembly
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 17:58>
+:END:
+
+* WORKING Symbolic Evaluation of Limits [0/2]                      :noexport:
+:PROPERTIES:
+:CREATED:  <2016-07-18 Mon 18:15>
+:END:
+
+** TODO Rules
+:PROPERTIES:
+:CREATED:  <2016-07-18 Mon 18:19>
+:END:
+
+** TODO Assembly
+:PROPERTIES:
+:CREATED:  <2016-07-18 Mon 18:20>
+:END:
+
+* WORKING Symbolic Integration [0/3]                               :noexport:
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 18:02>
+:ID:       61add971-a129-40d0-be13-24f8a4afc522
+:END:
+
+** TODO Rules
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 18:02>
+:END:
+
+** TODO Techniques
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 18:02>
+:END:
+
+** TODO Assembly
+:PROPERTIES:
+:CREATED:  <2016-06-11 Sat 18:02>
+:END:
 
 * DONE Library Assembly [2/2]
 :PROPERTIES:
