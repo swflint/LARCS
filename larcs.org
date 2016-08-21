@@ -2328,7 +2328,7 @@ The final assembly of this portion of the system is as simple as the rest, resol
 
 LARCS is primarily a library, and as such, the formal interface for the library, and a way to load it must be provided.  This is done here by defining packages centrally and defining an ASDF system to load the library quickly and easily.
 
-** WORKING Package Definitions [1/6]
+** WORKING Package Definitions [2/6]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 15:00>
 :ID:       573a8352-8cbe-408c-8c27-3cf0b66da885
@@ -2369,11 +2369,14 @@ This defines the common package, which keeps a few macros and variables that are
     (:nicknames #:common))
 #+END_SRC
 
-*** TODO Classification
+*** DONE Classification
+CLOSED: [2016-08-21 Sun 12:03]
 :PROPERTIES:
 :CREATED:  <2016-08-05 Fri 22:07>
 :ID:       f68d9d69-3cca-4767-8204-8077ae8ac2b2
 :END:
+
+Classification is another system that is used by just as many packages as the common packages.  In this case, it exports two functions (one to get classification and one to check whether something is classified as a given classification) and a macro (the case pattern for classification).
 
 #+Caption: Classification Package Definition
 #+Name: classification-package-def
