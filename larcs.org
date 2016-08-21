@@ -2320,7 +2320,7 @@ The final assembly of this portion of the system is as simple as the rest, resol
   <<stf-rules>>
 #+END_SRC
 
-* WORKING Library Assembly [1/2]
+* DONE Library Assembly [2/2]
 :PROPERTIES:
 :CREATED:  <2016-06-11 Sat 22:30>
 :ID:       89370949-8f58-41cf-8c4f-92f81d48ac23
@@ -2328,7 +2328,7 @@ The final assembly of this portion of the system is as simple as the rest, resol
 
 LARCS is primarily a library, and as such, the formal interface for the library, and a way to load it must be provided.  This is done here by defining packages centrally and defining an ASDF system to load the library quickly and easily.
 
-** WORKING Package Definitions [5/6]
+** DONE Package Definitions [6/6]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 15:00>
 :ID:       573a8352-8cbe-408c-8c27-3cf0b66da885
@@ -2471,11 +2471,14 @@ This is a rather simple package, providing a way to differentiate equations for 
     (:nicknames :diff))
 #+END_SRC
 
-*** TODO Typesetting
+*** DONE Typesetting
+CLOSED: [2016-08-21 Sun 13:35]
 :PROPERTIES:
 :CREATED:  <2016-08-05 Fri 22:07>
 :ID:       f3ae4f48-7fc9-4f4c-a128-642cd3babaf1
 :END:
+
+Again, this is a relatively simple package definition, providing a way to convert symbolic equations to a form that can be more easily read by most humans.
 
 #+Caption: Typesetting Package Definition
 #+Name: typesetting-package-def
