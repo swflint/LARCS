@@ -2328,7 +2328,7 @@ The final assembly of this portion of the system is as simple as the rest, resol
 
 LARCS is primarily a library, and as such, the formal interface for the library, and a way to load it must be provided.  This is done here by defining packages centrally and defining an ASDF system to load the library quickly and easily.
 
-** WORKING Package Definitions [0/6]
+** WORKING Package Definitions [1/6]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 15:00>
 :ID:       573a8352-8cbe-408c-8c27-3cf0b66da885
@@ -2347,11 +2347,14 @@ As all of the packages are defined centrally, this makes resolving inter-package
   <<typesetting-package-def>>
 #+END_SRC
 
-*** TODO Common
+*** DONE Common
+CLOSED: [2016-08-21 Sun 11:53]
 :PROPERTIES:
 :CREATED:  <2016-08-05 Fri 22:07>
 :ID:       84845974-c272-4007-a490-6bc328a8d22d
 :END:
+
+This defines the common package, which keeps a few macros and variables that are used by all other packages.  It exports a function to generate arguments lists, a list of special symbols to TeX sequences and a list of constant names.
 
 #+Caption: Common Package Definition
 #+Name: common-package-def
