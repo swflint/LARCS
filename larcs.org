@@ -662,13 +662,11 @@ This assembles the classification library, which in the ~#:larcs.classify~ packa
   <<et-possible-classifications>>
 #+END_SRC
 
-* WORKING Algebraic Manipulation [3/5]
+* WORKING Polynomial Related Functions [3/10]
 :PROPERTIES:
-:CREATED:  <2016-06-09 Thu 09:20>
-:ID:       b2c1fd45-b631-48f9-a093-66e1a0faa77f
+:CREATED:  <2016-05-01 Sun 12:29>
+:ID:       984d0f52-4c52-4bfa-a150-f3289d25bdf1
 :END:
-
-One of the most important parts of this system is the "algebraic manipulator", a sub-system that provides utilities for symbolic arithmetic, that is to say addition, subtraction, multiplication and division, along with trigonometric functions and exponential/logarithmic functions.  These function, as many other portions of this system, using rewrite rules, implementing a form of specialized generic programming.
 
 ** DONE Collect Variables
 CLOSED: [2016-06-21 Tue 22:10]
@@ -707,7 +705,7 @@ An expression is passed in, and if a variable, it is collected, if non-atomic, a
 [[file:imgs/variable-collection.png]]
 
 #+Caption: Collect Variables
-#+Name: am-collect-variables
+#+Name: poly-collect-variables
 #+BEGIN_SRC lisp
   (defun collect-variables (expression)
     (let ((variables '()))
@@ -721,6 +719,167 @@ An expression is passed in, and if a variable, it is collected, if non-atomic, a
                                               (rest expression)))))
       (reverse variables)))
 #+END_SRC
+
+** DONE Get Coefficient
+CLOSED: [2016-06-26 Sun 19:50]
+:PROPERTIES:
+:CREATED:  <2016-05-31 Tue 19:08>
+:ID:       cbc927fc-ae5e-46bf-a028-2872b5c31831
+:END:
+
+To get the coefficient of a polynomial term there are three possibilities
+
+ - Numerics :: The term itself
+ - Multiplicatives :: The second element in the term
+ - All else :: 1
+
+#+Caption: Get Coefficient
+#+Name: poly-get-coefficient
+#+BEGIN_SRC lisp
+  (defun coefficient (term)
+    (when (classified-as-p term 'polynomial-term)
+      (classification-case term
+                           (numeric term)
+                           (multiplicative (second term))
+                           (* 1))))
+#+END_SRC
+
+** DONE Get Term Variables
+CLOSED: [2016-06-27 Mon 18:40]
+:PROPERTIES:
+:CREATED:  <2016-05-31 Tue 19:08>
+:ID:       55729698-bd51-48af-ab42-197871c54dbb
+:END:
+
+The ability to retrieve tha variable in a polynomial term is important.  This is accomplished by collecting the variables in the term and returning the first.  If this is simply a numeric expression, ~nil~ is returned as there are no variables.
+
+#+Caption: Get Term Variable
+#+Name: poly-get-term-variable
+#+BEGIN_SRC lisp
+  (defun term-variable (term)
+    (when (classified-as-p term 'polynomial-term)
+      (first (collect-variables term))))
+#+END_SRC
+
+** TODO Get Power
+:PROPERTIES:
+:CREATED:  <2016-05-31 Tue 19:08>
+:ID:       7d5a10da-bb30-496f-b285-470057a46db0
+:END:
+
+#+Caption: Get Power
+#+Name: poly-get-power
+#+BEGIN_SRC lisp
+  (defun get-power (term)
+    (classification-case term
+                         (numeric 0)
+                         (variable 1)
+                         (power (third term))
+                         (multiplicative
+                          (if (listp (third term))
+                              (third (third term))
+                              1))
+                         (* 0)))
+#+END_SRC
+
+** TODO Term Order Less Than
+:PROPERTIES:
+:CREATED:  <2016-06-24 Fri 20:57>
+:ID:       b7fcb056-2494-4142-aad5-7619629b1980
+:END:
+
+#+Caption: Term Order Less Than
+#+Name: poly-term-order-less-than
+#+BEGIN_SRC lisp
+  (defun term-order-< (a b)
+    (< (get-power a)
+       (get-power b)))
+#+END_SRC
+
+** TODO Same Order
+:PROPERTIES:
+:CREATED:  <2016-05-31 Tue 19:08>
+:ID:       c56a1496-f4c2-4693-9448-5043570a752f
+:END:
+
+#+Caption: Same Order
+#+Name: poly-same-order
+#+BEGIN_SRC lisp
+  (defun term-order-= (term-a term-b)
+    (= (get-power term-a)
+       (get-power term-b)))
+#+END_SRC
+
+** TODO Term Order Greater Than
+:PROPERTIES:
+:CREATED:  <2016-06-24 Fri 20:57>
+:ID:       27f836aa-8522-4a4c-88b3-6f19a505916f
+:END:
+
+#+Caption: Term Order Greater Than
+#+Name: poly-term-order-greater-than
+#+BEGIN_SRC lisp
+  (defun term-order-> (a b)
+    (> (get-power a)
+       (get-power b)))
+#+END_SRC
+
+** TODO Same Variable
+:PROPERTIES:
+:CREATED:  <2016-05-31 Tue 19:08>
+:ID:       3806c97a-12fa-4488-b38c-d9ff3570c139
+:END:
+
+#+Caption: Same Variable
+#+Name: poly-same-variable
+#+BEGIN_SRC lisp
+  (defun same-variable-p (term-a term-b)
+    (eq (term-variable term-a)
+        (term-variable term-b)))
+#+END_SRC
+
+** TODO Is Combinable
+:PROPERTIES:
+:CREATED:  <2016-05-31 Tue 19:08>
+:ID:       db0410aa-bb12-4933-9be7-1a50d70ae90f
+:END:
+
+#+Caption: Is Combinable
+#+Name: poly-is-combinable
+#+BEGIN_SRC lisp
+  (defun single-term-combinable-p (term-a term-b)
+    (and (term-order-= term-a term-b)
+       (same-variable-p term-a term-b)))
+#+END_SRC
+
+** TODO Assembly
+:PROPERTIES:
+:CREATED:  <2016-08-21 Sun 11:03>
+:ID:       0c64cf6f-818d-4d39-9dc3-ab9353a6d66e
+:END:
+
+#+Caption: Polynomial Related Functions
+#+Name: poly-assembly
+#+BEGIN_SRC lisp :tangle "larcs-polynomials.lisp"
+  (in-package #:larcs.polynomials)
+  <<poly-collect-variables>>
+  <<poly-get-coefficient>>
+  <<poly-get-term-variable>>
+  <<poly-get-power>>
+  <<poly-term-order-less-than>>
+  <<poly-same-order>>
+  <<poly-term-order-greater-than>>
+  <<poly-same-variable>>
+  <<poly-is-combinable>>
+#+END_SRC
+
+* WORKING Algebraic Manipulation [3/5]
+:PROPERTIES:
+:CREATED:  <2016-06-09 Thu 09:20>
+:ID:       b2c1fd45-b631-48f9-a093-66e1a0faa77f
+:END:
+
+One of the most important parts of this system is the "algebraic manipulator", a sub-system that provides utilities for symbolic arithmetic, that is to say addition, subtraction, multiplication and division, along with trigonometric functions and exponential/logarithmic functions.  These function, as many other portions of this system, using rewrite rules, implementing a form of specialized generic programming.
 
 ** DONE Term Collection
 CLOSED: [2016-06-24 Fri 20:57]
@@ -780,157 +939,6 @@ To aid in the design and implementation of various sub-systems, from simplificat
                        (cons :exponentials exponentials)
                        (cons :natural-logarithmics natural-logarithmics)
                        (cons :trigonometrics trigonometrics)))))
-#+END_SRC
-
-** WORKING Polynomial Related Functions [2/8]
-:PROPERTIES:
-:CREATED:  <2016-05-01 Sun 12:29>
-:ID:       984d0f52-4c52-4bfa-a150-f3289d25bdf1
-:END:
-
-#+Caption: Polynomial Related Functions
-#+Name: am-polynomial-related-functions
-#+BEGIN_SRC lisp
-  <<am-get-coefficient>>
-  <<am-get-term-variable>>
-  <<am-get-power>>
-  <<am-term-order-less-than>>
-  <<am-same-order>>
-  <<am-term-order-greater-than>>
-  <<am-same-variable>>
-  <<am-is-combinable>>
-#+END_SRC
-
-*** DONE Get Coefficient
-CLOSED: [2016-06-26 Sun 19:50]
-:PROPERTIES:
-:CREATED:  <2016-05-31 Tue 19:08>
-:ID:       cbc927fc-ae5e-46bf-a028-2872b5c31831
-:END:
-
-To get the coefficient of a polynomial term there are three possibilities
-
- - Numerics :: The term itself
- - Multiplicatives :: The second element in the term
- - All else :: 1
-
-#+Caption: Get Coefficient
-#+Name: am-get-coefficient
-#+BEGIN_SRC lisp
-  (defun coefficient (term)
-    (when (classified-as-p term 'polynomial-term)
-      (classification-case term
-                           (numeric term)
-                           (multiplicative (second term))
-                           (* 1))))
-#+END_SRC
-
-*** DONE Get Term Variables
-CLOSED: [2016-06-27 Mon 18:40]
-:PROPERTIES:
-:CREATED:  <2016-05-31 Tue 19:08>
-:ID:       55729698-bd51-48af-ab42-197871c54dbb
-:END:
-
-The ability to retrieve tha variable in a polynomial term is important.  This is accomplished by collecting the variables in the term and returning the first.  If this is simply a numeric expression, ~nil~ is returned as there are no variables.
-
-#+Caption: Get Term Variable
-#+Name: am-get-term-variable
-#+BEGIN_SRC lisp
-  (defun term-variable (term)
-    (when (classified-as-p term 'polynomial-term)
-      (first (collect-variables term))))
-#+END_SRC
-
-*** TODO Get Power
-:PROPERTIES:
-:CREATED:  <2016-05-31 Tue 19:08>
-:ID:       7d5a10da-bb30-496f-b285-470057a46db0
-:END:
-
-#+Caption: Get Power
-#+Name: am-get-power
-#+BEGIN_SRC lisp
-  (defun get-power (term)
-    (classification-case term
-                         (numeric 0)
-                         (variable 1)
-                         (power (third term))
-                         (multiplicative
-                          (if (listp (third term))
-                              (third (third term))
-                              1))
-                         (* 0)))
-#+END_SRC
-
-*** TODO Term Order Less Than
-:PROPERTIES:
-:CREATED:  <2016-06-24 Fri 20:57>
-:ID:       b7fcb056-2494-4142-aad5-7619629b1980
-:END:
-
-#+Caption: Term Order Less Than
-#+Name: am-term-order-less-than
-#+BEGIN_SRC lisp
-  (defun term-order-< (a b)
-    (< (get-power a)
-       (get-power b)))
-#+END_SRC
-
-*** TODO Same Order
-:PROPERTIES:
-:CREATED:  <2016-05-31 Tue 19:08>
-:ID:       c56a1496-f4c2-4693-9448-5043570a752f
-:END:
-
-#+Caption: Same Order
-#+Name: am-same-order
-#+BEGIN_SRC lisp
-  (defun term-order-= (term-a term-b)
-    (= (get-power term-a)
-       (get-power term-b)))
-#+END_SRC
-
-*** TODO Term Order Greater Than
-:PROPERTIES:
-:CREATED:  <2016-06-24 Fri 20:57>
-:ID:       27f836aa-8522-4a4c-88b3-6f19a505916f
-:END:
-
-#+Caption: Term Order Greater Than
-#+Name: am-term-order-greater-than
-#+BEGIN_SRC lisp
-  (defun term-order-> (a b)
-    (> (get-power a)
-       (get-power b)))
-#+END_SRC
-
-*** TODO Same Variable
-:PROPERTIES:
-:CREATED:  <2016-05-31 Tue 19:08>
-:ID:       3806c97a-12fa-4488-b38c-d9ff3570c139
-:END:
-
-#+Caption: Same Variable
-#+Name: am-same-variable
-#+BEGIN_SRC lisp
-  (defun same-variable-p (term-a term-b)
-    (eq (term-variable term-a)
-        (term-variable term-b)))
-#+END_SRC
-
-*** TODO Is Combinable
-:PROPERTIES:
-:CREATED:  <2016-05-31 Tue 19:08>
-:ID:       db0410aa-bb12-4933-9be7-1a50d70ae90f
-:END:
-
-#+Caption: Is Combinable
-#+Name: am-is-combinable
-#+BEGIN_SRC lisp
-  (defun single-term-combinable-p (term-a term-b)
-    (and (term-order-= term-a term-b)
-       (same-variable-p term-a term-b)))
 #+END_SRC
 
 ** WORKING Expression Manipulators [0/7]
@@ -1371,7 +1379,6 @@ This is the assembly of the ~#:larcs.manipulate~ package.  It includes, in corre
   <<am-determine-expression-type>>
   <<am-collect-variables>>
   <<am-collect-terms>>
-  <<am-polynomial-related-functions>>
   <<am-expression-manipulation>>
 #+END_SRC
 
@@ -2319,7 +2326,7 @@ The final assembly of this portion of the system is as simple as the rest, resol
 :ID:       89370949-8f58-41cf-8c4f-92f81d48ac23
 :END:
 
-** WORKING Package Definitions [0/5]
+** WORKING Package Definitions [0/6]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 15:00>
 :ID:       573a8352-8cbe-408c-8c27-3cf0b66da885
@@ -2330,6 +2337,7 @@ The final assembly of this portion of the system is as simple as the rest, resol
 #+BEGIN_SRC lisp :tangle "larcs-packages.lisp"
   <<common-package-def>>
   <<classification-package-def>>
+  <<polynomial-package-def>>
   <<manipulation-package-def>>
   <<differentiation-package-def>>
   <<typesetting-package-def>>
@@ -2374,6 +2382,31 @@ The final assembly of this portion of the system is as simple as the rest, resol
     (:nicknames #:classify))
 #+END_SRC
 
+*** TODO Polynomial Functions
+:PROPERTIES:
+:CREATED:  <2016-08-21 Sun 10:58>
+:ID:       c97b187c-22c8-4332-902e-3be2247b277e
+:END:
+
+#+Caption: Polynomial Package Definition
+#+Name: polynomial-package-def
+#+BEGIN_SRC lisp 
+  (defpackage #:larcs.polynomials
+    (:use #:cl
+          #:larcs.common
+          #:larcs.classify)
+    (:export #:collect-variables
+             #:coefficient
+             #:term-variable
+             #:get-power
+             #:term-order-<
+             #:term-order-=
+             #:term-order->
+             #:save-variable-p
+             #:single-term-combinable-p)
+    (:nicknames #:polynomials))
+#+END_SRC
+
 *** TODO Manipulation
 :PROPERTIES:
 :CREATED:  <2016-08-05 Fri 22:07>
@@ -2386,20 +2419,12 @@ The final assembly of this portion of the system is as simple as the rest, resol
   (defpackage #:larcs.manipulate
     (:use #:cl
           #:larcs.common
-          #:larcs.classify)
+          #:larcs.classify
+          #:larcs.polynomials)
     (:import-from #:alexandria
                   #:symbolicate)
     (:export #:manipulate
-             #:collect-variables
-             #:collect-terms
-             #:coefficient
-             #:term-variable
-             #:get-power
-             #:term-order-<
-             #:term-order-=
-             #:term-order->
-             #:save-variable-p
-             #:single-term-combinable-p)
+             #:collect-terms)
     (:nicknames #:manipulate))
 #+END_SRC
 
@@ -2416,7 +2441,8 @@ The final assembly of this portion of the system is as simple as the rest, resol
     (:use #:cl
           #:larcs.common
           #:larcs.classify
-          #:larcs.manipulate)
+          #:larcs.manipulate
+          #:larcs.polynomials)
     (:import-from #:alexandria
                   #:symbolicate)
     (:import-from #:com.informatimago.common-lisp.cesarum.list
@@ -2439,7 +2465,8 @@ The final assembly of this portion of the system is as simple as the rest, resol
     (:use #:cl
           #:larcs.common
           #:larcs.classify
-          #:larcs.manipulate)
+          #:larcs.manipulate
+          #:larcs.polynomials)
     (:import-from #:alexandria
                   #:symbolicate)
     (:import-from #:com.informatimago.common-lisp.cesarum.list
@@ -2468,6 +2495,7 @@ The final assembly of this portion of the system is as simple as the rest, resol
     :components ((:file "larcs-packages")
                  (:file "larcs-common")
                  (:file "larcs-classify")
+                 (:file "larcs-polynomials")
                  (:file "larcs-manipulation")
                  (:file "larcs-differentiate")
                  (:file "larcs-typeset")))
