@@ -2332,6 +2332,8 @@ The final assembly of this portion of the system is as simple as the rest, resol
 :ID:       573a8352-8cbe-408c-8c27-3cf0b66da885
 :END:
 
+As all of the packages are defined centrally, this makes resolving inter-package dependencies much easier and convenient.
+
 #+Caption: LARCS Packages
 #+Name: larcs-packages
 #+BEGIN_SRC lisp :tangle "larcs-packages.lisp"
