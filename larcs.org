@@ -2326,6 +2326,8 @@ The final assembly of this portion of the system is as simple as the rest, resol
 :ID:       89370949-8f58-41cf-8c4f-92f81d48ac23
 :END:
 
+LARCS is primarily a library, and as such, the formal interface for the library, and a way to load it must be provided.  This is done here by defining packages centrally and defining an ASDF system to load the library quickly and easily.
+
 ** WORKING Package Definitions [0/6]
 :PROPERTIES:
 :CREATED:  <2016-06-13 Mon 15:00>
