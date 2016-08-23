@@ -668,6 +668,8 @@ This assembles the classification library, which in the ~#:larcs.classify~ packa
 :ID:       984d0f52-4c52-4bfa-a150-f3289d25bdf1
 :END:
 
+Polynomials, and polynomial terms, are a somewhat common occurence.  Because of this, it is important to provide a set of functions that manipulate these structures.  These functions include a coefficient retriever, a variable retriever, a power retriever and a couple of order comparators.
+
 ** DONE Collect Variables
 CLOSED: [2016-06-21 Tue 22:10]
 :PROPERTIES:
